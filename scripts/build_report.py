@@ -92,8 +92,8 @@ def render_html(
         {
             "label": "Sharpe",
             "value": _fmt_val(metrics.get("sharpe")),
-            "help": "Risk-adjusted return using total volatility. Higher is better."
-            " Uses annual RF {ANNUAL_RF_RATE:.0%} and monthly scaling.",
+            "help": f"Risk-adjusted return using total volatility. Higher is better."
+            f" Uses annual RF {ANNUAL_RF_RATE:.0%} and monthly scaling.",
         },
         {
             "label": "Sortino",
@@ -108,7 +108,7 @@ def render_html(
             <span>{item['label']}</span>
             <span class=\"relative inline-block align-middle group\" aria-label=\"Help\" role=\"img\">
               <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 20 20\" fill=\"currentColor\" class=\"h-4 w-4 text-slate-400\">
-                <path fill-rule=\"evenodd\" d=\"M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.94 7.94a3 3 0 114.24 4.24l-.35.35c-.37.37-.53.86-.46 1.35a.75.75 0 11-1.48.2 2.96 2.96 0 01.8-2.01l.35-.35a1.5 1.5 0 10-2.12-2.12.75.75 0 01-1.06-1.06zM10 14a1 1 0 100 2 1 1 0 000-2z\" clip-rule=\"evenodd\" />
+                <path fill-rule=\"evenodd\" d=\"M10 18a8 8 0 100-16 8 8 0 000 16zm.75-4.25a.75.75 0 11-1.5 0v-4.5a.75.75 0 011.5 0v4.5zM10 7a1 1 0 110-2 1 1 0 010 2z\" clip-rule=\"evenodd\" />
               </svg>
               <span class=\"pointer-events-none absolute left-1/2 z-10 hidden w-64 -translate-x-1/2 translate-y-2 rounded-md bg-slate-900 px-3 py-2 text-xs text-white shadow-lg group-hover:block\">{item['help']}</span>
             </span>
