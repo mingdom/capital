@@ -1,0 +1,22 @@
+# OS / Editor
+.DS_Store
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Environments
+venv/
+.venv/
+.env
+
+# Data
+portfolio_data-*.json
+data/
+
