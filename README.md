@@ -78,7 +78,7 @@ This runs `black --check .` and `ruff check .`. Run `make format` to auto-fix fo
 - `sortino.py` — main analysis script (monthly returns, CAGR, drawdown, Sharpe/Sortino).
 - `benchmarks.py` — fetches/caches SPY & QQQ monthly returns (yfinance) for comparisons.
 - `data/valuations.json` — SavvyTrader valuations API response for local runs.
-- `data/` — additional data files (e.g., `prices.json`, historical snapshots). Usually git-ignored.
+- `data/` — additional data files (e.g., `valuations.json`, `prices.json`, historical snapshots).
 - `tests/` — pytest-based tests (e.g., `tests/test_sortino_smoke.py`).
 - `scripts/pre-commit.sh` — optional Git pre-commit hook (Black + Ruff checks).
 - `Makefile` — common tasks (`make dev`, `run`, `test`, `format`, `lint`, `hook`).

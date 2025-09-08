@@ -16,7 +16,4 @@ venv/
 .venv/
 .env
 
-# Data
-portfolio_data-*.json
-data/
-
+# Data (tracked)
