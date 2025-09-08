@@ -28,7 +28,7 @@ lint: $(RUFF)
 $(RUFF): install ; @true
 
 test: $(PYTEST)
-	PYTHONPATH=. $(PYTEST)
+	PYTHONPATH=. $(PYTEST) -q
 
 $(PYTEST): install ; @true
 
@@ -36,10 +36,10 @@ run: $(PY)
 	$(PY) sortino.py
 
 run-benchmarks: $(PY)
-        $(PY) sortino.py --benchmarks
+	$(PY) sortino.py --benchmarks
 
 report: $(PY)
-        $(PY) scripts/build_report.py
+	$(PY) scripts/build_report.py
 
 clean:
 	rm -rf $(VENV) __pycache__ .pytest_cache .coverage htmlcov
