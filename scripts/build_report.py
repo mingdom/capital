@@ -73,20 +73,50 @@ def render_html(
     monthly_table_html = "\n".join(monthly_rows)
 
     card_items = [
-        ("CAGR", _fmt_pct(metrics.get("cagr"))),
-        ("YTD", _fmt_pct(metrics.get("ytd"))),
-        ("Max Monthly Drawdown", _fmt_pct(metrics.get("max_dd_monthly"))),
-        ("Sharpe", _fmt_val(metrics.get("sharpe"))),
-        ("Sortino", _fmt_val(metrics.get("sortino"))),
+        {
+            "label": "CAGR",
+            "value": _fmt_pct(metrics.get("cagr")),
+            "help": "Compound annual growth rate based on the full period."
+            " Shows the constant annual return that would compound to the same total.",
+        },
+        {
+            "label": "YTD",
+            "value": _fmt_pct(metrics.get("ytd")),
+            "help": "Year-to-date total return from the start of the year to the as-of date.",
+        },
+        {
+            "label": "Max Monthly Drawdown",
+            "value": _fmt_pct(metrics.get("max_dd_monthly")),
+            "help": "Worst single-month return over the period (most negative monthly return).",
+        },
+        {
+            "label": "Sharpe",
+            "value": _fmt_val(metrics.get("sharpe")),
+            "help": "Risk-adjusted return using total volatility. Higher is better."
+            " Uses annual RF {ANNUAL_RF_RATE:.0%} and monthly scaling.",
+        },
+        {
+            "label": "Sortino",
+            "value": _fmt_val(metrics.get("sortino")),
+            "help": "Risk-adjusted return using downside volatility only. Higher is better.",
+        },
     ]
     cards_html = "\n".join(
         f"""
         <div class=\"rounded-xl border border-slate-200 bg-white p-4 shadow-sm\">
-          <div class=\"text-sm text-slate-500\">{name}</div>
-          <div class=\"mt-1 text-2xl font-semibold text-slate-800\">{val}</div>
+          <div class=\"flex items-center gap-2 text-sm text-slate-500\">
+            <span>{item['label']}</span>
+            <span class=\"relative inline-block align-middle group\" aria-label=\"Help\" role=\"img\">
+              <svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 20 20\" fill=\"currentColor\" class=\"h-4 w-4 text-slate-400\">
+                <path fill-rule=\"evenodd\" d=\"M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.94 7.94a3 3 0 114.24 4.24l-.35.35c-.37.37-.53.86-.46 1.35a.75.75 0 11-1.48.2 2.96 2.96 0 01.8-2.01l.35-.35a1.5 1.5 0 10-2.12-2.12.75.75 0 01-1.06-1.06zM10 14a1 1 0 100 2 1 1 0 000-2z\" clip-rule=\"evenodd\" />
+              </svg>
+              <span class=\"pointer-events-none absolute left-1/2 z-10 hidden w-64 -translate-x-1/2 translate-y-2 rounded-md bg-slate-900 px-3 py-2 text-xs text-white shadow-lg group-hover:block\">{item['help']}</span>
+            </span>
+          </div>
+          <div class=\"mt-1 text-2xl font-semibold text-slate-800\">{item['value']}</div>
         </div>
         """
-        for name, val in card_items
+        for item in card_items
     )
 
     rows = []
@@ -127,7 +157,7 @@ def render_html(
     </header>
 
     <section aria-labelledby=\"metrics\">
-      <h2 id=\"metrics\" class=\"sr-only\">Metrics</h2>
+      <h2 id=\"metrics\" class=\"text-xl font-semibold text-slate-900\">Key Metrics</h2>
       <div class=\"grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3\">
         {cards_html}
       </div>
