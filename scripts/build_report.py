@@ -30,8 +30,13 @@ def _fmt_val(x: float) -> str:
     return f"{x:.2f}" if pd.notna(x) else "na"
 
 
-def render_html(monthly_returns: pd.Series, metrics: dict[str, float]) -> str:
-    """Render a simple HTML report with a Chart.js plot and metrics table."""
+def render_html(
+    monthly_returns: pd.Series, metrics: dict[str, float], as_of: str
+) -> str:
+    """Render a simple HTML report with a Chart.js plot and metrics table.
+
+    as_of: ISO date string (YYYY-MM-DD) indicating last data date.
+    """
     labels = [str(m) for m in monthly_returns.index]
     data = [round(v * 100, 2) for v in monthly_returns]
 
@@ -55,6 +60,7 @@ def render_html(monthly_returns: pd.Series, metrics: dict[str, float]) -> str:
 </head>
 <body>
   <h1>Portfolio Monthly Returns</h1>
+  <p><em>As of: {as_of}</em></p>
   <canvas id=\"returnsChart\"></canvas>
   <script>
     const ctx = document.getElementById('returnsChart').getContext('2d');
@@ -90,11 +96,25 @@ def render_html(monthly_returns: pd.Series, metrics: dict[str, float]) -> str:
     return html
 
 
+def _get_last_data_date(json_file: str) -> str:
+    """Return the last summaryDate (YYYY-MM-DD) from the valuations JSON."""
+    try:
+        with open(json_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if not data:
+            return "unknown"
+        dates = pd.to_datetime([row.get("summaryDate") for row in data])
+        return str(pd.Series(dates).max().date())
+    except Exception:
+        return "unknown"
+
+
 def main(json_file: str, annual_rf: float, year: int, output: Path) -> None:
     monthly, metrics = convert_to_monthly_and_calculate_ratios(
         json_file=json_file, annual_rf=annual_rf, current_year=year
     )
-    html = render_html(monthly, metrics)
+    as_of = _get_last_data_date(json_file)
+    html = render_html(monthly, metrics, as_of)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(html, encoding="utf-8")
 

@@ -61,11 +61,12 @@ make report
 Merging to `main` runs the `Build Web Report` workflow, which regenerates
 `dist/index.html` and deploys it to GitHub Pages. After enabling Pages
 (`Settings` → `Pages` → `Build and deployment` → `GitHub Actions`), the latest
-report is served at your project Pages URL:
+report is published here:
 
-- `https://<your-user-or-org>.github.io/<repo>/`
+- https://mingdom.github.io/capital/
 
-The workflow summary will also display the exact URL after each deployment.
+The page shows an “As of: YYYY-MM-DD” line reflecting the last date present
+in `data/valuations.json` used for that build.
 
 ## Test
 
@@ -106,3 +107,14 @@ This runs `black --check .` and `ruff check .`. Run `make format` to auto-fix fo
 - `AGENTS.md` — contributor guidelines.
 
 Note: The HTML report supersedes the raw console sample previously shown here.
+
+### GitHub Pages settings
+
+If the deployment job fails with a 404 and a message like “Ensure GitHub Pages
+has been enabled”, check the repo settings:
+
+- Go to `Settings` → `Pages`.
+- Under “Build and deployment”, set `Source` to `GitHub Actions`.
+- Save the change and re-run the “Build Web Report” workflow (or push to `main`).
+- Optional: Ensure the repository is public (or your plan allows Pages from
+  private repos) so the URL is accessible.
