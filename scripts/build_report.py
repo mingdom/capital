@@ -36,14 +36,39 @@ def render_html(
     monthly_returns: pd.Series,
     metrics: dict[str, float],
     bench_metrics: dict[str, dict[str, float]],
+    spy: pd.Series,
+    qqq: pd.Series,
     as_of: str,
 ) -> str:
     """Render a Tailwind-styled HTML report with metrics, benchmarks table, and chart.
 
     as_of: ISO date string (YYYY-MM-DD) indicating last data date.
     """
-    labels = [str(m) for m in monthly_returns.index]
-    data_portfolio = [round(v * 100, 2) for v in monthly_returns]
+    # Build monthly comparison table data (Portfolio vs SPY vs QQQ)
+    months = list(monthly_returns.index)
+    def fmt_color(val: float) -> str:
+        if pd.isna(val):
+            return "text-slate-400"
+        if val > 0:
+            return "text-emerald-600"
+        if val < 0:
+            return "text-rose-600"
+        return "text-slate-600"
+
+    monthly_rows = []
+    for m in months:
+        p = monthly_returns.get(m, pd.NA)
+        s = spy.get(m, pd.NA) if spy is not None else pd.NA
+        q = qqq.get(m, pd.NA) if qqq is not None else pd.NA
+        monthly_rows.append(
+            f"<tr class=\"border-t border-slate-200\">"
+            f"<td class=\"py-2 px-3 text-slate-600\">{m}</td>"
+            f"<td class=\"py-2 px-3 font-medium {fmt_color(p)}\">{_fmt_pct(p) if pd.notna(p) else '—'}</td>"
+            f"<td class=\"py-2 px-3 {fmt_color(s)}\">{_fmt_pct(s) if pd.notna(s) else '—'}</td>"
+            f"<td class=\"py-2 px-3 {fmt_color(q)}\">{_fmt_pct(q) if pd.notna(q) else '—'}</td>"
+            f"</tr>"
+        )
+    monthly_table_html = "\n".join(monthly_rows)
 
     card_items = [
         ("CAGR", _fmt_pct(metrics.get("cagr"))),
@@ -86,7 +111,6 @@ def render_html(
   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
   <title>Mingdom Capital — Performance</title>
   <script src=\"https://cdn.tailwindcss.com\"></script>
-  <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>
 </head>
 <body class=\"bg-slate-50\">
   <main class=\"mx-auto max-w-5xl p-6\">
@@ -123,10 +147,22 @@ def render_html(
       </div>
     </section>
 
-    <section aria-labelledby=\"chart\" class=\"mt-8\">
-      <h2 id=\"chart\" class=\"text-xl font-semibold text-slate-900\">Monthly Returns</h2>
-      <div class=\"mt-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm\">
-        <canvas id=\"returnsChart\"></canvas>
+    <section aria-labelledby=\"monthly\" class=\"mt-8\">
+      <h2 id=\"monthly\" class=\"text-xl font-semibold text-slate-900\">Monthly Performance</h2>
+      <div class=\"mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm\">
+        <table class=\"min-w-full divide-y divide-slate-200\">
+          <thead class=\"bg-slate-50\">
+            <tr>
+              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Month</th>
+              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Portfolio</th>
+              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">SPY</th>
+              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">QQQ</th>
+            </tr>
+          </thead>
+          <tbody class=\"bg-white\">
+            {monthly_table_html}
+          </tbody>
+        </table>
       </div>
     </section>
 
@@ -134,42 +170,6 @@ def render_html(
       <p>Source: SavvyTrader valuations JSON. RF: {ANNUAL_RF_RATE:.2%} annual.</p>
     </footer>
   </main>
-
-  <script>
-    const ctx = document.getElementById('returnsChart').getContext('2d');
-    new Chart(ctx, {{
-      type: 'line',
-      data: {{
-        labels: {json.dumps(labels)},
-        datasets: [{{
-          label: 'Portfolio Return %',
-          data: {json.dumps(data_portfolio)},
-          borderColor: 'rgb(37, 99, 235)',
-          backgroundColor: 'rgba(37, 99, 235, 0.15)',
-          fill: true,
-          tension: 0.25
-        }}]
-      }},
-      options: {{
-        responsive: true,
-        scales: {{
-          y: {{
-            ticks: {{
-              callback: (value) => value + '%'
-            }}
-          }}
-        }},
-        plugins: {{
-          legend: {{ display: true }},
-          tooltip: {{
-            callbacks: {{
-              label: (ctx) => `${{ctx.parsed.y}}%`
-            }}
-          }}
-        }}
-      }}
-    }});
-  </script>
 </body>
 </html>
 """
@@ -204,7 +204,7 @@ def main(json_file: str, annual_rf: float, year: int, output: Path) -> None:
     }
 
     as_of = _get_last_data_date(json_file)
-    html = render_html(monthly, metrics, bench_metrics, as_of)
+    html = render_html(monthly, metrics, bench_metrics, spy, qqq, as_of)
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(html, encoding="utf-8")
 
