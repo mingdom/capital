@@ -26,8 +26,8 @@ def convert_to_monthly_and_calculate_ratios(
 
     # Convert to monthly returns by compounding daily returns in each month
     df["month"] = df["summaryDate"].dt.to_period("M")
-    monthly_returns = df.groupby("month").apply(
-        lambda g: np.prod(1 + g["dailyTotalValueChange"]) - 1
+    monthly_returns = df.groupby("month")["dailyTotalValueChange"].apply(
+        lambda s: np.prod(1 + s) - 1
     )
 
     # Print monthly returns for debug
