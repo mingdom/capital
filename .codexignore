@@ -1,0 +1,5 @@
+# Override ignores to include the data directory for Codex
+# The data/ folder is gitignored, but we want Codex to see it.
+!data/
+!data/**
+

@@ -32,6 +32,6 @@ def test_smoke_runs_and_prints(capsys):
 
     out = capsys.readouterr().out
     # Basic smoke checks
-    assert "Monthly Returns:" in out
+    assert "Monthly Returns" in out
     assert "Annualized Sharpe Ratio:" in out
     assert "Annualized Sortino Ratio:" in out

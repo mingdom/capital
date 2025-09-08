@@ -32,6 +32,10 @@ make run
 
 # Or directly
 ./venv/bin/python sortino.py
+
+# Compare against SPY/QQQ (fetch/cached via yfinance)
+make run-benchmarks
+# or: ./venv/bin/python sortino.py --benchmarks
 ```
 
 ## Test
@@ -61,6 +65,7 @@ This runs `black --check .` and `ruff check .`. Run `make format` to auto-fix fo
 ## Project Structure
 
 - `sortino.py` — main analysis script (monthly returns, CAGR, drawdown, Sharpe/Sortino).
+- `benchmarks.py` — fetches/caches SPY & QQQ monthly returns (yfinance) for comparisons.
 - `data/valuations.json` — SavvyTrader valuations API response for local runs.
 - `data/` — additional data files (e.g., `prices.json`, historical snapshots). Usually git-ignored.
 - `tests/` — pytest-based tests (e.g., `tests/test_sortino_smoke.py`).
