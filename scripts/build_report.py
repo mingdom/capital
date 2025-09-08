@@ -120,6 +120,10 @@ def render_html(
       <h1 class=\"text-3xl font-semibold text-slate-900\">Portfolio Performance</h1>
       <p class=\"mt-1 text-slate-500\">As of: {as_of}</p>
       <p class=\"text-slate-500\">Range: {range_start} → {range_end}</p>
+      <div class=\"mt-2 flex gap-3\">
+        <a class=\"text-blue-600 hover:underline\" href=\"monthly.csv\" download>Download Monthly CSV</a>
+        <a class=\"text-blue-600 hover:underline\" href=\"metrics.csv\" download>Download Metrics CSV</a>
+      </div>
     </header>
 
     <section aria-labelledby=\"metrics\">
@@ -234,7 +238,33 @@ def main(json_file: str, annual_rf: float, year: int, output: Path) -> None:
         monthly, metrics, bench_metrics, spy, qqq, as_of, first_str, last_str
     )
     output.parent.mkdir(parents=True, exist_ok=True)
+    # Write HTML
     output.write_text(html, encoding="utf-8")
+    # Write CSV exports alongside HTML
+    dist_dir = output.parent
+    months_str = [str(m) for m in months]
+    monthly_df = pd.DataFrame(
+        {
+            "month": months_str,
+            "portfolio": list(monthly.values),
+            "SPY": [spy.get(m, pd.NA) for m in months],
+            "QQQ": [qqq.get(m, pd.NA) for m in months],
+        }
+    )
+    monthly_df.to_csv(dist_dir / "monthly.csv", index=False)
+
+    def _rows_from_metrics(entity: str, m: dict[str, float] | None):
+        if not m:
+            return []
+        keys = ["cagr", "ytd", "max_dd_monthly", "sharpe", "sortino"]
+        return [{"entity": entity, "metric": k, "value": m.get(k)} for k in keys]
+
+    metrics_rows = []
+    metrics_rows.extend(_rows_from_metrics("Portfolio", metrics))
+    metrics_rows.extend(_rows_from_metrics("SPY", bench_metrics.get("SPY")))
+    metrics_rows.extend(_rows_from_metrics("QQQ", bench_metrics.get("QQQ")))
+    if metrics_rows:
+        pd.DataFrame(metrics_rows).to_csv(dist_dir / "metrics.csv", index=False)
 
 
 if __name__ == "__main__":

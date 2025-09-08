@@ -48,3 +48,10 @@
 - Make minimal, focused changes; do not rename `sortino.py` without justification.
 - If you change commands or flags, update `README.md` accordingly.
 - Avoid adding heavy dependencies; prefer stdlib + `pandas`/`numpy` already in use.
+
+### Local Dev Best Practices (CI parity)
+- Always run tests locally before committing/pushing:
+  - Create venv and install deps: `python3 -m venv venv && ./venv/bin/pip install -U pip && ./venv/bin/pip install -r requirements.txt -r dev-requirements.txt`
+  - Run tests with project on path: `PYTHONPATH=. ./venv/bin/pytest -q`
+- Validate the report build locally: `./venv/bin/python scripts/build_report.py --output dist/index.html`
+- Only push after tests pass and the report generates without errors. This mirrors CI and avoids broken Pages deployments.

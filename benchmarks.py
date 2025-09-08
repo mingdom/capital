@@ -53,6 +53,10 @@ def fetch_monthly_returns(symbol: str, start_period: pd.Period, end_period: pd.P
 
 
 def _first_trading_close(series: pd.Series, start: pd.Timestamp) -> float | None:
+    # Normalize timezone to tz-naive to avoid tz-aware vs naive comparisons
+    if isinstance(series.index, pd.DatetimeIndex) and series.index.tz is not None:
+        series = series.copy()
+        series.index = series.index.tz_localize(None)
     s = series[series.index >= start]
     if not s.empty:
         return float(s.iloc[0])
@@ -60,6 +64,10 @@ def _first_trading_close(series: pd.Series, start: pd.Timestamp) -> float | None
 
 
 def _last_trading_close(series: pd.Series, end: pd.Timestamp) -> float | None:
+    # Normalize timezone to tz-naive to avoid tz-aware vs naive comparisons
+    if isinstance(series.index, pd.DatetimeIndex) and series.index.tz is not None:
+        series = series.copy()
+        series.index = series.index.tz_localize(None)
     s = series[series.index <= end]
     if not s.empty:
         return float(s.iloc[-1])
