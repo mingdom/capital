@@ -1,3 +1,14 @@
+# Mingdom Capital Performance Tracker
+
+This project tracks the Mingdom Capital portfolio using exported valuations data from SavvyTrader. It computes monthly returns and key risk/return metrics (CAGR, Max Monthly Drawdown, Sharpe, Sortino), and can compare performance against SPY and QQQ using cached yfinance data. Outputs are rounded for clarity and include brief guidance on interpretation.
+
+Key features
+- Ingests SavvyTrader valuations JSON (`data/valuations.json`).
+- Aggregates daily changes into monthly returns.
+- Reports CAGR, YTD, Max Monthly Drawdown, Sharpe, Sortino.
+- Optional benchmark comparison vs SPY/QQQ with local caching.
+- Simple CLI and Makefile for repeatable runs.
+
 # Quickstart
 
 1. Go to SavvyTrader portfolio url, i.e.: https://savvytrader.com/mingdom/mingdom-capital
