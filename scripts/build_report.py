@@ -70,6 +70,29 @@ def render_html(
             f"<td class=\"py-2 px-3 {fmt_color(q)}\">{_fmt_pct(q) if pd.notna(q) else '—'}</td>"
             f"</tr>"
         )
+    # Summary row: since inception (compound over all months shown)
+    def _compound(vals):
+        vals = [v for v in vals if pd.notna(v)]
+        if not vals:
+            return pd.NA
+        prod = 1.0
+        for v in vals:
+            prod *= (1.0 + float(v))
+        return prod - 1.0
+
+    p_total = _compound([monthly_returns.get(m, pd.NA) for m in months])
+    s_total = _compound([spy.get(m, pd.NA) for m in months]) if spy is not None else pd.NA
+    q_total = _compound([qqq.get(m, pd.NA) for m in months]) if qqq is not None else pd.NA
+
+    monthly_rows.append(
+        f"<tr class=\"border-t border-slate-200 bg-slate-50 font-medium\">"
+        f"<td class=\"py-2 px-3\">Since Inception</td>"
+        f"<td class=\"py-2 px-3 {fmt_color(p_total)}\">{_fmt_pct(p_total) if pd.notna(p_total) else '—'}</td>"
+        f"<td class=\"py-2 px-3 {fmt_color(s_total)}\">{_fmt_pct(s_total) if pd.notna(s_total) else '—'}</td>"
+        f"<td class=\"py-2 px-3 {fmt_color(q_total)}\">{_fmt_pct(q_total) if pd.notna(q_total) else '—'}</td>"
+        f"</tr>"
+    )
+
     monthly_table_html = "\n".join(monthly_rows)
 
     card_items = [
@@ -119,19 +142,42 @@ def render_html(
         for item in card_items
     )
 
+    # Trailing window returns for 3M and 1Y (12M) using the displayed months
+    def _window_comp(series: pd.Series, window: int):
+        if not months:
+            return pd.NA
+        use = months[-window:]
+        return _compound([series.get(m, pd.NA) for m in use])
+
+    p_3m = _window_comp(monthly_returns, 3)
+    p_1y = _window_comp(monthly_returns, 12)
+    s_3m = _window_comp(spy, 3) if spy is not None else pd.NA
+    s_1y = _window_comp(spy, 12) if spy is not None else pd.NA
+    q_3m = _window_comp(qqq, 3) if qqq is not None else pd.NA
+    q_1y = _window_comp(qqq, 12) if qqq is not None else pd.NA
+
     rows = []
     for key in ["Portfolio", "SPY", "QQQ"]:
-        m = metrics if key == "Portfolio" else bench_metrics.get(key, {})
-        if not m:
+        if key == "Portfolio":
+            m = metrics
+            extra3 = p_3m
+            extra12 = p_1y
+        else:
+            m = bench_metrics.get(key, {})
+            extra3 = s_3m if key == "SPY" else q_3m
+            extra12 = s_1y if key == "SPY" else q_1y
+        if not m and pd.isna(extra3) and pd.isna(extra12):
             continue
         rows.append(
             f"<tr class=\"border-t border-slate-200\">"
             f"<td class=\"py-2 px-3 font-medium text-slate-800\">{key}</td>"
-            f"<td class=\"py-2 px-3\">{_fmt_pct(m.get('cagr'))}</td>"
-            f"<td class=\"py-2 px-3\">{_fmt_pct(m.get('ytd'))}</td>"
-            f"<td class=\"py-2 px-3\">{_fmt_pct(m.get('max_dd_monthly'))}</td>"
-            f"<td class=\"py-2 px-3\">{_fmt_val(m.get('sharpe'))}</td>"
-            f"<td class=\"py-2 px-3\">{_fmt_val(m.get('sortino'))}</td>"
+            f"<td class=\"py-2 px-3\">{_fmt_pct(m.get('cagr')) if m else '—'}</td>"
+            f"<td class=\"py-2 px-3\">{_fmt_pct(m.get('ytd')) if m else '—'}</td>"
+            f"<td class=\"py-2 px-3\">{_fmt_pct(extra3) if pd.notna(extra3) else '—'}</td>"
+            f"<td class=\"py-2 px-3\">{_fmt_pct(extra12) if pd.notna(extra12) else '—'}</td>"
+            f"<td class=\"py-2 px-3\">{_fmt_pct(m.get('max_dd_monthly')) if m else '—'}</td>"
+            f"<td class=\"py-2 px-3\">{_fmt_val(m.get('sharpe')) if m else '—'}</td>"
+            f"<td class=\"py-2 px-3\">{_fmt_val(m.get('sortino')) if m else '—'}</td>"
             f"</tr>"
         )
     table_html = "\n".join(rows)
@@ -163,27 +209,6 @@ def render_html(
       </div>
     </section>
 
-    <section aria-labelledby=\"benchmarks\" class=\"mt-8\">
-      <h2 id=\"benchmarks\" class=\"text-xl font-semibold text-slate-900\">Benchmarks</h2>
-      <div class=\"mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm\">
-        <table class=\"min-w-full divide-y divide-slate-200\">
-          <thead class=\"bg-slate-50\">
-            <tr>
-              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Name</th>
-              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">CAGR</th>
-              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">YTD</th>
-              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Max Monthly DD</th>
-              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Sharpe</th>
-              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Sortino</th>
-            </tr>
-          </thead>
-          <tbody class=\"bg-white\">
-            {table_html}
-          </tbody>
-        </table>
-      </div>
-    </section>
-
     <section aria-labelledby=\"monthly\" class=\"mt-8\">
       <h2 id=\"monthly\" class=\"text-xl font-semibold text-slate-900\">Monthly Performance</h2>
       <div class=\"mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm\">
@@ -198,6 +223,29 @@ def render_html(
           </thead>
           <tbody class=\"bg-white\">
             {monthly_table_html}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby=\"benchmarks\" class=\"mt-8\">
+      <h2 id=\"benchmarks\" class=\"text-xl font-semibold text-slate-900\">Benchmarks</h2>
+      <div class=\"mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm\">
+        <table class=\"min-w-full divide-y divide-slate-200\">
+          <thead class=\"bg-slate-50\">
+            <tr>
+              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Name</th>
+              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">CAGR</th>
+              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">YTD</th>
+              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">3M</th>
+              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">1Y</th>
+              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Max Monthly DD</th>
+              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Sharpe</th>
+              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Sortino</th>
+            </tr>
+          </thead>
+          <tbody class=\"bg-white\">
+            {table_html}
           </tbody>
         </table>
       </div>
