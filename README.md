@@ -60,8 +60,12 @@ make report
 
 Merging to `main` runs the `Build Web Report` workflow, which regenerates
 `dist/index.html` and deploys it to GitHub Pages. After enabling Pages
-(`Settings` → `Pages` → `Build and deployment` → `GitHub Actions`), the
-latest report is served at `https://<your-user>.github.io/capital/`.
+(`Settings` → `Pages` → `Build and deployment` → `GitHub Actions`), the latest
+report is served at your project Pages URL:
+
+- `https://<your-user-or-org>.github.io/<repo>/`
+
+The workflow summary will also display the exact URL after each deployment.
 
 ## Test
 
@@ -101,36 +105,4 @@ This runs `black --check .` and `ruff check .`. Run `make format` to auto-fix fo
 - `2025-q2/` — static charts/assets; not code.
 - `AGENTS.md` — contributor guidelines.
 
-Sample Response:
-```
-Monthly Returns:
-month
-2024-02    0.012513
-2024-03    0.024022
-2024-04   -0.018967
-2024-05    0.052679
-2024-06    0.041913
-2024-07   -0.019194
-2024-08    0.029271
-2024-09    0.043702
-2024-10    0.014421
-2024-11    0.075256
-2024-12    0.006172
-2025-01    0.075087
-2025-02   -0.039864
-2025-03   -0.091526
-2025-04    0.017057
-2025-05    0.110503
-2025-06    0.067449
-2025-07    0.023597
-2025-08    0.020527
-2025-09    0.017270
-Freq: M
-
-CAGR (Annual): 30.07%
-Max Monthly Drawdown: -9.15%
-YTD Performance (2025): 20.14%
-
-Annualized Sharpe Ratio: 1.531999832165774
-Annualized Sortino Ratio: 2.809998735415429
-```
+Note: The HTML report supersedes the raw console sample previously shown here.

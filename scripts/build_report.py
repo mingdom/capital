@@ -2,10 +2,16 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
+
+# Ensure project root is on sys.path when invoked as a script (e.g., `python scripts/build_report.py`)
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from sortino import (
     ANNUAL_RF_RATE,
