@@ -49,6 +49,20 @@ make run-benchmarks
 # or: ./venv/bin/python sortino.py --benchmarks
 ```
 
+## Web UI
+
+Generate a static HTML report with a simple Chart.js visualization:
+
+```bash
+make report
+# or: ./venv/bin/python scripts/build_report.py --output dist/index.html
+```
+
+Merging to `main` runs the `Build Web Report` workflow, which regenerates
+`dist/index.html` and deploys it to GitHub Pages. After enabling Pages
+(`Settings` → `Pages` → `Build and deployment` → `GitHub Actions`), the
+latest report is served at `https://<your-user>.github.io/capital/`.
+
 ## Test
 
 ```bash
