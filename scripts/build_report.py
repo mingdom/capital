@@ -19,7 +19,7 @@ from sortino import (
     convert_to_monthly_and_calculate_ratios,
     compute_metrics,
 )
-from benchmarks import get_benchmark_series
+from benchmarks import get_aligned_benchmark_series
 
 
 def _fmt_pct(x: float) -> str:
@@ -39,6 +39,8 @@ def render_html(
     spy: pd.Series,
     qqq: pd.Series,
     as_of: str,
+    range_start: str,
+    range_end: str,
 ) -> str:
     """Render a Tailwind-styled HTML report with metrics, benchmarks table, and chart.
 
@@ -117,6 +119,7 @@ def render_html(
     <header class=\"mb-6\">
       <h1 class=\"text-3xl font-semibold text-slate-900\">Portfolio Performance</h1>
       <p class=\"mt-1 text-slate-500\">As of: {as_of}</p>
+      <p class=\"text-slate-500\">Range: {range_start} → {range_end}</p>
     </header>
 
     <section aria-labelledby=\"metrics\">
@@ -189,22 +192,47 @@ def _get_last_data_date(json_file: str) -> str:
         return "unknown"
 
 
+def _get_first_data_date(json_file: str) -> str:
+    try:
+        with open(json_file, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if not data:
+            return "unknown"
+        dates = pd.to_datetime([row.get("summaryDate") for row in data])
+        return str(pd.Series(dates).min().date())
+    except Exception:
+        return "unknown"
+
+
 def main(json_file: str, annual_rf: float, year: int, output: Path) -> None:
     monthly, metrics = convert_to_monthly_and_calculate_ratios(
         json_file=json_file, annual_rf=annual_rf, current_year=year
     )
-    # Benchmarks for the same monthly periods
+    # Benchmarks for the same monthly periods, aligned for partial months
     months = monthly.index
-    spy = get_benchmark_series("SPY", months)
-    qqq = get_benchmark_series("QQQ", months)
+    first_str = _get_first_data_date(json_file)
+    last_str = _get_last_data_date(json_file)
+    try:
+        from datetime import date as _date
+        inception_date = _date.fromisoformat(first_str)
+        last_date = _date.fromisoformat(last_str)
+    except Exception:
+        # Fallbacks in case of parse issues
+        inception_date = months.min().to_timestamp(how='start').date()
+        last_date = months.max().to_timestamp(how='end').date()
+
+    spy = get_aligned_benchmark_series("SPY", months, inception_date, last_date)
+    qqq = get_aligned_benchmark_series("QQQ", months, inception_date, last_date)
 
     bench_metrics = {
         "SPY": compute_metrics(spy, annual_rf, year) if not spy.empty else {},
         "QQQ": compute_metrics(qqq, annual_rf, year) if not qqq.empty else {},
     }
 
-    as_of = _get_last_data_date(json_file)
-    html = render_html(monthly, metrics, bench_metrics, spy, qqq, as_of)
+    as_of = last_str
+    html = render_html(
+        monthly, metrics, bench_metrics, spy, qqq, as_of, first_str, last_str
+    )
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(html, encoding="utf-8")
 

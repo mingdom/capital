@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
@@ -52,6 +52,41 @@ def fetch_monthly_returns(symbol: str, start_period: pd.Period, end_period: pd.P
     return rets
 
 
+def _first_trading_close(series: pd.Series, start: pd.Timestamp) -> float | None:
+    s = series[series.index >= start]
+    if not s.empty:
+        return float(s.iloc[0])
+    return None
+
+
+def _last_trading_close(series: pd.Series, end: pd.Timestamp) -> float | None:
+    s = series[series.index <= end]
+    if not s.empty:
+        return float(s.iloc[-1])
+    return None
+
+
+def fetch_partial_return(symbol: str, start_date: date, end_date: date) -> float | None:
+    """Fetch adjusted-close based return between two dates inclusive.
+
+    Uses daily data and computes return = last_adj_close / first_adj_close - 1.
+    Chooses the first trading day on/after start_date and the last trading day on/before end_date.
+    """
+    if end_date < start_date:
+        return None
+    start_ts = pd.Timestamp(start_date)
+    end_ts = pd.Timestamp(end_date)
+    hist = yf.Ticker(symbol).history(start=start_ts, end=end_ts + pd.offsets.Day(1), interval="1d", auto_adjust=True)
+    if hist.empty:
+        return None
+    closes = hist["Close"].copy()
+    first = _first_trading_close(closes, start_ts)
+    last = _last_trading_close(closes, end_ts)
+    if first is None or last is None or first == 0:
+        return None
+    return float(last / first - 1.0)
+
+
 def ensure_benchmark_cache(symbols: Iterable[str], needed_months: Iterable[pd.Period]) -> Dict[str, Dict[str, float]]:
     cache = _load_cache()
     lcm = last_complete_month()
@@ -90,3 +125,89 @@ def get_benchmark_series(symbol: str, months: Iterable[pd.Period]) -> pd.Series:
     data = [v for _, v in out]
     return pd.Series(data, index=idx, name=symbol).sort_index()
 
+
+def ensure_aligned_partials(symbols: Iterable[str], inception_date: date, current_end: date) -> Dict:
+    """Ensure cache contains aligned partial returns for inception and current months.
+
+    Stores under top-level key "_aligned":
+      { symbol: { "YYYY-MM": { start: str, end: str, return: float, as_of: str } } }
+    """
+    cache = _load_cache()
+    aligned = cache.get("_aligned", {})
+
+    inception_month = pd.Period(inception_date, freq="M")
+    current_month = pd.Period(current_end, freq="M")
+
+    for sym in symbols:
+        sym_aligned = aligned.get(sym, {})
+        # Inception partial (from inception_date to month end)
+        inc_end = inception_month.to_timestamp("M")  # end of month timestamp
+        inc_end_date = (inc_end + pd.offsets.MonthEnd(0)).date()
+        key_inc = str(inception_month)
+        if key_inc not in sym_aligned:
+            r = fetch_partial_return(sym, inception_date, inc_end_date)
+            if r is not None:
+                sym_aligned[key_inc] = {
+                    "start": str(inception_date),
+                    "end": str(inc_end_date),
+                    "return": r,
+                    "as_of": str(inc_end_date),
+                }
+
+        # Current partial (from month start to current_end)
+        cm_start_date = date(current_month.start_time.year, current_month.start_time.month, 1)
+        key_cur = str(current_month)
+        existing = sym_aligned.get(key_cur)
+        needs_update = (
+            existing is None or existing.get("end") != str(current_end)
+        )
+        if needs_update:
+            r = fetch_partial_return(sym, cm_start_date, current_end)
+            if r is not None:
+                sym_aligned[key_cur] = {
+                    "start": str(cm_start_date),
+                    "end": str(current_end),
+                    "return": r,
+                    "as_of": str(current_end),
+                }
+
+        aligned[sym] = sym_aligned
+
+    cache["_aligned"] = aligned
+    cache.setdefault("_meta", {})["last_updated"] = datetime.utcnow().isoformat() + "Z"
+    _save_cache(cache)
+    return cache
+
+
+def get_aligned_benchmark_series(
+    symbol: str,
+    months: Iterable[pd.Period],
+    inception_date: date,
+    current_end: date,
+) -> pd.Series:
+    """Return benchmark monthly series aligned to portfolio partial months.
+
+    - Inception month uses partial from inception_date to month end.
+    - Current ongoing month uses partial from month start to current_end.
+    - All other months use cached full-month returns (up to last complete month).
+    """
+    # Ensure we have monthly for full months
+    ensure_benchmark_cache([symbol], months)
+    # Ensure aligned for inception and current
+    cache = ensure_aligned_partials([symbol], inception_date, current_end)
+    monthly_map = _load_cache().get(symbol, {})
+    aligned = cache.get("_aligned", {}).get(symbol, {})
+
+    out = []
+    for m in months:
+        key = str(m)
+        if key in aligned:
+            out.append((m, float(aligned[key]["return"])) )
+        elif key in monthly_map:
+            out.append((m, float(monthly_map[key])))
+        # else skip missing
+    if not out:
+        return pd.Series(dtype=float)
+    idx = pd.PeriodIndex([m for m, _ in out], freq="M")
+    data = [v for _, v in out]
+    return pd.Series(data, index=idx, name=symbol).sort_index()
