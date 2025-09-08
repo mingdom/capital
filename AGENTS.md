@@ -1,4 +1,6 @@
 # Repository Guidelines
+## Core Tenets
+- When I ask you a question, just answer it, do NOT jump into writing code!
 
 ## Project Structure & Module Organization
 - `sortino.py` — main analysis script; exposes `convert_to_monthly_and_calculate_ratios`.

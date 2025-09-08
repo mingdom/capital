@@ -1,13 +1,23 @@
 # Mingdom Capital Performance Tracker
 
-This project tracks the Mingdom Capital portfolio using exported valuations data from SavvyTrader. It computes monthly returns and key risk/return metrics (CAGR, Max Monthly Drawdown, Sharpe, Sortino), and can compare performance against SPY and QQQ using cached yfinance data. Outputs are rounded for clarity and include brief guidance on interpretation.
+Live report: https://mingdom.github.io/capital/
+
+Tracks the Mingdom Capital portfolio from SavvyTrader valuations data and reports
+monthly returns plus key risk/return metrics (CAGR, YTD, Max Monthly Drawdown,
+Sharpe, Sortino). Optional comparison against SPY and QQQ with cached data.
+
+The published page shows an “As of: YYYY-MM-DD” based on the latest date in
+`data/valuations.json` used for that build.
 
 Key features
-- Ingests SavvyTrader valuations JSON (`data/valuations.json`).
-- Aggregates daily changes into monthly returns.
-- Reports CAGR, YTD, Max Monthly Drawdown, Sharpe, Sortino.
-- Optional benchmark comparison vs SPY/QQQ with local caching.
-- Simple CLI and Makefile for repeatable runs.
+- Monthly aggregation from SavvyTrader valuations (`data/valuations.json`).
+- Metrics: CAGR, YTD, Max Monthly Drawdown, Sharpe, Sortino.
+- Optional SPY/QQQ benchmarks with local caching.
+- Simple Makefile/CLI for repeatable runs.
+
+## For Investors
+
+- View the latest performance: https://mingdom.github.io/capital/
 
 # Quickstart
 
@@ -49,24 +59,16 @@ make run-benchmarks
 # or: ./venv/bin/python sortino.py --benchmarks
 ```
 
-## Web UI
+## Report
 
-Generate a static HTML report with a simple Chart.js visualization:
+Generate a static HTML report (Chart.js visualization):
 
 ```bash
 make report
 # or: ./venv/bin/python scripts/build_report.py --output dist/index.html
 ```
 
-Merging to `main` runs the `Build Web Report` workflow, which regenerates
-`dist/index.html` and deploys it to GitHub Pages. After enabling Pages
-(`Settings` → `Pages` → `Build and deployment` → `GitHub Actions`), the latest
-report is published here:
-
-- https://mingdom.github.io/capital/
-
-The page shows an “As of: YYYY-MM-DD” line reflecting the last date present
-in `data/valuations.json` used for that build.
+The generated file is written to `dist/index.html`.
 
 ## Test
 
@@ -107,14 +109,3 @@ This runs `black --check .` and `ruff check .`. Run `make format` to auto-fix fo
 - `AGENTS.md` — contributor guidelines.
 
 Note: The HTML report supersedes the raw console sample previously shown here.
-
-### GitHub Pages settings
-
-If the deployment job fails with a 404 and a message like “Ensure GitHub Pages
-has been enabled”, check the repo settings:
-
-- Go to `Settings` → `Pages`.
-- Under “Build and deployment”, set `Source` to `GitHub Actions`.
-- Save the change and re-run the “Build Web Report” workflow (or push to `main`).
-- Optional: Ensure the repository is public (or your plan allows Pages from
-  private repos) so the URL is accessible.
