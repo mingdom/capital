@@ -5,7 +5,7 @@ BLACK=$(VENV)/bin/black
 RUFF=$(VENV)/bin/ruff
 PYTEST=$(VENV)/bin/pytest
 
-.PHONY: dev install format lint test run run-benchmarks clean hook
+.PHONY: dev install format lint test run run-benchmarks report clean hook
 
 $(PY):
 	python3 -m venv $(VENV)
@@ -36,7 +36,10 @@ run: $(PY)
 	$(PY) sortino.py
 
 run-benchmarks: $(PY)
-	$(PY) sortino.py --benchmarks
+        $(PY) sortino.py --benchmarks
+
+report: $(PY)
+        $(PY) scripts/build_report.py
 
 clean:
 	rm -rf $(VENV) __pycache__ .pytest_cache .coverage htmlcov

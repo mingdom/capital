@@ -49,6 +49,17 @@ make run-benchmarks
 # or: ./venv/bin/python sortino.py --benchmarks
 ```
 
+## Web UI
+
+Generate a static HTML report with a simple Chart.js visualization:
+
+```bash
+make report
+# or: ./venv/bin/python scripts/build_report.py --output dist/index.html
+```
+
+GitHub Actions build this report on every push to `main` and publish it via GitHub Pages.
+
 ## Test
 
 ```bash
