@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -64,14 +65,12 @@ def render_html(
     monthly_rows = []
     for m in months:
         p = monthly_returns.get(m, pd.NA)
-        p_cum = cum_port.get(m, pd.NA)
         s = spy.get(m, pd.NA) if spy is not None else pd.NA
         q = qqq.get(m, pd.NA) if qqq is not None else pd.NA
         monthly_rows.append(
             f"<tr class=\"border-t border-slate-200\">"
             f"<td class=\"py-2 px-3 text-slate-600\">{m}</td>"
             f"<td class=\"py-2 px-3 font-medium {fmt_color(p)}\">{_fmt_pct(p) if pd.notna(p) else '—'}</td>"
-            f"<td class=\"py-2 px-3 {fmt_color(p_cum)}\">{_fmt_pct(p_cum) if pd.notna(p_cum) else '—'}</td>"
             f"<td class=\"py-2 px-3 {fmt_color(s)}\">{_fmt_pct(s) if pd.notna(s) else '—'}</td>"
             f"<td class=\"py-2 px-3 {fmt_color(q)}\">{_fmt_pct(q) if pd.notna(q) else '—'}</td>"
             f"</tr>"
@@ -93,7 +92,6 @@ def render_html(
     monthly_rows.append(
         f"<tr class=\"border-t border-slate-200 bg-slate-50 font-medium\">"
         f"<td class=\"py-2 px-3\">Since Inception</td>"
-        f"<td class=\"py-2 px-3\">—</td>"
         f"<td class=\"py-2 px-3 {fmt_color(p_total)}\">{_fmt_pct(p_total) if pd.notna(p_total) else '—'}</td>"
         f"<td class=\"py-2 px-3 {fmt_color(s_total)}\">{_fmt_pct(s_total) if pd.notna(s_total) else '—'}</td>"
         f"<td class=\"py-2 px-3 {fmt_color(q_total)}\">{_fmt_pct(q_total) if pd.notna(q_total) else '—'}</td>"
@@ -105,6 +103,14 @@ def render_html(
     port_cum = [float(cum_port.get(m)) if pd.notna(cum_port.get(m)) else None for m in months]
     spy_cum = [float(cum_spy.get(m)) if pd.notna(cum_spy.get(m)) else None for m in months]
     qqq_cum = [float(cum_qqq.get(m)) if pd.notna(cum_qqq.get(m)) else None for m in months]
+
+    all_vals = [v for v in port_cum + spy_cum + qqq_cum if v is not None]
+    if all_vals:
+        y_min = math.floor((min(all_vals) - 0.01) * 100) / 100
+        y_max = math.ceil((max(all_vals) + 0.01) * 100) / 100
+        y_step = max(0.01, round((y_max - y_min) / 5, 2))
+    else:
+        y_min, y_max, y_step = -0.1, 0.1, 0.05
 
     card_items = [
         {
@@ -235,7 +241,6 @@ def render_html(
             <tr>
               <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Month</th>
               <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Portfolio</th>
-              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Cumulative</th>
               <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">SPY</th>
               <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">QQQ</th>
             </tr>
@@ -288,11 +293,13 @@ def render_html(
       data: {{ labels, datasets }},
       options: {{
         interaction: {{ mode: 'index', intersect: false }},
-        scales: {{
-          y: {{
-            ticks: {{ callback: v => (v * 100).toFixed(0) + '%' }}
-          }}
-        }},
+          scales: {{
+            y: {{
+              min: {y_min},
+              max: {y_max},
+              ticks: {{ stepSize: {y_step}, callback: v => (v * 100).toFixed(0) + '%' }}
+            }}
+          }},
         plugins: {{
           tooltip: {{
             callbacks: {{
