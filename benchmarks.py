@@ -40,7 +40,15 @@ def _periods_to_str(periods: Iterable[pd.Period]) -> List[str]:
 def fetch_monthly_returns(symbol: str, start_period: pd.Period, end_period: pd.Period) -> pd.Series:
     start = (start_period.to_timestamp("M") - pd.offsets.MonthBegin(1)).normalize()
     end = end_period.to_timestamp("M")
-    hist = yf.Ticker(symbol).history(start=start, end=end + pd.offsets.MonthEnd(1), interval="1mo", auto_adjust=True)
+    try:
+        hist = yf.Ticker(symbol).history(
+            start=start,
+            end=end + pd.offsets.MonthEnd(1),
+            interval="1mo",
+            auto_adjust=True,
+        )
+    except Exception:
+        return pd.Series(dtype=float)
     if hist.empty:
         return pd.Series(dtype=float)
     closes = hist["Close"].copy()
@@ -84,7 +92,15 @@ def fetch_partial_return(symbol: str, start_date: date, end_date: date) -> float
         return None
     start_ts = pd.Timestamp(start_date)
     end_ts = pd.Timestamp(end_date)
-    hist = yf.Ticker(symbol).history(start=start_ts, end=end_ts + pd.offsets.Day(1), interval="1d", auto_adjust=True)
+    try:
+        hist = yf.Ticker(symbol).history(
+            start=start_ts,
+            end=end_ts + pd.offsets.Day(1),
+            interval="1d",
+            auto_adjust=True,
+        )
+    except Exception:
+        return None
     if hist.empty:
         return None
     closes = hist["Close"].copy()
@@ -95,7 +111,9 @@ def fetch_partial_return(symbol: str, start_date: date, end_date: date) -> float
     return float(last / first - 1.0)
 
 
-def ensure_benchmark_cache(symbols: Iterable[str], needed_months: Iterable[pd.Period]) -> Dict[str, Dict[str, float]]:
+def ensure_benchmark_cache(
+    symbols: Iterable[str], needed_months: Iterable[pd.Period]
+) -> Dict[str, Dict[str, float]]:
     cache = _load_cache()
     lcm = last_complete_month()
     needed = [p for p in needed_months if p <= lcm]
@@ -134,7 +152,9 @@ def get_benchmark_series(symbol: str, months: Iterable[pd.Period]) -> pd.Series:
     return pd.Series(data, index=idx, name=symbol).sort_index()
 
 
-def ensure_aligned_partials(symbols: Iterable[str], inception_date: date, current_end: date) -> Dict:
+def ensure_aligned_partials(
+    symbols: Iterable[str], inception_date: date, current_end: date
+) -> Dict:
     """Ensure cache contains aligned partial returns for inception and current months.
 
     Stores under top-level key "_aligned":
@@ -166,9 +186,7 @@ def ensure_aligned_partials(symbols: Iterable[str], inception_date: date, curren
         cm_start_date = date(current_month.start_time.year, current_month.start_time.month, 1)
         key_cur = str(current_month)
         existing = sym_aligned.get(key_cur)
-        needs_update = (
-            existing is None or existing.get("end") != str(current_end)
-        )
+        needs_update = existing is None or existing.get("end") != str(current_end)
         if needs_update:
             r = fetch_partial_return(sym, cm_start_date, current_end)
             if r is not None:
@@ -210,7 +228,7 @@ def get_aligned_benchmark_series(
     for m in months:
         key = str(m)
         if key in aligned:
-            out.append((m, float(aligned[key]["return"])) )
+            out.append((m, float(aligned[key]["return"])))
         elif key in monthly_map:
             out.append((m, float(monthly_map[key])))
         # else skip missing

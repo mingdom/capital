@@ -48,6 +48,10 @@ def render_html(
     """
     # Build monthly comparison table data (Portfolio vs SPY vs QQQ)
     months = list(monthly_returns.index)
+    # Cumulative performance series for later use
+    cum_port = (1 + monthly_returns).cumprod() - 1
+    cum_spy = (1 + spy).cumprod() - 1 if spy is not None else pd.Series(dtype=float)
+    cum_qqq = (1 + qqq).cumprod() - 1 if qqq is not None else pd.Series(dtype=float)
     def fmt_color(val: float) -> str:
         if pd.isna(val):
             return "text-slate-400"
@@ -60,12 +64,14 @@ def render_html(
     monthly_rows = []
     for m in months:
         p = monthly_returns.get(m, pd.NA)
+        p_cum = cum_port.get(m, pd.NA)
         s = spy.get(m, pd.NA) if spy is not None else pd.NA
         q = qqq.get(m, pd.NA) if qqq is not None else pd.NA
         monthly_rows.append(
             f"<tr class=\"border-t border-slate-200\">"
             f"<td class=\"py-2 px-3 text-slate-600\">{m}</td>"
             f"<td class=\"py-2 px-3 font-medium {fmt_color(p)}\">{_fmt_pct(p) if pd.notna(p) else '—'}</td>"
+            f"<td class=\"py-2 px-3 {fmt_color(p_cum)}\">{_fmt_pct(p_cum) if pd.notna(p_cum) else '—'}</td>"
             f"<td class=\"py-2 px-3 {fmt_color(s)}\">{_fmt_pct(s) if pd.notna(s) else '—'}</td>"
             f"<td class=\"py-2 px-3 {fmt_color(q)}\">{_fmt_pct(q) if pd.notna(q) else '—'}</td>"
             f"</tr>"
@@ -87,6 +93,7 @@ def render_html(
     monthly_rows.append(
         f"<tr class=\"border-t border-slate-200 bg-slate-50 font-medium\">"
         f"<td class=\"py-2 px-3\">Since Inception</td>"
+        f"<td class=\"py-2 px-3\">—</td>"
         f"<td class=\"py-2 px-3 {fmt_color(p_total)}\">{_fmt_pct(p_total) if pd.notna(p_total) else '—'}</td>"
         f"<td class=\"py-2 px-3 {fmt_color(s_total)}\">{_fmt_pct(s_total) if pd.notna(s_total) else '—'}</td>"
         f"<td class=\"py-2 px-3 {fmt_color(q_total)}\">{_fmt_pct(q_total) if pd.notna(q_total) else '—'}</td>"
@@ -94,6 +101,10 @@ def render_html(
     )
 
     monthly_table_html = "\n".join(monthly_rows)
+    months_str = [str(m) for m in months]
+    port_cum = [float(cum_port.get(m)) if pd.notna(cum_port.get(m)) else None for m in months]
+    spy_cum = [float(cum_spy.get(m)) if pd.notna(cum_spy.get(m)) else None for m in months]
+    qqq_cum = [float(cum_qqq.get(m)) if pd.notna(cum_qqq.get(m)) else None for m in months]
 
     card_items = [
         {
@@ -209,6 +220,13 @@ def render_html(
       </div>
     </section>
 
+    <section aria-labelledby=\"cumulative\" class=\"mt-8\">
+      <h2 id=\"cumulative\" class=\"text-xl font-semibold text-slate-900\">Cumulative Performance</h2>
+      <div class=\"mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white p-4 shadow-sm\">
+        <canvas id=\"perf-chart\"></canvas>
+      </div>
+    </section>
+
     <section aria-labelledby=\"monthly\" class=\"mt-8\">
       <h2 id=\"monthly\" class=\"text-xl font-semibold text-slate-900\">Monthly Performance</h2>
       <div class=\"mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm\">
@@ -217,6 +235,7 @@ def render_html(
             <tr>
               <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Month</th>
               <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Portfolio</th>
+              <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Cumulative</th>
               <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">SPY</th>
               <th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">QQQ</th>
             </tr>
@@ -255,6 +274,35 @@ def render_html(
       <p>Source: SavvyTrader valuations JSON. RF: {ANNUAL_RF_RATE:.2%} annual.</p>
     </footer>
   </main>
+  <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>
+  <script>
+    const labels = {json.dumps(months_str)};
+    const datasets = [
+      {{ label: 'Portfolio', data: {json.dumps(port_cum)}, borderColor: 'rgb(37,99,235)', fill: false }},
+      {{ label: 'SPY', data: {json.dumps(spy_cum)}, borderColor: 'rgb(234,88,12)', fill: false }},
+      {{ label: 'QQQ', data: {json.dumps(qqq_cum)}, borderColor: 'rgb(16,185,129)', fill: false }}
+    ];
+    const ctx = document.getElementById('perf-chart').getContext('2d');
+    new Chart(ctx, {{
+      type: 'line',
+      data: {{ labels, datasets }},
+      options: {{
+        interaction: {{ mode: 'index', intersect: false }},
+        scales: {{
+          y: {{
+            ticks: {{ callback: v => (v * 100).toFixed(0) + '%' }}
+          }}
+        }},
+        plugins: {{
+          tooltip: {{
+            callbacks: {{
+              label: ctx => ctx.dataset.label + ': ' + (ctx.parsed.y * 100).toFixed(2) + '%'
+            }}
+          }}
+        }}
+      }}
+    }});
+  </script>
 </body>
 </html>
 """

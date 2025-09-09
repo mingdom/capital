@@ -19,5 +19,7 @@ def test_render_html_contains_sections_and_tables():
     assert "Portfolio Performance" in html
     assert "Benchmarks" in html
     assert "Monthly Performance" in html
+    assert "Cumulative Performance" in html
     assert "CAGR" in html
     assert "2024-01" in html
+    assert "perf-chart" in html
