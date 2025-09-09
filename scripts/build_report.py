@@ -276,7 +276,7 @@ def render_html(
     </section>
 
     <footer class=\"mt-10 text-sm text-slate-500\">
-      <p>Source: SavvyTrader valuations JSON. RF: {ANNUAL_RF_RATE:.2%} annual.</p>
+      <a href=\"https://github.com/mingdom/capital\" class=\"hover:underline\">View source on GitHub</a>
     </footer>
   </main>
   <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>
