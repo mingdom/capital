@@ -34,9 +34,9 @@ def convert_to_monthly_and_calculate_ratios(
         lambda s: np.prod(1 + s) - 1
     )
 
-    # Print monthly returns as percentages rounded to 2 decimals
+    # Print monthly returns as percentages rounded to 1 decimal
     print("Monthly Returns (%):")
-    formatted_monthly = monthly_returns.mul(100).round(2).astype(str) + "%"
+    formatted_monthly = monthly_returns.mul(100).round(1).astype(str) + "%"
     print(formatted_monthly.to_string())
 
     # Additional Stats
@@ -44,18 +44,18 @@ def convert_to_monthly_and_calculate_ratios(
     total_cum_return = np.prod(1 + monthly_returns) - 1
     num_years = len(monthly_returns) / 12
     cagr = (1 + total_cum_return) ** (1 / num_years) - 1 if num_years > 0 else np.nan
-    print(f"\nCAGR (Annual): {cagr * 100:.2f}%")
+    print(f"\nCAGR (Annual): {cagr * 100:.1f}%")
 
     # Max Drawdown per Month (largest monthly loss)
     max_dd_monthly = (
         monthly_returns.min() * 100 if not monthly_returns.empty else np.nan
     )
-    print(f"Max Monthly Drawdown: {max_dd_monthly:.2f}%")
+    print(f"Max Monthly Drawdown: {max_dd_monthly:.1f}%")
 
     # YTD Performance (for the specified year)
     ytd_months = monthly_returns[monthly_returns.index.year == current_year]
     ytd_perf = np.prod(1 + ytd_months) - 1 if not ytd_months.empty else np.nan
-    print(f"YTD Performance ({current_year}): {ytd_perf * 100:.2f}%")
+    print(f"YTD Performance ({current_year}): {ytd_perf * 100:.1f}%")
 
     # Calculate Sharpe and Sortino
     monthly_rf = annual_rf / 12
@@ -70,8 +70,8 @@ def convert_to_monthly_and_calculate_ratios(
     sharpe = mean_excess / std * np.sqrt(12) if std != 0 else np.nan
     sortino = mean_excess / down_dev * np.sqrt(12) if down_dev != 0 else np.nan
 
-    print(f"\nAnnualized Sharpe Ratio: {sharpe:.2f}")
-    print(f"Annualized Sortino Ratio: {sortino:.2f}")
+    print(f"\nAnnualized Sharpe Ratio: {sharpe:.1f}")
+    print(f"Annualized Sortino Ratio: {sortino:.1f}")
 
     # Interpretation hints
     print("\nHow to interpret:")
@@ -117,11 +117,11 @@ def compute_metrics(monthly_returns: pd.Series, annual_rf: float, current_year: 
 
 
 def _fmt_pct(x: float) -> str:
-    return f"{x * 100:.2f}%" if pd.notna(x) else "na"
+    return f"{x * 100:.1f}%" if pd.notna(x) else "na"
 
 
 def _fmt_val(x: float) -> str:
-    return f"{x:.2f}" if pd.notna(x) else "na"
+    return f"{x:.1f}" if pd.notna(x) else "na"
 
 
 def compare_with_benchmarks(portfolio_monthly: pd.Series, annual_rf: float, current_year: int):

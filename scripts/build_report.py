@@ -24,13 +24,13 @@ from benchmarks import get_aligned_benchmark_series
 
 
 def _fmt_pct(x: float) -> str:
-    """Format a number as percentage."""
-    return f"{x * 100:.2f}%" if pd.notna(x) else "na"
+    """Format a number as percentage with one decimal."""
+    return f"{x * 100:.1f}%" if pd.notna(x) else "na"
 
 
 def _fmt_val(x: float) -> str:
-    """Format a number with two decimals."""
-    return f"{x:.2f}" if pd.notna(x) else "na"
+    """Format a number with one decimal."""
+    return f"{x:.1f}" if pd.notna(x) else "na"
 
 
 def render_html(
@@ -297,13 +297,13 @@ def render_html(
             y: {{
               min: {y_min},
               max: {y_max},
-              ticks: {{ stepSize: {y_step}, callback: v => (v * 100).toFixed(0) + '%' }}
+              ticks: {{ stepSize: {y_step}, callback: v => (v * 100).toFixed(1) + '%' }}
             }}
           }},
         plugins: {{
           tooltip: {{
             callbacks: {{
-              label: ctx => ctx.dataset.label + ': ' + (ctx.parsed.y * 100).toFixed(2) + '%'
+              label: ctx => ctx.dataset.label + ': ' + (ctx.parsed.y * 100).toFixed(1) + '%'
             }}
           }}
         }}
