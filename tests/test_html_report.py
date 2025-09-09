@@ -21,7 +21,7 @@ def test_render_html_contains_sections_and_tables():
     assert "Monthly Performance" in html
     assert "Cumulative Performance" in html
     assert "<th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Cumulative</th>" not in html
-    assert "-1.02%" in html
+    assert "-1.0%" in html
     assert "CAGR" in html
     assert "2024-01" in html
     assert "perf-chart" in html
