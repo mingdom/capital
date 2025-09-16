@@ -33,10 +33,10 @@ test: $(PYTEST)
 $(PYTEST): install ; @true
 
 run: $(PY)
-	$(PY) sortino.py
+	$(PY) -m portfolio_cli analyze
 
 run-benchmarks: $(PY)
-	$(PY) sortino.py --benchmarks
+	$(PY) -m portfolio_cli analyze --benchmarks
 
 report: $(PY)
 	$(PY) scripts/build_report.py

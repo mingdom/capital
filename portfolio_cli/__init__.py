@@ -1,0 +1,28 @@
+"""User-facing entry-point helpers for the portfolio CLI."""
+
+from .analysis import (  # noqa: F401
+    ANNUAL_RF_RATE,
+    JSON_FILE_PATH,
+    PerformanceMetrics,
+    PortfolioAnalysis,
+    calculate_metrics,
+    calculate_monthly_returns,
+    format_portfolio_summary,
+    load_daily_changes,
+    run_portfolio_analysis,
+)
+from .cli import app, run  # noqa: F401
+
+__all__ = [
+    "ANNUAL_RF_RATE",
+    "JSON_FILE_PATH",
+    "PerformanceMetrics",
+    "PortfolioAnalysis",
+    "calculate_metrics",
+    "calculate_monthly_returns",
+    "format_portfolio_summary",
+    "load_daily_changes",
+    "run_portfolio_analysis",
+    "app",
+    "run",
+]

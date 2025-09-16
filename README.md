@@ -6,6 +6,10 @@ Tracks the Mingdom Capital portfolio from SavvyTrader valuations data and report
 monthly returns plus key risk/return metrics (CAGR, YTD, Max Monthly Drawdown,
 Sharpe, Sortino). Optional comparison against SPY and QQQ with cached data.
 
+The core functionality is now exposed through a Typer-powered CLI (`python -m
+portfolio_cli`) so commands, options, and future features remain discoverable
+via `--help`.
+
 The published page shows an “As of: YYYY-MM-DD” based on the latest date in
 `data/valuations.json` used for that build.
 
@@ -13,7 +17,8 @@ Key features
 - Monthly aggregation from SavvyTrader valuations (`data/valuations.json`).
 - Metrics: CAGR, YTD, Max Monthly Drawdown, Sharpe, Sortino.
 - Optional SPY/QQQ benchmarks with local caching.
-- Simple Makefile/CLI for repeatable runs.
+- Typer-based CLI for quick inspection and future extensibility.
+- Simple Makefile targets for repeatable runs.
 
 ## For Investors
 
@@ -52,12 +57,34 @@ python3 -m venv venv
 make run
 
 # Or directly
-./venv/bin/python sortino.py
+./venv/bin/python -m portfolio_cli analyze
 
 # Compare against SPY/QQQ (fetch/cached via yfinance)
 make run-benchmarks
-# or: ./venv/bin/python sortino.py --benchmarks
+# or: ./venv/bin/python -m portfolio_cli analyze --benchmarks
+
+# Inspect available commands
+./venv/bin/python -m portfolio_cli --help
 ```
+
+### CLI commands
+
+The CLI groups portfolio analysis tasks and exposes consistent help output:
+
+```bash
+# Portfolio summary (default command)
+python -m portfolio_cli analyze --json data/valuations.json --rf 0.04 --year 2024
+
+# Include SPY/QQQ comparison table
+python -m portfolio_cli analyze --benchmarks
+
+# Discover options for any command
+python -m portfolio_cli analyze --help
+```
+
+Typer keeps the implementation compact while providing type-checked arguments
+and autogenerating usage docs, so new subcommands (e.g., multi-portfolio
+support, DCF utilities) can be added without extra parsing boilerplate.
 
 ## Report
 
@@ -96,7 +123,8 @@ This runs `black --check .` and `ruff check .`. Run `make format` to auto-fix fo
 
 ## Project Structure
 
-- `sortino.py` — main analysis script (monthly returns, CAGR, drawdown, Sharpe/Sortino).
+- `sortino.py` — legacy entry point that now proxies to the Typer CLI.
+- `portfolio_cli/` — reusable analysis code plus Typer CLI entry points.
 - `benchmarks.py` — fetches/caches SPY & QQQ monthly returns (yfinance) for comparisons.
 - `data/valuations.json` — SavvyTrader valuations API response for local runs.
 - `data/` — additional data files (e.g., `valuations.json`, `prices.json`, historical snapshots).
@@ -109,3 +137,19 @@ This runs `black --check .` and `ruff check .`. Run `make format` to auto-fix fo
 - `AGENTS.md` — contributor guidelines.
 
 Note: The HTML report supersedes the raw console sample previously shown here.
+
+## Why Typer for the CLI?
+
+We compared common Python CLI options:
+
+- `argparse` (stdlib) is dependency-free but produces minimal help text unless
+  extra boilerplate is added and does not scale well to many subcommands.
+- `click` improves ergonomics with decorators yet still requires repeating
+  argument metadata separate from type hints.
+- `typer` builds on Click, embraces Python type hints for validation, and
+  auto-generates rich usage documentation. It keeps the code ready for future
+  features such as alternative portfolio data loaders, DCF calculators, or
+  additional benchmarking commands.
+
+Given the roadmap, Typer offered the best balance of ergonomics and
+extensibility while remaining lightweight.
