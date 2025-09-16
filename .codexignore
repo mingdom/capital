@@ -3,3 +3,6 @@
 !data/
 !data/**
 
+# Ensure private performance data remains visible to Codex
+!data/private/
+!data/private/**

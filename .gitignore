@@ -16,6 +16,6 @@ venv/
 .venv/
 .env
 
-# Data (tracked)
-
+# Data
+data/private/
 dist/
