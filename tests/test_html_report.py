@@ -1,27 +1,42 @@
 import pandas as pd
 
-from scripts.build_report import render_html
+from portfolio_cli.analysis import PerformanceMetrics, PortfolioAnalysis
+from portfolio_cli.performance import PerformanceBundle
+from portfolio_cli.report import render_html_report
 
 
-def test_render_html_contains_sections_and_tables():
-    monthly = pd.Series([0.01, -0.02], index=pd.period_range("2024-01", periods=2, freq="M"))
+def test_render_html_contains_tables_and_metrics():
+    index = pd.period_range("2024-01", periods=3, freq="M")
+    combined = pd.DataFrame(
+        {
+            "SavvyTrader": [0.01, -0.02, 0.03],
+            "Fidelity": [0.02, 0.0, -0.01],
+            "SPY": [0.015, -0.01, 0.02],
+        },
+        index=index,
+    )
+
+    perf = PerformanceMetrics(cagr=0.1, max_dd_monthly=-0.02, ytd=0.01, sharpe=1.2, sortino=1.5)
     metrics = {
-        "cagr": 0.1,
-        "max_dd_monthly": -0.02,
-        "ytd": 0.01,
-        "sharpe": 1.2,
-        "sortino": 1.5,
+        "SavvyTrader": PortfolioAnalysis(monthly_returns=combined["SavvyTrader"], metrics=perf),
+        "Fidelity": PortfolioAnalysis(monthly_returns=combined["Fidelity"], metrics=perf),
+        "SPY": PortfolioAnalysis(monthly_returns=combined["SPY"], metrics=perf),
     }
-    bench_metrics = {"SPY": metrics, "QQQ": metrics}
-    spy = monthly.copy()
-    qqq = monthly.copy()
-    html = render_html(monthly, metrics, bench_metrics, spy, qqq, "2025-09-08", "2024-02-02", "2025-09-08")
-    assert "Portfolio Performance" in html
-    assert "Benchmarks" in html
-    assert "Monthly Performance" in html
-    assert "Cumulative Performance" in html
-    assert "<th class=\"py-2 px-3 text-left text-sm font-semibold text-slate-700\">Cumulative</th>" not in html
-    assert "-1.0%" in html
+
+    bundle = PerformanceBundle(
+        combined=combined,
+        recent=combined,
+        metrics=metrics,
+        missing=[],
+        last_period=index[-1],
+    )
+
+    html = render_html_report(bundle, title="Test Report", as_of="2024-03-31")
+    assert "Test Report" in html
+    assert "Monthly Returns" in html
+    assert "Summary Metrics" in html
+    assert "SavvyTrader" in html
+    assert "Fidelity" in html
+    assert "SPY" in html
     assert "CAGR" in html
     assert "2024-01" in html
-    assert "perf-chart" in html

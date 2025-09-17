@@ -9,6 +9,7 @@
   - `load_fidelity_monthly_returns` for Fidelity CSV (cash-flow adjusted).
   - `run_portfolio_analysis` dispatches by source and returns `PortfolioAnalysis` dataclass.
 - Output formatting uses Rich tables: last 12 monthly returns side-by-side plus summary metrics (CAGR, YTD, Max Drawdown, Sharpe, Sortino).
+- HTML report generation lives in `portfolio_cli.report.render_html_report`, reused by both the CLI `report` command and `scripts/build_report.py`.
 
 ## Why Typer?
 
@@ -36,3 +37,4 @@ Alternatives considered:
 - Extend `sources` registry for additional providers with shared interface.
 - Persist shell history under `~/.config/portfolio_cli/history` for quality-of-life improvement.
 - Allow custom benchmark selection beyond SPY/QQQ.
+- Add charts (e.g., Plotly/Chart.js) to the HTML report.

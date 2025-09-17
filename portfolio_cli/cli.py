@@ -3,38 +3,20 @@
 from __future__ import annotations
 
 from datetime import datetime
-from enum import Enum
 from pathlib import Path
 import sys
 from typing import List, Optional
 
-import typer
 import pandas as pd
-
-from portfolio_cli.analysis import (
-    ANNUAL_RF_RATE,
-    FIDELITY_CSV_PATH,
-    JSON_FILE_PATH,
-    PortfolioAnalysis,
-    calculate_metrics,
-    run_portfolio_analysis,
-)
-from benchmarks import get_benchmark_series
+import typer
+from rich import box
 from rich.console import Console
 from rich.table import Table
-from rich import box
 
+from portfolio_cli.analysis import ANNUAL_RF_RATE, FIDELITY_CSV_PATH, JSON_FILE_PATH
+from portfolio_cli.performance import SUPPORTED_SOURCES, SourceKind, collect_performance_data
+from portfolio_cli.report import render_html_report
 from portfolio_cli.shell import start_shell
-
-
-class SourceKind(str, Enum):
-    SAVVYTRADER = "savvytrader"
-    FIDELITY = "fidelity"
-
-    def default_path(self) -> Path:
-        if self is SourceKind.SAVVYTRADER:
-            return JSON_FILE_PATH
-        return FIDELITY_CSV_PATH
 
 
 app = typer.Typer(
@@ -95,79 +77,42 @@ def performance_command(
         show_default=True,
     ),
 ) -> None:
-    """Display monthly returns and summary metrics for one or both portfolios."""
+    """Display monthly returns and summary metrics for selected portfolios."""
 
     current_year = year or datetime.now().year
-    requested = [SourceKind.SAVVYTRADER, SourceKind.FIDELITY] if not sources else list(dict.fromkeys(sources))
-
     console = Console()
-    monthly_map: dict[str, pd.Series] = {}
-    metrics_map: dict[str, PortfolioAnalysis] = {}
-    missing: list[str] = []
 
-    for src in requested:
-        path = savvy_json if src is SourceKind.SAVVYTRADER else fidelity_csv
-        try:
-            analysis = run_portfolio_analysis(
-                source=str(src.value),
-                input_path=path,
-                annual_rf=annual_rf,
-                current_year=current_year,
-            )
-        except FileNotFoundError:
-            missing.append(f"{src.value} (missing file: {path})")
-            continue
-        except ValueError as err:
-            missing.append(f"{src.value} ({err})")
-            continue
+    bundle = collect_performance_data(
+        sources=sources,
+        savvy_json=savvy_json,
+        fidelity_csv=fidelity_csv,
+        annual_rf=annual_rf,
+        current_year=current_year,
+        include_benchmarks=benchmarks,
+    )
 
-        portfolio_name = "SavvyTrader" if src is SourceKind.SAVVYTRADER else "Fidelity"
-        monthly_map[portfolio_name] = analysis.monthly_returns
-        metrics_map[portfolio_name] = analysis
-
-    if not monthly_map:
+    if bundle.combined.empty:
         console.print("[bold red]No portfolio data available[/bold red] — please check file paths.")
-        for note in missing:
+        for note in bundle.missing:
             console.print(f"• {note}")
         raise typer.Exit(code=1)
 
-    combined = pd.DataFrame({name: series for name, series in monthly_map.items()})
-    combined = combined.sort_index()
-
-    if benchmarks:
-        months_index = combined.index
-        if months_index.empty:
-            all_series = list(monthly_map.values())
-            if all_series:
-                months_index = pd.concat(all_series).sort_index().index
-        for symbol, label in (("SPY", "SPY"), ("QQQ", "QQQ")):
-            if months_index.empty:
-                continue
-            benchmark_series = get_benchmark_series(symbol, months_index)
-            if benchmark_series.empty:
-                missing.append(f"benchmark {symbol} (no cached data)")
-                continue
-            benchmark_series = benchmark_series.reindex(months_index)
-            combined[label] = benchmark_series
-            metrics_map[label] = PortfolioAnalysis(
-                monthly_returns=benchmark_series,
-                metrics=calculate_metrics(benchmark_series.dropna(), annual_rf, current_year),
-            )
-
-    combined = combined.sort_index()
-    recent = combined.tail(12)
+    combined = bundle.combined
+    recent = bundle.recent if not bundle.recent.empty else combined
+    metrics_map = bundle.metrics
 
     def fmt_pct(value: float | None) -> str:
         return f"{value * 100:.1f}%" if value is not None else "—"
 
     returns_table = Table(title="Monthly Returns · last 12 months", box=box.MINIMAL_DOUBLE_HEAD, show_lines=False)
     returns_table.add_column("Month", style="bold")
-    for name in combined.columns:
+    columns = list(combined.columns)
+    for name in columns:
         returns_table.add_column(name, justify="right")
 
     for month, row in recent.iterrows():
         month_label = str(month)
-        formatted_row = [fmt_pct(row[col]) if pd.notna(row[col]) else "—" for col in combined.columns]
+        formatted_row = [fmt_pct(row[col]) if pd.notna(row[col]) else "—" for col in columns]
         returns_table.add_row(month_label, *formatted_row)
 
     console.print(returns_table)
@@ -175,7 +120,7 @@ def performance_command(
 
     metrics_table = Table(title="Summary Metrics", box=box.MINIMAL_DOUBLE_HEAD, show_lines=False)
     metrics_table.add_column("Metric", style="bold")
-    for name in combined.columns:
+    for name in columns:
         metrics_table.add_column(name, justify="right")
 
     metric_rows = [
@@ -189,7 +134,7 @@ def performance_command(
     for label, getter, *rest in metric_rows:
         is_ratio = rest[0] if rest else False
         row_values = []
-        for name in combined.columns:
+        for name in columns:
             metrics = metrics_map.get(name)
             if metrics is None:
                 row_values.append("—")
@@ -203,10 +148,100 @@ def performance_command(
 
     console.print(metrics_table)
 
-    if missing:
+    if bundle.missing:
         console.print()
         console.print("[yellow]Skipped sources:[/yellow]")
-        for note in missing:
+        for note in bundle.missing:
+            console.print(f"• {note}")
+
+
+@app.command("report")
+def report_command(
+    output: Path = typer.Option(
+        Path("dist/index.html"),
+        "--output",
+        "-o",
+        file_okay=True,
+        dir_okay=False,
+        writable=True,
+        help="Destination HTML file for the report.",
+        show_default=True,
+    ),
+    sources: Optional[List[SourceKind]] = typer.Argument(  # type: ignore[arg-type]
+        None,
+        case_sensitive=False,
+        help="Portfolio sources to include (savvytrader fidelity). Defaults to both.",
+    ),
+    savvy_json: Path = typer.Option(
+        JSON_FILE_PATH,
+        "--savvy-json",
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        help="Path to SavvyTrader valuations JSON file.",
+        show_default=True,
+    ),
+    fidelity_csv: Path = typer.Option(
+        FIDELITY_CSV_PATH,
+        "--fidelity-csv",
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        help="Path to Fidelity investment income CSV export.",
+        show_default=True,
+    ),
+    annual_rf: float = typer.Option(
+        ANNUAL_RF_RATE,
+        "--rf",
+        min=0.0,
+        help="Annual risk-free rate used for Sharpe/Sortino calculations (e.g., 0.04).",
+        show_default=True,
+    ),
+    year: Optional[int] = typer.Option(
+        None,
+        "--year",
+        help="Calendar year to use for YTD performance (defaults to the current year).",
+    ),
+    benchmarks: bool = typer.Option(
+        True,
+        "--benchmarks/--no-benchmarks",
+        help="Include SPY and QQQ benchmarks in the report.",
+        show_default=True,
+    ),
+    title: str = typer.Option(
+        "Mingdom Capital Performance",
+        "--title",
+        help="Title used at the top of the HTML report.",
+    ),
+) -> None:
+    """Generate an HTML report covering the selected portfolios."""
+
+    current_year = year or datetime.now().year
+    console = Console()
+
+    bundle = collect_performance_data(
+        sources=sources,
+        savvy_json=savvy_json,
+        fidelity_csv=fidelity_csv,
+        annual_rf=annual_rf,
+        current_year=current_year,
+        include_benchmarks=benchmarks,
+    )
+
+    if bundle.combined.empty:
+        console.print("[bold red]No portfolio data available — report not created.[/bold red]")
+        for note in bundle.missing:
+            console.print(f"• {note}")
+        raise typer.Exit(code=1)
+
+    html = render_html_report(bundle, title=title)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(html, encoding="utf-8")
+
+    console.print(f"[green]Report written to {output}[/green]")
+    if bundle.missing:
+        console.print("[yellow]Notes:[/yellow]")
+        for note in bundle.missing:
             console.print(f"• {note}")
 
 

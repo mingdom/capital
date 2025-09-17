@@ -27,6 +27,9 @@ make run
 
 # Skip benchmark columns if needed
 ./venv/bin/python -m portfolio_cli performance --no-benchmarks
+
+# Generate HTML report
+./venv/bin/python -m portfolio_cli report --output dist/index.html
 ```
 
 ## Generate report

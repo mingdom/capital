@@ -11,7 +11,7 @@ import typer
 
 from typer.main import get_command
 
-SUPPORTED_SOURCES = ("savvytrader", "fidelity")
+from portfolio_cli.performance import SUPPORTED_SOURCES
 
 
 class PortfolioShell(cmd.Cmd):
@@ -93,6 +93,46 @@ class PortfolioShell(cmd.Cmd):
     def help_performance(self) -> None:  # pragma: no cover - passthrough help
         self._show_command_help("performance")
 
+    def do_report(self, arg: str) -> bool | None:
+        """Generate the HTML report. Usage: report [sources] [options]"""
+
+        parsed = shlex.split(arg)
+        self._run_cli(["report", *parsed])
+        return None
+
+    def complete_report(self, text: str, line: str, begidx: int, endidx: int):
+        try:
+            tokens = shlex.split(line[:begidx])
+        except ValueError:
+            tokens = line[:begidx].split()
+
+        flags = [
+            "--output",
+            "--title",
+            "--savvy-json",
+            "--fidelity-csv",
+            "--rf",
+            "--year",
+            "--benchmarks",
+            "--no-benchmarks",
+        ]
+
+        if len(tokens) <= 1:
+            if not text:
+                return list(SUPPORTED_SOURCES)
+            return [src for src in SUPPORTED_SOURCES if src.startswith(text)]
+
+        if text.startswith("--"):
+            return [flag for flag in flags if flag.startswith(text)]
+
+        if tokens and tokens[-1] in SUPPORTED_SOURCES:
+            return [flag for flag in flags if flag.startswith(text)]
+
+        return [src for src in SUPPORTED_SOURCES if src.startswith(text)]
+
+    def help_report(self) -> None:  # pragma: no cover - passthrough help
+        self._show_command_help("report")
+
     def do_commands(self, arg: str) -> bool | None:  # pragma: no cover - passthrough
         """List available commands."""
 
@@ -108,10 +148,10 @@ class PortfolioShell(cmd.Cmd):
         typer.echo("Supported sources:")
         typer.echo("  savvytrader (default)")
         typer.echo("    File: data/valuations.json")
-        typer.echo("    Use: analyze savvytrader [--json custom.json]")
+        typer.echo("    Use: performance savvytrader [flags]")
         typer.echo("  fidelity")
         typer.echo("    File: data/private/fidelity-performance.csv")
-        typer.echo("    Use: analyze fidelity --input path/to/export.csv")
+        typer.echo("    Use: performance fidelity --fidelity-csv path/to/export.csv")
         return None
 
     def do_help(self, arg: str) -> bool | None:  # pragma: no cover - passthrough
@@ -120,6 +160,7 @@ class PortfolioShell(cmd.Cmd):
             return super().do_help(arg)
         typer.echo("Core commands:")
         typer.echo("  performance [sources]  Show monthly returns (e.g., performance fidelity)")
+        typer.echo("  report [sources]       Generate HTML report")
         typer.echo("  sources                Show supported data formats and default files")
         typer.echo("  help <command>       Show command-specific help")
         typer.echo("  exit                 Quit the shell")
