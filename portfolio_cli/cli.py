@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
+import os
+import shutil
+import subprocess
 import sys
 from typing import List, Optional
 
@@ -243,6 +246,67 @@ def report_command(
         console.print("[yellow]Notes:[/yellow]")
         for note in bundle.missing:
             console.print(f"• {note}")
+
+
+@app.command("web")
+def web_command(
+    host: str = typer.Option("localhost", "--host", help="Server host address."),
+    port: int = typer.Option(8501, "--port", help="Server port."),
+    open_browser: bool = typer.Option(True, "--open-browser/--no-open-browser", help="Open browser automatically."),
+    sources: Optional[List[SourceKind]] = typer.Argument(  # type: ignore[arg-type]
+        None,
+        case_sensitive=False,
+        help="Optional list of default sources to enable (savvytrader fidelity).",
+    ),
+    savvy_json: Path = typer.Option(
+        JSON_FILE_PATH,
+        "--savvy-json",
+        help="Default SavvyTrader JSON path passed to the app.",
+    ),
+    fidelity_csv: Path = typer.Option(
+        FIDELITY_CSV_PATH,
+        "--fidelity-csv",
+        help="Default Fidelity CSV path passed to the app.",
+    ),
+    annual_rf: float = typer.Option(
+        ANNUAL_RF_RATE,
+        "--rf",
+        min=0.0,
+        help="Default risk-free rate used in the app.",
+    ),
+    benchmarks: bool = typer.Option(
+        True,
+        "--benchmarks/--no-benchmarks",
+        help="Include benchmarks by default.",
+    ),
+) -> None:
+    """Launch the Streamlit dashboard for interactive exploration."""
+
+    if shutil.which("streamlit") is None:
+        raise typer.Exit("Streamlit is not installed. Run `pip install streamlit` to use this command.")
+
+    app_path = Path(__file__).resolve().parents[1] / "streamlit_app.py"
+    env = os.environ.copy()
+    if sources:
+        env["PORTFOLIO_SOURCES"] = ",".join(kind.value for kind in sources)
+    env["PORTFOLIO_SAVVY_JSON"] = str(savvy_json)
+    env["PORTFOLIO_FIDELITY_CSV"] = str(fidelity_csv)
+    env["PORTFOLIO_INCLUDE_BENCHMARKS"] = "1" if benchmarks else "0"
+    env["PORTFOLIO_RISK_FREE"] = str(annual_rf)
+
+    cmd = [
+        "streamlit",
+        "run",
+        str(app_path),
+        "--server.address",
+        host,
+        "--server.port",
+        str(port),
+    ]
+    if not open_browser:
+        env["STREAMLIT_SERVER_HEADLESS"] = "true"
+
+    subprocess.run(cmd, env=env, check=False)
 
 
 @app.command("interactive")

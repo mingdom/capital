@@ -30,6 +30,9 @@ make run
 
 # Generate HTML report
 ./venv/bin/python -m portfolio_cli report --output dist/index.html
+
+# Launch web dashboard (Streamlit)
+./venv/bin/python -m portfolio_cli web --port 8501
 ```
 
 ## Generate report

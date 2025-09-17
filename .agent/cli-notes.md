@@ -3,13 +3,14 @@
 ## Overview
 
 - Core entry point: `portfolio_cli.cli` (Typer app) with `performance` command accepting positional `sources` (`savvytrader`, `fidelity`) and showing Rich tables.
-- Interactive shell: `portfolio_cli.shell.PortfolioShell`, wraps Typer commands, provides tab completion and helper commands (`sources`, `reload`, `report`).
+- Interactive shell: `portfolio_cli.shell.PortfolioShell`, wraps Typer commands, provides tab completion and helper commands (`sources`, `reload`, `report`, `ls` alias).
 - Analysis layer: `portfolio_cli.analysis` exposes shared calculators:
   - `load_daily_changes` + `calculate_monthly_returns` for SavvyTrader JSON.
   - `load_fidelity_monthly_returns` for Fidelity CSV (cash-flow adjusted).
   - `run_portfolio_analysis` dispatches by source and returns `PortfolioAnalysis` dataclass.
 - Output formatting uses Rich tables: last 12 monthly returns side-by-side plus summary metrics (CAGR, YTD, Max Drawdown, Sharpe, Sortino).
 - HTML report generation lives in `portfolio_cli.report.render_html_report`, reused by both the CLI `report` command and `scripts/build_report.py`.
+- Streamlit dashboard (`streamlit_app.py`) launched via `portfolio-cli web` shares the same performance bundle and exposes controls for sources, benchmarks, and file paths.
 
 ## Why Typer?
 

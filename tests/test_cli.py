@@ -1,11 +1,12 @@
 import json
 import sys
 from datetime import datetime, timedelta
+from pathlib import Path
 
 import pytest
 from typer.testing import CliRunner
 
-from portfolio_cli.analysis import load_fidelity_monthly_returns
+from portfolio_cli.analysis import ANNUAL_RF_RATE, load_fidelity_monthly_returns
 from portfolio_cli.cli import app
 from portfolio_cli.shell import PortfolioShell, start_shell
 
@@ -171,6 +172,48 @@ def test_shell_ls_alias(capsys):
     shell.do_ls("")
     out = capsys.readouterr().out
     assert "Core commands" in out
+
+
+def test_cli_web_invokes_streamlit(monkeypatch, tmp_path):
+    called = {}
+
+    def fake_run(cmd, env=None, check=None):
+        called["cmd"] = cmd
+        called["env"] = env
+        called["check"] = check
+        return None
+
+    monkeypatch.setattr("portfolio_cli.cli.subprocess.run", fake_run)
+    monkeypatch.setattr("portfolio_cli.cli.shutil.which", lambda _: "/usr/bin/streamlit")
+
+    data_path = tmp_path / "data.json"
+    data_path.write_text("[]")
+    csv_path = tmp_path / "fidelity.csv"
+    csv_path.write_text("Month,Beginning balance\n")
+
+    runner = CliRunner()
+    result = runner.invoke(
+        app,
+        [
+            "web",
+            "--port",
+            "9000",
+            "--no-open-browser",
+            "--savvy-json",
+            str(data_path),
+            "--fidelity-csv",
+            str(csv_path),
+            "--no-benchmarks",
+            "--rf",
+            str(ANNUAL_RF_RATE),
+            "fidelity",
+        ],
+    )
+
+    assert result.exit_code == 0
+    assert called["cmd"][0:3] == ["streamlit", "run", str((Path(__file__).resolve().parents[1] / "streamlit_app.py"))]
+    assert called["env"]["PORTFOLIO_SOURCES"] == "fidelity"
+    assert called["env"]["PORTFOLIO_INCLUDE_BENCHMARKS"] == "0"
 
 
 def test_cli_report_generates_file(tmp_path):
