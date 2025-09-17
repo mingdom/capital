@@ -1,4 +1,5 @@
 import json
+import sys
 from datetime import datetime, timedelta
 
 import pytest
@@ -144,6 +145,25 @@ def test_shell_complete_performance_suggests_sources():
 
     flags = shell.complete_performance("--", "performance fidelity --", len("performance fidelity "), len("performance fidelity --"))
     assert "--no-benchmarks" in flags
+
+
+def test_shell_reload_executes(monkeypatch):
+    shell = PortfolioShell(app)
+
+    called = {}
+
+    def fake_execv(prog, args):
+        called["prog"] = prog
+        called["args"] = args
+        raise SystemExit()
+
+    monkeypatch.setattr("portfolio_cli.shell.os.execv", fake_execv)
+
+    with pytest.raises(SystemExit):
+        shell.do_reload("")
+
+    assert called["prog"] == sys.executable
+    assert called["args"] == [sys.executable, "-m", "portfolio_cli", "interactive"]
 
 
 def test_cli_report_generates_file(tmp_path):

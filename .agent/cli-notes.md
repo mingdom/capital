@@ -3,7 +3,7 @@
 ## Overview
 
 - Core entry point: `portfolio_cli.cli` (Typer app) with `performance` command accepting positional `sources` (`savvytrader`, `fidelity`) and showing Rich tables.
-- Interactive shell: `portfolio_cli.shell.PortfolioShell`, wraps Typer commands, provides tab completion and helper commands (`sources`).
+- Interactive shell: `portfolio_cli.shell.PortfolioShell`, wraps Typer commands, provides tab completion and helper commands (`sources`, `reload`, `report`).
 - Analysis layer: `portfolio_cli.analysis` exposes shared calculators:
   - `load_daily_changes` + `calculate_monthly_returns` for SavvyTrader JSON.
   - `load_fidelity_monthly_returns` for Fidelity CSV (cash-flow adjusted).

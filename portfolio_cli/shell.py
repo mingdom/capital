@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import cmd
+import os
 import shlex
+import sys
 from typing import Iterable
 
 import click
@@ -142,6 +144,15 @@ class PortfolioShell(cmd.Cmd):
                 self.stdout.write(f"  {name[3:]}\n")
         return None
 
+    def do_reload(self, arg: str) -> bool | None:
+        """Reload the CLI by restarting the current Python process."""
+
+        typer.echo("Reloading CLI...")
+        python = sys.executable
+        args = [python, "-m", "portfolio_cli", "interactive"]
+        os.execv(python, args)
+        return None
+
     def do_sources(self, arg: str) -> bool | None:
         """Describe supported portfolio data formats."""
 
@@ -162,6 +173,7 @@ class PortfolioShell(cmd.Cmd):
         typer.echo("  performance [sources]  Show monthly returns (e.g., performance fidelity)")
         typer.echo("  report [sources]       Generate HTML report")
         typer.echo("  sources                Show supported data formats and default files")
+        typer.echo("  reload                 Restart the CLI to pull in code changes")
         typer.echo("  help <command>       Show command-specific help")
         typer.echo("  exit                 Quit the shell")
         typer.echo("\nTyper CLI usage remains available via 'portfolio-cli <command>'.")
