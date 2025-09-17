@@ -43,6 +43,7 @@ def test_cli_performance_savvytrader(tmp_path):
             "0.04",
             "--year",
             "2024",
+            "--no-benchmarks",
         ],
     )
 
@@ -83,7 +84,7 @@ def test_shell_runs_performance_command(tmp_path, capsys):
     start_shell(
         app,
         commands=[
-            f"performance savvytrader --savvy-json {data_path} --rf 0.04 --year 2024",
+            f"performance savvytrader --savvy-json {data_path} --rf 0.04 --year 2024 --no-benchmarks",
             "exit",
         ],
     )
@@ -109,6 +110,7 @@ def test_cli_performance_fidelity(tmp_path):
             "0.02",
             "--year",
             "2024",
+            "--no-benchmarks",
         ],
     )
 
@@ -141,4 +143,4 @@ def test_shell_complete_performance_suggests_sources():
     assert partial == ["fidelity"]
 
     flags = shell.complete_performance("--", "performance fidelity --", len("performance fidelity "), len("performance fidelity --"))
-    assert "--input" in flags
+    assert "--no-benchmarks" in flags

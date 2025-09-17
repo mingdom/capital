@@ -24,6 +24,9 @@ make run
 ./venv/bin/python -m portfolio_cli performance
 ./venv/bin/python -m portfolio_cli performance savvytrader --year 2024
 ./venv/bin/python -m portfolio_cli performance fidelity --fidelity-csv data/private/fidelity-performance.csv
+
+# Skip benchmark columns if needed
+./venv/bin/python -m portfolio_cli performance --no-benchmarks
 ```
 
 ## Generate report

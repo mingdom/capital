@@ -35,4 +35,4 @@ Alternatives considered:
 - Add `report` subcommand to wrap `scripts/build_report.py`.
 - Extend `sources` registry for additional providers with shared interface.
 - Persist shell history under `~/.config/portfolio_cli/history` for quality-of-life improvement.
-- Integrate benchmarks into the `performance` tables once ready.
+- Allow custom benchmark selection beyond SPY/QQQ.

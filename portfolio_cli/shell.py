@@ -68,7 +68,14 @@ class PortfolioShell(cmd.Cmd):
         except ValueError:
             tokens = line[:begidx].split()
 
-        flags = ["--input", "--json", "--rf", "--year", "--benchmarks", "--no-benchmarks"]
+        flags = [
+            "--savvy-json",
+            "--fidelity-csv",
+            "--rf",
+            "--year",
+            "--benchmarks",
+            "--no-benchmarks",
+        ]
 
         if len(tokens) <= 1:
             if not text:

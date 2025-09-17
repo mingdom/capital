@@ -16,8 +16,10 @@ from portfolio_cli.analysis import (
     FIDELITY_CSV_PATH,
     JSON_FILE_PATH,
     PortfolioAnalysis,
+    calculate_metrics,
     run_portfolio_analysis,
 )
+from benchmarks import get_benchmark_series
 from rich.console import Console
 from rich.table import Table
 from rich import box
@@ -86,6 +88,12 @@ def performance_command(
         "--year",
         help="Calendar year to use for YTD performance (defaults to the current year).",
     ),
+    benchmarks: bool = typer.Option(
+        True,
+        "--benchmarks/--no-benchmarks",
+        help="Include SPY and QQQ benchmarks alongside portfolio performance.",
+        show_default=True,
+    ),
 ) -> None:
     """Display monthly returns and summary metrics for one or both portfolios."""
 
@@ -123,8 +131,30 @@ def performance_command(
             console.print(f"• {note}")
         raise typer.Exit(code=1)
 
-    combined = pd.DataFrame({name: series for name, series in monthly_map.items()}).sort_index()
-    # focus on recent history when there are many rows
+    combined = pd.DataFrame({name: series for name, series in monthly_map.items()})
+    combined = combined.sort_index()
+
+    if benchmarks:
+        months_index = combined.index
+        if months_index.empty:
+            all_series = list(monthly_map.values())
+            if all_series:
+                months_index = pd.concat(all_series).sort_index().index
+        for symbol, label in (("SPY", "SPY"), ("QQQ", "QQQ")):
+            if months_index.empty:
+                continue
+            benchmark_series = get_benchmark_series(symbol, months_index)
+            if benchmark_series.empty:
+                missing.append(f"benchmark {symbol} (no cached data)")
+                continue
+            benchmark_series = benchmark_series.reindex(months_index)
+            combined[label] = benchmark_series
+            metrics_map[label] = PortfolioAnalysis(
+                monthly_returns=benchmark_series,
+                metrics=calculate_metrics(benchmark_series.dropna(), annual_rf, current_year),
+            )
+
+    combined = combined.sort_index()
     recent = combined.tail(12)
 
     def fmt_pct(value: float | None) -> str:
