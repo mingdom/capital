@@ -3,6 +3,7 @@
 - When I ask you a question, just answer it, do NOT jump into writing code!
 - At the end of every task, summarize what you did.
 - `.agent` folder is for all developer logs and documentation as you make decisions and write code. Feel free to use this space for additional documentation.
+- When prompted, log decisions or progress in `.agent/devlog-YYYY-MM-DD.md` entries following the existing format (summary, current state, next ideas).
 
 ## Project Structure & Module Organization
 - `sortino.py` — main analysis script; exposes `convert_to_monthly_and_calculate_ratios`.
