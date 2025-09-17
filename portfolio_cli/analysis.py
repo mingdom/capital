@@ -7,6 +7,7 @@ subcommands (e.g. DCF modelling or alternative benchmark lookups).
 
 from __future__ import annotations
 
+import csv
 import json
 from dataclasses import dataclass
 from datetime import datetime
@@ -18,6 +19,7 @@ import pandas as pd
 
 
 JSON_FILE_PATH = Path("data/valuations.json")
+FIDELITY_CSV_PATH = Path("data/private/fidelity-performance.csv")
 ANNUAL_RF_RATE = 0.04
 
 
@@ -112,18 +114,107 @@ def calculate_metrics(monthly_returns: pd.Series, annual_rf: float, current_year
     )
 
 
+def load_fidelity_monthly_returns(csv_file: str | Path) -> pd.Series:
+    """Parse Fidelity export into a monthly return series."""
+
+    path = Path(csv_file)
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        reader = csv.reader(handle)
+        headers: list[str] | None = None
+        data_rows: list[list[str]] = []
+
+        for row in reader:
+            if not row:
+                continue
+            first_cell = row[0].strip()
+            if headers is None:
+                if first_cell.startswith("Monthly"):
+                    headers = row
+                continue
+            else:
+                if first_cell.startswith("Total") or first_cell == "":
+                    break
+                data_rows.append(row)
+
+    if headers is None:
+        raise ValueError("Could not locate 'Monthly' header in Fidelity CSV")
+
+    periods: list[pd.Period] = []
+    values: list[float] = []
+
+    def _to_number(raw: str) -> float:
+        cleaned = raw.replace("$", "").replace(",", "").strip()
+        if not cleaned or cleaned == "-":
+            return 0.0
+        if cleaned.startswith("(") and cleaned.endswith(")"):
+            cleaned = f"-{cleaned[1:-1]}"
+        return float(cleaned)
+
+    for row in data_rows:
+        month_label = row[0].split("(")[0].strip()
+        if not month_label:
+            continue
+        try:
+            period = pd.Period(month_label, freq="M")
+        except Exception as exc:  # pragma: no cover - unexpected format
+            raise ValueError(f"Unable to parse month label '{month_label}'") from exc
+
+        cells = (row + [""] * 9)[:9]
+        beginning = _to_number(cells[1])
+        market_change = _to_number(cells[2])
+        dividends = _to_number(cells[3])
+        interest = _to_number(cells[4])
+        deposits = _to_number(cells[5])
+        withdrawals = _to_number(cells[6])
+        net_fees = _to_number(cells[7])
+
+        performance = market_change + dividends + interest - net_fees
+        _ = deposits, withdrawals  # explicit for future cash-flow analytics
+
+        if beginning <= 0:
+            monthly_return = float("nan")
+        else:
+            monthly_return = performance / beginning
+
+        periods.append(period)
+        values.append(monthly_return)
+
+    series = pd.Series(values, index=pd.PeriodIndex(periods, freq="M"))
+    series = series.sort_index()
+    return series.dropna()
+
+
 def run_portfolio_analysis(
+    source: str = "savvytrader",
     json_file: str | Path = JSON_FILE_PATH,
+    fidelity_file: str | Path = FIDELITY_CSV_PATH,
+    input_path: str | Path | None = None,
     annual_rf: float = ANNUAL_RF_RATE,
     current_year: int | None = None,
 ) -> PortfolioAnalysis:
-    """Load valuations JSON and compute monthly returns + summary statistics."""
+    """Load data for the requested source and compute metrics."""
 
     if current_year is None:
         current_year = datetime.now().year
 
-    df = load_daily_changes(json_file)
-    monthly_returns = calculate_monthly_returns(df)
+    source_key = source.lower()
+
+    if source_key == "savvytrader":
+        path = Path(input_path) if input_path is not None else Path(json_file)
+        if not path.exists():
+            raise FileNotFoundError(path)
+        df = load_daily_changes(path)
+        monthly_returns = calculate_monthly_returns(df)
+    elif source_key == "fidelity":
+        path = Path(input_path) if input_path is not None else Path(fidelity_file)
+        if not path.exists():
+            raise FileNotFoundError(path)
+        monthly_returns = load_fidelity_monthly_returns(path)
+    else:
+        raise ValueError(
+            f"Unsupported source '{source}'. Expected 'savvytrader' or 'fidelity'."
+        )
+
     metrics = calculate_metrics(monthly_returns, annual_rf, current_year)
     return PortfolioAnalysis(monthly_returns=monthly_returns, metrics=metrics)
 

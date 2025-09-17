@@ -18,6 +18,7 @@ Key features
 - Metrics: CAGR, YTD, Max Monthly Drawdown, Sharpe, Sortino.
 - Optional SPY/QQQ benchmarks with local caching.
 - Interactive Typer-based CLI for discoverable workflows.
+- Multiple data sources: SavvyTrader JSON and Fidelity CSV (cash-flow aware).
 - Simple Makefile targets for repeatable runs.
 
 ## For Investors
@@ -81,6 +82,7 @@ python -m portfolio_cli
 # Within the prompt:
 portfolio> help
 portfolio> analyze --year 2024
+portfolio> analyze --source fidelity --input data/private/fidelity-performance.csv
 portfolio> benchmarks
 portfolio> exit
 ```
@@ -99,6 +101,9 @@ python -m portfolio_cli analyze --json data/valuations.json --rf 0.04 --year 202
 
 # Include SPY/QQQ comparison table
 python -m portfolio_cli analyze --benchmarks
+
+# Analyze Fidelity export (deposits/withdrawals handled automatically)
+python -m portfolio_cli analyze --source fidelity --input data/private/fidelity-performance.csv
 
 # Launch the interactive shell explicitly
 python -m portfolio_cli interactive
@@ -178,3 +183,11 @@ We compared common Python CLI options:
 
 Given the roadmap, Typer offered the best balance of ergonomics and
 extensibility while remaining lightweight.
+
+## Fidelity data format
+
+Place the Fidelity investment income CSV export at
+`data/private/fidelity-performance.csv` (ignored by Git). The CLI normalizes
+returns by removing cash-flow effects, so deposits and withdrawals will not
+skew performance metrics. Use `--source fidelity` together with `--input` if you
+store the file elsewhere.

@@ -86,6 +86,7 @@ class PortfolioShell(cmd.Cmd):
             return super().do_help(arg)
         typer.echo("Core commands:")
         typer.echo("  analyze [options]    Run portfolio analysis")
+        typer.echo("                      (e.g., --source fidelity --input path/to/file.csv)")
         typer.echo("  benchmarks           Run analysis with SPY/QQQ comparison")
         typer.echo("  help <command>       Show command-specific help")
         typer.echo("  exit                 Quit the shell")

@@ -9,18 +9,13 @@ from typing import Optional
 
 import typer
 
-from portfolio_cli.analysis import (
-    ANNUAL_RF_RATE,
-    JSON_FILE_PATH,
-    format_portfolio_summary,
-    run_portfolio_analysis,
-)
+from portfolio_cli.analysis import ANNUAL_RF_RATE, format_portfolio_summary, run_portfolio_analysis
 from sortino import build_benchmark_comparison_table
 from portfolio_cli.shell import start_shell
 
 
 app = typer.Typer(
-    help="Portfolio analytics toolkit for SavvyTrader exports",
+    help="Portfolio analytics toolkit for SavvyTrader and Fidelity exports",
     no_args_is_help=False,
 )
 
@@ -32,15 +27,20 @@ def main_callback() -> None:
 
 @app.command("analyze")
 def analyze_command(
-    json_path: Path = typer.Option(
-        JSON_FILE_PATH,
+    source: str = typer.Option(
+        "savvytrader",
+        "--source",
+        help="Portfolio data format to load (savvytrader or fidelity).",
+        show_default=True,
+    ),
+    input_path: Optional[Path] = typer.Option(
+        None,
+        "--input",
         "--json",
-        exists=True,
         file_okay=True,
         dir_okay=False,
         readable=True,
-        help="Path to the SavvyTrader valuations JSON file.",
-        show_default=True,
+        help="Override data file path for the selected source.",
     ),
     annual_rf: float = typer.Option(
         ANNUAL_RF_RATE,
@@ -63,7 +63,12 @@ def analyze_command(
     """Run the monthly aggregation and display key metrics."""
 
     current_year = year or datetime.now().year
-    analysis = run_portfolio_analysis(json_file=json_path, annual_rf=annual_rf, current_year=current_year)
+    analysis = run_portfolio_analysis(
+        source=source,
+        input_path=input_path,
+        annual_rf=annual_rf,
+        current_year=current_year,
+    )
     typer.echo(format_portfolio_summary(analysis, current_year))
 
     if benchmarks:
