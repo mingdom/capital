@@ -26,7 +26,7 @@ def _sample_data():
     return rows
 
 
-def test_cli_analyze_prints_summary(tmp_path):
+def test_cli_performance_savvytrader(tmp_path):
     data_path = tmp_path / "valuations.json"
     with data_path.open("w") as handle:
         json.dump(_sample_data(), handle)
@@ -35,8 +35,9 @@ def test_cli_analyze_prints_summary(tmp_path):
     result = runner.invoke(
         app,
         [
-            "analyze",
-            "--json",
+            "performance",
+            "savvytrader",
+            "--savvy-json",
             str(data_path),
             "--rf",
             "0.04",
@@ -47,7 +48,7 @@ def test_cli_analyze_prints_summary(tmp_path):
 
     assert result.exit_code == 0
     assert "Monthly Returns" in result.stdout
-    assert "Annualized Sharpe Ratio" in result.stdout
+    assert "Summary Metrics" in result.stdout
 
 
 def _fidelity_csv() -> str:
@@ -74,7 +75,7 @@ def test_load_fidelity_monthly_returns(tmp_path):
     assert pytest.approx(series.iloc[2], rel=1e-6) == 11 / 110
 
 
-def test_shell_runs_analyze_command(tmp_path, capsys):
+def test_shell_runs_performance_command(tmp_path, capsys):
     data_path = tmp_path / "valuations.json"
     with data_path.open("w") as handle:
         json.dump(_sample_data(), handle)
@@ -82,7 +83,7 @@ def test_shell_runs_analyze_command(tmp_path, capsys):
     start_shell(
         app,
         commands=[
-            f"analyze --json {data_path} --rf 0.04 --year 2024",
+            f"performance savvytrader --savvy-json {data_path} --rf 0.04 --year 2024",
             "exit",
         ],
     )
@@ -92,7 +93,7 @@ def test_shell_runs_analyze_command(tmp_path, capsys):
     assert "Goodbye" in out
 
 
-def test_cli_analyze_fidelity(tmp_path):
+def test_cli_performance_fidelity(tmp_path):
     csv_file = tmp_path / "fidelity.csv"
     csv_file.write_text(_fidelity_csv())
 
@@ -100,9 +101,9 @@ def test_cli_analyze_fidelity(tmp_path):
     result = runner.invoke(
         app,
         [
-            "analyze",
+            "performance",
             "fidelity",
-            "--input",
+            "--fidelity-csv",
             str(csv_file),
             "--rf",
             "0.02",
@@ -130,14 +131,14 @@ def test_shell_sources_command(capsys):
     assert "fidelity" in out
 
 
-def test_shell_complete_analyze_suggests_sources():
+def test_shell_complete_performance_suggests_sources():
     shell = PortfolioShell(app)
 
-    suggestions = shell.complete_analyze("", "analyze ", len("analyze "), len("analyze "))
+    suggestions = shell.complete_performance("", "performance ", len("performance "), len("performance "))
     assert set(suggestions) >= {"savvytrader", "fidelity"}
 
-    partial = shell.complete_analyze("fi", "analyze fi", len("analyze "), len("analyze fi"))
+    partial = shell.complete_performance("fi", "performance fi", len("performance "), len("performance fi"))
     assert partial == ["fidelity"]
 
-    flags = shell.complete_analyze("--", "analyze fidelity --", len("analyze fidelity "), len("analyze fidelity --"))
+    flags = shell.complete_performance("--", "performance fidelity --", len("performance fidelity "), len("performance fidelity --"))
     assert "--input" in flags

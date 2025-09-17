@@ -6,18 +6,22 @@ from datetime import datetime
 from enum import Enum
 from pathlib import Path
 import sys
-from typing import Optional
+from typing import List, Optional
 
 import typer
+import pandas as pd
 
 from portfolio_cli.analysis import (
     ANNUAL_RF_RATE,
     FIDELITY_CSV_PATH,
     JSON_FILE_PATH,
-    format_portfolio_summary,
+    PortfolioAnalysis,
     run_portfolio_analysis,
 )
-from sortino import build_benchmark_comparison_table
+from rich.console import Console
+from rich.table import Table
+from rich import box
+
 from portfolio_cli.shell import start_shell
 
 
@@ -45,26 +49,30 @@ def main_callback() -> None:
     """Inspect performance metrics, compare benchmarks, and export summaries."""
 
 
-@app.command("analyze")
-def analyze_command(
-    source: SourceKind = typer.Argument(  # type: ignore[arg-type]
-        SourceKind.SAVVYTRADER,
-        case_sensitive=False,
-        help=(
-            "Portfolio data format to load. "
-            "savvytrader → data/valuations.json (default). "
-            "fidelity → data/private/fidelity-performance.csv."
-        ),
-        show_default=True,
-    ),
-    input_path: Optional[Path] = typer.Option(
+@app.command("performance")
+def performance_command(
+    sources: Optional[List[SourceKind]] = typer.Argument(  # type: ignore[arg-type]
         None,
-        "--input",
-        "--json",
+        case_sensitive=False,
+        help="Portfolio sources to include (savvytrader fidelity). Defaults to both.",
+    ),
+    savvy_json: Path = typer.Option(
+        JSON_FILE_PATH,
+        "--savvy-json",
         file_okay=True,
         dir_okay=False,
         readable=True,
-        help="Override data file path for the selected source.",
+        help="Path to SavvyTrader valuations JSON file.",
+        show_default=True,
+    ),
+    fidelity_csv: Path = typer.Option(
+        FIDELITY_CSV_PATH,
+        "--fidelity-csv",
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        help="Path to Fidelity investment income CSV export.",
+        show_default=True,
     ),
     annual_rf: float = typer.Option(
         ANNUAL_RF_RATE,
@@ -78,26 +86,98 @@ def analyze_command(
         "--year",
         help="Calendar year to use for YTD performance (defaults to the current year).",
     ),
-    benchmarks: bool = typer.Option(
-        False,
-        "--benchmarks/--no-benchmarks",
-        help="Include SPY/QQQ comparison table after the portfolio summary.",
-    ),
 ) -> None:
-    """Run the monthly aggregation and display key metrics."""
+    """Display monthly returns and summary metrics for one or both portfolios."""
 
     current_year = year or datetime.now().year
-    analysis = run_portfolio_analysis(
-        source=str(source.value),
-        input_path=input_path if input_path is not None else source.default_path(),
-        annual_rf=annual_rf,
-        current_year=current_year,
-    )
-    typer.echo(format_portfolio_summary(analysis, current_year))
+    requested = [SourceKind.SAVVYTRADER, SourceKind.FIDELITY] if not sources else list(dict.fromkeys(sources))
 
-    if benchmarks:
-        table = build_benchmark_comparison_table(analysis.monthly_returns, annual_rf, current_year)
-        typer.echo(table)
+    console = Console()
+    monthly_map: dict[str, pd.Series] = {}
+    metrics_map: dict[str, PortfolioAnalysis] = {}
+    missing: list[str] = []
+
+    for src in requested:
+        path = savvy_json if src is SourceKind.SAVVYTRADER else fidelity_csv
+        try:
+            analysis = run_portfolio_analysis(
+                source=str(src.value),
+                input_path=path,
+                annual_rf=annual_rf,
+                current_year=current_year,
+            )
+        except FileNotFoundError:
+            missing.append(f"{src.value} (missing file: {path})")
+            continue
+        except ValueError as err:
+            missing.append(f"{src.value} ({err})")
+            continue
+
+        portfolio_name = "SavvyTrader" if src is SourceKind.SAVVYTRADER else "Fidelity"
+        monthly_map[portfolio_name] = analysis.monthly_returns
+        metrics_map[portfolio_name] = analysis
+
+    if not monthly_map:
+        console.print("[bold red]No portfolio data available[/bold red] — please check file paths.")
+        for note in missing:
+            console.print(f"• {note}")
+        raise typer.Exit(code=1)
+
+    combined = pd.DataFrame({name: series for name, series in monthly_map.items()}).sort_index()
+    # focus on recent history when there are many rows
+    recent = combined.tail(12)
+
+    def fmt_pct(value: float | None) -> str:
+        return f"{value * 100:.1f}%" if value is not None else "—"
+
+    returns_table = Table(title="Monthly Returns · last 12 months", box=box.MINIMAL_DOUBLE_HEAD, show_lines=False)
+    returns_table.add_column("Month", style="bold")
+    for name in combined.columns:
+        returns_table.add_column(name, justify="right")
+
+    for month, row in recent.iterrows():
+        month_label = str(month)
+        formatted_row = [fmt_pct(row[col]) if pd.notna(row[col]) else "—" for col in combined.columns]
+        returns_table.add_row(month_label, *formatted_row)
+
+    console.print(returns_table)
+    console.print()
+
+    metrics_table = Table(title="Summary Metrics", box=box.MINIMAL_DOUBLE_HEAD, show_lines=False)
+    metrics_table.add_column("Metric", style="bold")
+    for name in combined.columns:
+        metrics_table.add_column(name, justify="right")
+
+    metric_rows = [
+        ("CAGR", lambda m: m.metrics.cagr),
+        ("YTD", lambda m: m.metrics.ytd),
+        ("Max Drawdown", lambda m: m.metrics.max_dd_monthly),
+        ("Sharpe", lambda m: m.metrics.sharpe, True),
+        ("Sortino", lambda m: m.metrics.sortino, True),
+    ]
+
+    for label, getter, *rest in metric_rows:
+        is_ratio = rest[0] if rest else False
+        row_values = []
+        for name in combined.columns:
+            metrics = metrics_map.get(name)
+            if metrics is None:
+                row_values.append("—")
+                continue
+            value = getter(metrics)
+            if value is None:
+                row_values.append("—")
+            else:
+                row_values.append(f"{value:.1f}" if is_ratio else fmt_pct(value))
+        metrics_table.add_row(label, *row_values)
+
+    console.print(metrics_table)
+
+    if missing:
+        console.print()
+        console.print("[yellow]Skipped sources:[/yellow]")
+        for note in missing:
+            console.print(f"• {note}")
 
 
 @app.command("interactive")

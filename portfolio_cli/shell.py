@@ -55,14 +55,14 @@ class PortfolioShell(cmd.Cmd):
             typer.echo(command.get_help(sub_ctx))
 
     # ---------- commands ------------------------------------------------
-    def do_analyze(self, arg: str) -> bool | None:
-        """Analyze the current portfolio. Usage: analyze [options]"""
+    def do_performance(self, arg: str) -> bool | None:
+        """Show portfolio performance. Usage: performance [sources] [options]"""
 
         parsed = shlex.split(arg)
-        self._run_cli(["analyze", *parsed])
+        self._run_cli(["performance", *parsed])
         return None
 
-    def complete_analyze(self, text: str, line: str, begidx: int, endidx: int):
+    def complete_performance(self, text: str, line: str, begidx: int, endidx: int):
         try:
             tokens = shlex.split(line[:begidx])
         except ValueError:
@@ -83,18 +83,8 @@ class PortfolioShell(cmd.Cmd):
 
         return [src for src in SUPPORTED_SOURCES if src.startswith(text)]
 
-    def help_analyze(self) -> None:  # pragma: no cover - passthrough help
-        self._show_command_help("analyze")
-
-    def do_benchmarks(self, arg: str) -> bool | None:
-        """Shortcut for 'analyze --benchmarks'."""
-
-        parsed = shlex.split(arg)
-        self._run_cli(["analyze", "--benchmarks", *parsed])
-        return None
-
-    def help_benchmarks(self) -> None:  # pragma: no cover - passthrough help
-        typer.echo("Run portfolio analysis including SPY/QQQ comparison table.")
+    def help_performance(self) -> None:  # pragma: no cover - passthrough help
+        self._show_command_help("performance")
 
     def do_commands(self, arg: str) -> bool | None:  # pragma: no cover - passthrough
         """List available commands."""
@@ -122,9 +112,8 @@ class PortfolioShell(cmd.Cmd):
         if arg:
             return super().do_help(arg)
         typer.echo("Core commands:")
-        typer.echo("  analyze [source]     Run portfolio analysis (e.g., analyze fidelity)")
-        typer.echo("  benchmarks           Run analysis with SPY/QQQ comparison")
-        typer.echo("  sources              Show supported data formats and default files")
+        typer.echo("  performance [sources]  Show monthly returns (e.g., performance fidelity)")
+        typer.echo("  sources                Show supported data formats and default files")
         typer.echo("  help <command>       Show command-specific help")
         typer.echo("  exit                 Quit the shell")
         typer.echo("\nTyper CLI usage remains available via 'portfolio-cli <command>'.")

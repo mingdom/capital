@@ -6,3 +6,6 @@
 # Ensure private performance data remains visible to Codex
 !data/private/
 !data/private/**
+
+# Agent memory/config/docs
+!.agent
