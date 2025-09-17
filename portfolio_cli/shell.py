@@ -179,6 +179,11 @@ class PortfolioShell(cmd.Cmd):
         typer.echo("\nTyper CLI usage remains available via 'portfolio-cli <command>'.")
         return None
 
+    def do_ls(self, arg: str) -> bool | None:
+        """Alias for `help` to list available commands."""
+
+        return self.do_help(arg)
+
     def do_exit(self, arg: str) -> bool | None:
         """Exit the shell."""
 

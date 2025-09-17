@@ -166,6 +166,13 @@ def test_shell_reload_executes(monkeypatch):
     assert called["args"] == [sys.executable, "-m", "portfolio_cli", "interactive"]
 
 
+def test_shell_ls_alias(capsys):
+    shell = PortfolioShell(app)
+    shell.do_ls("")
+    out = capsys.readouterr().out
+    assert "Core commands" in out
+
+
 def test_cli_report_generates_file(tmp_path):
     data_path = tmp_path / "valuations.json"
     with data_path.open("w") as handle:
