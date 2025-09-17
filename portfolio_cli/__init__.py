@@ -12,6 +12,7 @@ from .analysis import (  # noqa: F401
     run_portfolio_analysis,
 )
 from .cli import app, run  # noqa: F401
+from .shell import start_shell  # noqa: F401
 
 __all__ = [
     "ANNUAL_RF_RATE",
@@ -25,4 +26,5 @@ __all__ = [
     "run_portfolio_analysis",
     "app",
     "run",
+    "start_shell",
 ]

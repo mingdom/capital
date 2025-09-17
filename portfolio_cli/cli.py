@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
+import sys
 from typing import Optional
 
 import typer
@@ -15,9 +16,13 @@ from portfolio_cli.analysis import (
     run_portfolio_analysis,
 )
 from sortino import build_benchmark_comparison_table
+from portfolio_cli.shell import start_shell
 
 
-app = typer.Typer(help="Portfolio analytics toolkit for SavvyTrader exports")
+app = typer.Typer(
+    help="Portfolio analytics toolkit for SavvyTrader exports",
+    no_args_is_help=False,
+)
 
 
 @app.callback()
@@ -66,10 +71,20 @@ def analyze_command(
         typer.echo(table)
 
 
+@app.command("interactive")
+def interactive_command() -> None:
+    """Launch the interactive shell."""
+
+    start_shell(app)
+
+
 def run() -> None:
     """Run the CLI."""
 
-    app()
+    if len(sys.argv) <= 1:
+        start_shell(app)
+    else:
+        app()
 
 
 if __name__ == "__main__":

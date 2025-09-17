@@ -17,7 +17,7 @@ Key features
 - Monthly aggregation from SavvyTrader valuations (`data/valuations.json`).
 - Metrics: CAGR, YTD, Max Monthly Drawdown, Sharpe, Sortino.
 - Optional SPY/QQQ benchmarks with local caching.
-- Typer-based CLI for quick inspection and future extensibility.
+- Interactive Typer-based CLI for discoverable workflows.
 - Simple Makefile targets for repeatable runs.
 
 ## For Investors
@@ -53,11 +53,15 @@ python3 -m venv venv
 ## Run
 
 ```bash
-# With Makefile
+# With Makefile (interactive shell)
 make run
 
-# Or directly
-./venv/bin/python -m portfolio_cli analyze
+# Direct CLI (interactive shell)
+./venv/bin/python -m portfolio_cli
+
+# Non-interactive analyze command
+make analyze
+# or: ./venv/bin/python -m portfolio_cli analyze
 
 # Compare against SPY/QQQ (fetch/cached via yfinance)
 make run-benchmarks
@@ -66,6 +70,24 @@ make run-benchmarks
 # Inspect available commands
 ./venv/bin/python -m portfolio_cli --help
 ```
+
+### Interactive shell
+
+Running the CLI without subcommands launches a prompt similar to `portfolio>`
+with built-in help:
+
+```bash
+python -m portfolio_cli
+# Within the prompt:
+portfolio> help
+portfolio> analyze --year 2024
+portfolio> benchmarks
+portfolio> exit
+```
+
+Shortcuts include `benchmarks` (equivalent to `analyze --benchmarks`) and
+`commands` to list available actions. The shell delegates to the same Typer
+commands, so everything remains scriptable.
 
 ### CLI commands
 
@@ -77,6 +99,9 @@ python -m portfolio_cli analyze --json data/valuations.json --rf 0.04 --year 202
 
 # Include SPY/QQQ comparison table
 python -m portfolio_cli analyze --benchmarks
+
+# Launch the interactive shell explicitly
+python -m portfolio_cli interactive
 
 # Discover options for any command
 python -m portfolio_cli analyze --help

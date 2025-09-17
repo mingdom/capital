@@ -1,0 +1,111 @@
+"""Interactive shell that wraps the Typer CLI commands."""
+
+from __future__ import annotations
+
+import cmd
+import shlex
+from typing import Iterable
+
+import click
+import typer
+
+from typer.main import get_command
+
+
+class PortfolioShell(cmd.Cmd):
+    intro = (
+        "Welcome to the Mingdom Capital CLI. Type 'help' to list commands or 'exit' to quit."
+    )
+    prompt = "portfolio> "
+
+    def __init__(self, typer_app: typer.Typer, commands: Iterable[str] | None = None) -> None:
+        super().__init__()
+        self._typer_app = typer_app
+        self._click_app = get_command(self._typer_app)
+        if commands is not None:
+            self.cmdqueue = list(commands)
+
+    # ---------- helpers -------------------------------------------------
+    def _run_cli(self, args: Iterable[str]) -> None:
+        """Execute the Typer CLI with the provided argument list."""
+
+        try:
+            self._click_app.main(
+                args=list(args),
+                prog_name="portfolio-cli",
+                standalone_mode=False,
+            )
+        except click.ClickException as exc:
+            exc.show()
+        except SystemExit as exc:  # pragma: no cover - handled to avoid shell exit
+            if exc.code not in (0, None):
+                typer.echo(f"Command exited with status {exc.code}")
+
+    def _show_command_help(self, command_name: str) -> None:
+        ctx = click.Context(self._click_app)
+        command = self._click_app.get_command(ctx, command_name)
+        if command is None:
+            typer.echo(f"Unknown command: {command_name}")
+            return
+        with click.Context(command) as sub_ctx:
+            typer.echo(command.get_help(sub_ctx))
+
+    # ---------- commands ------------------------------------------------
+    def do_analyze(self, arg: str) -> bool | None:
+        """Analyze the current portfolio. Usage: analyze [options]"""
+
+        parsed = shlex.split(arg)
+        self._run_cli(["analyze", *parsed])
+        return None
+
+    def help_analyze(self) -> None:  # pragma: no cover - passthrough help
+        self._show_command_help("analyze")
+
+    def do_benchmarks(self, arg: str) -> bool | None:
+        """Shortcut for 'analyze --benchmarks'."""
+
+        parsed = shlex.split(arg)
+        self._run_cli(["analyze", "--benchmarks", *parsed])
+        return None
+
+    def help_benchmarks(self) -> None:  # pragma: no cover - passthrough help
+        typer.echo("Run portfolio analysis including SPY/QQQ comparison table.")
+
+    def do_commands(self, arg: str) -> bool | None:  # pragma: no cover - passthrough
+        """List available commands."""
+
+        self.stdout.write("Available commands:\n")
+        for name in sorted(self.get_names()):
+            if name.startswith("do_"):
+                self.stdout.write(f"  {name[3:]}\n")
+        return None
+
+    def do_help(self, arg: str) -> bool | None:  # pragma: no cover - passthrough
+        arg = arg.strip()
+        if arg:
+            return super().do_help(arg)
+        typer.echo("Core commands:")
+        typer.echo("  analyze [options]    Run portfolio analysis")
+        typer.echo("  benchmarks           Run analysis with SPY/QQQ comparison")
+        typer.echo("  help <command>       Show command-specific help")
+        typer.echo("  exit                 Quit the shell")
+        typer.echo("\nTyper CLI usage remains available via 'portfolio-cli <command>'.")
+        return None
+
+    def do_exit(self, arg: str) -> bool | None:
+        """Exit the shell."""
+
+        typer.echo("Goodbye!")
+        return True
+
+    do_quit = do_exit
+
+    def do_EOF(self, line: str) -> bool | None:  # pragma: no cover - interactive
+        typer.echo("Goodbye!")
+        return True
+
+
+def start_shell(typer_app: typer.Typer, commands: Iterable[str] | None = None) -> None:
+    """Launch the interactive shell."""
+
+    PortfolioShell(typer_app, commands=commands).cmdloop()

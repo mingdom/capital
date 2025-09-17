@@ -5,7 +5,7 @@ BLACK=$(VENV)/bin/black
 RUFF=$(VENV)/bin/ruff
 PYTEST=$(VENV)/bin/pytest
 
-.PHONY: dev install format lint test run run-benchmarks report clean hook
+.PHONY: dev install format lint test run analyze run-benchmarks report clean hook
 
 $(PY):
 	python3 -m venv $(VENV)
@@ -33,6 +33,9 @@ test: $(PYTEST)
 $(PYTEST): install ; @true
 
 run: $(PY)
+	$(PY) -m portfolio_cli
+
+analyze: $(PY)
 	$(PY) -m portfolio_cli analyze
 
 run-benchmarks: $(PY)
