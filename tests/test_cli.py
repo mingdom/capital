@@ -6,7 +6,7 @@ from typer.testing import CliRunner
 
 from portfolio_cli.analysis import load_fidelity_monthly_returns
 from portfolio_cli.cli import app
-from portfolio_cli.shell import start_shell
+from portfolio_cli.shell import PortfolioShell, start_shell
 
 
 def _sample_data():
@@ -101,7 +101,6 @@ def test_cli_analyze_fidelity(tmp_path):
         app,
         [
             "analyze",
-            "--source",
             "fidelity",
             "--input",
             str(csv_file),
@@ -129,3 +128,16 @@ def test_shell_sources_command(capsys):
     assert "Supported sources" in out
     assert "savvytrader" in out
     assert "fidelity" in out
+
+
+def test_shell_complete_analyze_suggests_sources():
+    shell = PortfolioShell(app)
+
+    suggestions = shell.complete_analyze("", "analyze ", len("analyze "), len("analyze "))
+    assert set(suggestions) >= {"savvytrader", "fidelity"}
+
+    partial = shell.complete_analyze("fi", "analyze fi", len("analyze "), len("analyze fi"))
+    assert partial == ["fidelity"]
+
+    flags = shell.complete_analyze("--", "analyze fidelity --", len("analyze fidelity "), len("analyze fidelity --"))
+    assert "--input" in flags

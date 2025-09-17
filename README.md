@@ -82,14 +82,15 @@ python -m portfolio_cli
 # Within the prompt:
 portfolio> help
 portfolio> analyze --year 2024
-portfolio> analyze --source fidelity --input data/private/fidelity-performance.csv
+portfolio> analyze fidelity --input data/private/fidelity-performance.csv
 portfolio> benchmarks
 portfolio> exit
 ```
 
 Shortcuts include `benchmarks` (equivalent to `analyze --benchmarks`) and
 `commands` to list available actions. The shell delegates to the same Typer
-commands, so everything remains scriptable.
+commands, so everything remains scriptable. Tab completion is available inside
+the shell for sources and common flags.
 
 ### CLI commands
 
@@ -103,13 +104,16 @@ python -m portfolio_cli analyze --json data/valuations.json --rf 0.04 --year 202
 python -m portfolio_cli analyze --benchmarks
 
 # Analyze Fidelity export (deposits/withdrawals handled automatically)
-python -m portfolio_cli analyze --source fidelity --input data/private/fidelity-performance.csv
+python -m portfolio_cli analyze fidelity --input data/private/fidelity-performance.csv
 
 # Launch the interactive shell explicitly
 python -m portfolio_cli interactive
 
 # Discover options for any command
 python -m portfolio_cli analyze --help
+
+# Install shell completions (bash/zsh/fish/pwsh)
+python -m portfolio_cli --install-completion
 ```
 
 Typer keeps the implementation compact while providing type-checked arguments

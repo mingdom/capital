@@ -47,9 +47,8 @@ def main_callback() -> None:
 
 @app.command("analyze")
 def analyze_command(
-    source: SourceKind = typer.Option(  # type: ignore[arg-type]
+    source: SourceKind = typer.Argument(  # type: ignore[arg-type]
         SourceKind.SAVVYTRADER,
-        "--source",
         case_sensitive=False,
         help=(
             "Portfolio data format to load. "

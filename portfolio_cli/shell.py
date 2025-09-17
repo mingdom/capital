@@ -11,11 +11,14 @@ import typer
 
 from typer.main import get_command
 
+SUPPORTED_SOURCES = ("savvytrader", "fidelity")
+
 
 class PortfolioShell(cmd.Cmd):
     intro = (
         "Welcome to the Mingdom Capital CLI. Default source is SavvyTrader. "
-        "Use 'sources' to view available formats or 'help' for commands."
+        "Use 'sources' to view available formats, 'help' for commands, and press Tab "
+        "to autocomplete known options."
     )
     prompt = "portfolio> "
 
@@ -59,6 +62,27 @@ class PortfolioShell(cmd.Cmd):
         self._run_cli(["analyze", *parsed])
         return None
 
+    def complete_analyze(self, text: str, line: str, begidx: int, endidx: int):
+        try:
+            tokens = shlex.split(line[:begidx])
+        except ValueError:
+            tokens = line[:begidx].split()
+
+        flags = ["--input", "--json", "--rf", "--year", "--benchmarks", "--no-benchmarks"]
+
+        if len(tokens) <= 1:
+            if not text:
+                return list(SUPPORTED_SOURCES)
+            return [src for src in SUPPORTED_SOURCES if src.startswith(text)]
+
+        if text.startswith("--"):
+            return [flag for flag in flags if flag.startswith(text)]
+
+        if tokens and tokens[-1] in SUPPORTED_SOURCES:
+            return [flag for flag in flags if flag.startswith(text)]
+
+        return [src for src in SUPPORTED_SOURCES if src.startswith(text)]
+
     def help_analyze(self) -> None:  # pragma: no cover - passthrough help
         self._show_command_help("analyze")
 
@@ -87,10 +111,10 @@ class PortfolioShell(cmd.Cmd):
         typer.echo("Supported sources:")
         typer.echo("  savvytrader (default)")
         typer.echo("    File: data/valuations.json")
-        typer.echo("    Use: analyze --source savvytrader [--json custom.json]")
+        typer.echo("    Use: analyze savvytrader [--json custom.json]")
         typer.echo("  fidelity")
         typer.echo("    File: data/private/fidelity-performance.csv")
-        typer.echo("    Use: analyze --source fidelity --input path/to/export.csv")
+        typer.echo("    Use: analyze fidelity --input path/to/export.csv")
         return None
 
     def do_help(self, arg: str) -> bool | None:  # pragma: no cover - passthrough
@@ -98,8 +122,7 @@ class PortfolioShell(cmd.Cmd):
         if arg:
             return super().do_help(arg)
         typer.echo("Core commands:")
-        typer.echo("  analyze [options]    Run portfolio analysis")
-        typer.echo("                      (e.g., --source fidelity --input path/to/file.csv)")
+        typer.echo("  analyze [source]     Run portfolio analysis (e.g., analyze fidelity)")
         typer.echo("  benchmarks           Run analysis with SPY/QQQ comparison")
         typer.echo("  sources              Show supported data formats and default files")
         typer.echo("  help <command>       Show command-specific help")
