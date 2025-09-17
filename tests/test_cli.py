@@ -114,3 +114,18 @@ def test_cli_analyze_fidelity(tmp_path):
 
     assert result.exit_code == 0
     assert "Monthly Returns" in result.stdout
+
+
+def test_shell_sources_command(capsys):
+    start_shell(
+        app,
+        commands=[
+            "sources",
+            "exit",
+        ],
+    )
+
+    out = capsys.readouterr().out
+    assert "Supported sources" in out
+    assert "savvytrader" in out
+    assert "fidelity" in out

@@ -14,7 +14,8 @@ from typer.main import get_command
 
 class PortfolioShell(cmd.Cmd):
     intro = (
-        "Welcome to the Mingdom Capital CLI. Type 'help' to list commands or 'exit' to quit."
+        "Welcome to the Mingdom Capital CLI. Default source is SavvyTrader. "
+        "Use 'sources' to view available formats or 'help' for commands."
     )
     prompt = "portfolio> "
 
@@ -80,6 +81,18 @@ class PortfolioShell(cmd.Cmd):
                 self.stdout.write(f"  {name[3:]}\n")
         return None
 
+    def do_sources(self, arg: str) -> bool | None:
+        """Describe supported portfolio data formats."""
+
+        typer.echo("Supported sources:")
+        typer.echo("  savvytrader (default)")
+        typer.echo("    File: data/valuations.json")
+        typer.echo("    Use: analyze --source savvytrader [--json custom.json]")
+        typer.echo("  fidelity")
+        typer.echo("    File: data/private/fidelity-performance.csv")
+        typer.echo("    Use: analyze --source fidelity --input path/to/export.csv")
+        return None
+
     def do_help(self, arg: str) -> bool | None:  # pragma: no cover - passthrough
         arg = arg.strip()
         if arg:
@@ -88,6 +101,7 @@ class PortfolioShell(cmd.Cmd):
         typer.echo("  analyze [options]    Run portfolio analysis")
         typer.echo("                      (e.g., --source fidelity --input path/to/file.csv)")
         typer.echo("  benchmarks           Run analysis with SPY/QQQ comparison")
+        typer.echo("  sources              Show supported data formats and default files")
         typer.echo("  help <command>       Show command-specific help")
         typer.echo("  exit                 Quit the shell")
         typer.echo("\nTyper CLI usage remains available via 'portfolio-cli <command>'.")

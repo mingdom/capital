@@ -3,19 +3,39 @@
 from __future__ import annotations
 
 from datetime import datetime
+from enum import Enum
 from pathlib import Path
 import sys
 from typing import Optional
 
 import typer
 
-from portfolio_cli.analysis import ANNUAL_RF_RATE, format_portfolio_summary, run_portfolio_analysis
+from portfolio_cli.analysis import (
+    ANNUAL_RF_RATE,
+    FIDELITY_CSV_PATH,
+    JSON_FILE_PATH,
+    format_portfolio_summary,
+    run_portfolio_analysis,
+)
 from sortino import build_benchmark_comparison_table
 from portfolio_cli.shell import start_shell
 
 
+class SourceKind(str, Enum):
+    SAVVYTRADER = "savvytrader"
+    FIDELITY = "fidelity"
+
+    def default_path(self) -> Path:
+        if self is SourceKind.SAVVYTRADER:
+            return JSON_FILE_PATH
+        return FIDELITY_CSV_PATH
+
+
 app = typer.Typer(
-    help="Portfolio analytics toolkit for SavvyTrader and Fidelity exports",
+    help=(
+        "Portfolio analytics toolkit. Default source is SavvyTrader; use "
+        "--source fidelity to analyze Fidelity exports."
+    ),
     no_args_is_help=False,
 )
 
@@ -27,10 +47,15 @@ def main_callback() -> None:
 
 @app.command("analyze")
 def analyze_command(
-    source: str = typer.Option(
-        "savvytrader",
+    source: SourceKind = typer.Option(  # type: ignore[arg-type]
+        SourceKind.SAVVYTRADER,
         "--source",
-        help="Portfolio data format to load (savvytrader or fidelity).",
+        case_sensitive=False,
+        help=(
+            "Portfolio data format to load. "
+            "savvytrader → data/valuations.json (default). "
+            "fidelity → data/private/fidelity-performance.csv."
+        ),
         show_default=True,
     ),
     input_path: Optional[Path] = typer.Option(
@@ -64,8 +89,8 @@ def analyze_command(
 
     current_year = year or datetime.now().year
     analysis = run_portfolio_analysis(
-        source=source,
-        input_path=input_path,
+        source=str(source.value),
+        input_path=input_path if input_path is not None else source.default_path(),
         annual_rf=annual_rf,
         current_year=current_year,
     )
