@@ -184,10 +184,8 @@ def test_cli_web_invokes_streamlit(monkeypatch, tmp_path):
         return None
 
     monkeypatch.setattr("portfolio_cli.cli.subprocess.run", fake_run)
-    monkeypatch.setattr("portfolio_cli.cli.shutil.which", lambda _: "/usr/bin/streamlit")
+    monkeypatch.setitem(sys.modules, "streamlit", object())
 
-    data_path = tmp_path / "data.json"
-    data_path.write_text("[]")
     csv_path = tmp_path / "fidelity.csv"
     csv_path.write_text("Month,Beginning balance\n")
 
@@ -199,21 +197,21 @@ def test_cli_web_invokes_streamlit(monkeypatch, tmp_path):
             "--port",
             "9000",
             "--no-open-browser",
-            "--savvy-json",
-            str(data_path),
             "--fidelity-csv",
             str(csv_path),
             "--no-benchmarks",
             "--rf",
             str(ANNUAL_RF_RATE),
-            "fidelity",
         ],
     )
 
     assert result.exit_code == 0
-    assert called["cmd"][0:3] == ["streamlit", "run", str((Path(__file__).resolve().parents[1] / "streamlit_app.py"))]
+    expected_prefix = [sys.executable, "-m", "streamlit", "run", str((Path(__file__).resolve().parents[1] / "streamlit_app.py"))]
+    assert called["cmd"][:5] == expected_prefix
     assert called["env"]["PORTFOLIO_SOURCES"] == "fidelity"
     assert called["env"]["PORTFOLIO_INCLUDE_BENCHMARKS"] == "0"
+    assert called["env"]["PORTFOLIO_FIDELITY_CSV"] == str(csv_path)
+    assert called["env"]["PORTFOLIO_RISK_FREE"] == str(ANNUAL_RF_RATE)
 
 
 def test_cli_report_generates_file(tmp_path):

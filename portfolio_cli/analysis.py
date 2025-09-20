@@ -12,7 +12,7 @@ import json
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, TextIO, cast
 
 import numpy as np
 import pandas as pd
@@ -114,11 +114,19 @@ def calculate_metrics(monthly_returns: pd.Series, annual_rf: float, current_year
     )
 
 
-def load_fidelity_monthly_returns(csv_file: str | Path) -> pd.Series:
+def load_fidelity_monthly_returns(csv_file: str | Path | TextIO) -> pd.Series:
     """Parse Fidelity export into a monthly return series."""
 
-    path = Path(csv_file)
-    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+    handle: TextIO
+    close_handle = False
+    if hasattr(csv_file, "read"):
+        handle = cast(TextIO, csv_file)
+    else:
+        path = Path(csv_file)
+        handle = path.open("r", encoding="utf-8-sig", newline="")
+        close_handle = True
+
+    try:
         reader = csv.reader(handle)
         headers: list[str] | None = None
         data_rows: list[list[str]] = []
@@ -136,52 +144,55 @@ def load_fidelity_monthly_returns(csv_file: str | Path) -> pd.Series:
                     break
                 data_rows.append(row)
 
-    if headers is None:
-        raise ValueError("Could not locate 'Monthly' header in Fidelity CSV")
+        if headers is None:
+            raise ValueError("Could not locate 'Monthly' header in Fidelity CSV")
 
-    periods: list[pd.Period] = []
-    values: list[float] = []
+        periods: list[pd.Period] = []
+        values: list[float] = []
 
-    def _to_number(raw: str) -> float:
-        cleaned = raw.replace("$", "").replace(",", "").strip()
-        if not cleaned or cleaned == "-":
-            return 0.0
-        if cleaned.startswith("(") and cleaned.endswith(")"):
-            cleaned = f"-{cleaned[1:-1]}"
-        return float(cleaned)
+        def _to_number(raw: str) -> float:
+            cleaned = raw.replace("$", "").replace(",", "").strip()
+            if not cleaned or cleaned == "-":
+                return 0.0
+            if cleaned.startswith("(") and cleaned.endswith(")"):
+                cleaned = f"-{cleaned[1:-1]}"
+            return float(cleaned)
 
-    for row in data_rows:
-        month_label = row[0].split("(")[0].strip()
-        if not month_label:
-            continue
-        try:
-            period = pd.Period(month_label, freq="M")
-        except Exception as exc:  # pragma: no cover - unexpected format
-            raise ValueError(f"Unable to parse month label '{month_label}'") from exc
+        for row in data_rows:
+            month_label = row[0].split("(")[0].strip()
+            if not month_label:
+                continue
+            try:
+                period = pd.Period(month_label, freq="M")
+            except Exception as exc:  # pragma: no cover - unexpected format
+                raise ValueError(f"Unable to parse month label '{month_label}'") from exc
 
-        cells = (row + [""] * 9)[:9]
-        beginning = _to_number(cells[1])
-        market_change = _to_number(cells[2])
-        dividends = _to_number(cells[3])
-        interest = _to_number(cells[4])
-        deposits = _to_number(cells[5])
-        withdrawals = _to_number(cells[6])
-        net_fees = _to_number(cells[7])
+            cells = (row + [""] * 9)[:9]
+            beginning = _to_number(cells[1])
+            market_change = _to_number(cells[2])
+            dividends = _to_number(cells[3])
+            interest = _to_number(cells[4])
+            deposits = _to_number(cells[5])
+            withdrawals = _to_number(cells[6])
+            net_fees = _to_number(cells[7])
 
-        performance = market_change + dividends + interest - net_fees
-        _ = deposits, withdrawals  # explicit for future cash-flow analytics
+            performance = market_change + dividends + interest - net_fees
+            _ = deposits, withdrawals  # explicit for future cash-flow analytics
 
-        if beginning <= 0:
-            monthly_return = float("nan")
-        else:
-            monthly_return = performance / beginning
+            if beginning <= 0:
+                monthly_return = float("nan")
+            else:
+                monthly_return = performance / beginning
 
-        periods.append(period)
-        values.append(monthly_return)
+            periods.append(period)
+            values.append(monthly_return)
 
-    series = pd.Series(values, index=pd.PeriodIndex(periods, freq="M"))
-    series = series.sort_index()
-    return series.dropna()
+        series = pd.Series(values, index=pd.PeriodIndex(periods, freq="M"))
+        series = series.sort_index()
+        return series.dropna()
+    finally:
+        if close_handle:
+            handle.close()
 
 
 def run_portfolio_analysis(

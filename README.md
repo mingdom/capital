@@ -31,8 +31,12 @@ make run
 # Generate HTML report
 ./venv/bin/python -m portfolio_cli report --output dist/index.html
 
-# Launch web dashboard (Streamlit)
+# Launch web dashboard (Fidelity-only Streamlit app)
+make web
+# or run directly
 ./venv/bin/python -m portfolio_cli web --port 8501
+
+The dashboard focuses on Fidelity exports: upload a CSV or rely on the fallback path shown in the UI. SavvyTrader data remains available through the CLI commands above.
 ```
 
 ## Generate report

@@ -253,16 +253,6 @@ def web_command(
     host: str = typer.Option("localhost", "--host", help="Server host address."),
     port: int = typer.Option(8501, "--port", help="Server port."),
     open_browser: bool = typer.Option(True, "--open-browser/--no-open-browser", help="Open browser automatically."),
-    sources: Optional[List[SourceKind]] = typer.Argument(  # type: ignore[arg-type]
-        None,
-        case_sensitive=False,
-        help="Optional list of default sources to enable (savvytrader fidelity).",
-    ),
-    savvy_json: Path = typer.Option(
-        JSON_FILE_PATH,
-        "--savvy-json",
-        help="Default SavvyTrader JSON path passed to the app.",
-    ),
     fidelity_csv: Path = typer.Option(
         FIDELITY_CSV_PATH,
         "--fidelity-csv",
@@ -280,21 +270,25 @@ def web_command(
         help="Include benchmarks by default.",
     ),
 ) -> None:
-    """Launch the Streamlit dashboard for interactive exploration."""
+    """Launch the Streamlit dashboard for Fidelity CSV analysis."""
 
-    if shutil.which("streamlit") is None:
-        raise typer.Exit("Streamlit is not installed. Run `pip install streamlit` to use this command.")
+    try:
+        import importlib
+
+        importlib.import_module("streamlit")
+    except ModuleNotFoundError as exc:  # pragma: no cover - import error surfaced to user
+        raise typer.Exit("Streamlit is not installed. Run `pip install streamlit` to use this command.") from exc
 
     app_path = Path(__file__).resolve().parents[1] / "streamlit_app.py"
     env = os.environ.copy()
-    if sources:
-        env["PORTFOLIO_SOURCES"] = ",".join(kind.value for kind in sources)
-    env["PORTFOLIO_SAVVY_JSON"] = str(savvy_json)
+    env["PORTFOLIO_SOURCES"] = SourceKind.FIDELITY.value
     env["PORTFOLIO_FIDELITY_CSV"] = str(fidelity_csv)
     env["PORTFOLIO_INCLUDE_BENCHMARKS"] = "1" if benchmarks else "0"
     env["PORTFOLIO_RISK_FREE"] = str(annual_rf)
 
     cmd = [
+        sys.executable,
+        "-m",
         "streamlit",
         "run",
         str(app_path),
