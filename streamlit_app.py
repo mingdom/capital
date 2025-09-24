@@ -9,7 +9,7 @@ import pandas as pd
 import streamlit as st
 import altair as alt
 
-from benchmarks import get_benchmark_series
+from benchmarks import configured_benchmarks, get_benchmark_series
 from portfolio_cli.analysis import (
     ANNUAL_RF_RATE,
     FIDELITY_CSV_PATH,
@@ -101,7 +101,7 @@ def main() -> None:
         )
     with col_right:
         include_benchmarks = st.checkbox(
-            "Include SPY/QQQ benchmarks",
+            "Include benchmarks",
             value=include_benchmarks_default,
         )
         annual_rf = st.number_input("Annual risk-free rate", value=rf_default, step=0.01)
@@ -156,7 +156,7 @@ def main() -> None:
     months_index = combined.index
 
     if include_benchmarks and not months_index.empty:
-        for symbol in ("SPY", "QQQ"):
+        for symbol in configured_benchmarks():
             series = get_benchmark_series(symbol, months_index)
             if series.empty:
                 missing.append(f"benchmark {symbol} (no data)")

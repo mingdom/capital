@@ -76,7 +76,7 @@ def performance_command(
     benchmarks: bool = typer.Option(
         True,
         "--benchmarks/--no-benchmarks",
-        help="Include SPY and QQQ benchmarks alongside portfolio performance.",
+        help="Include benchmarks alongside portfolio performance.",
         show_default=True,
     ),
 ) -> None:
@@ -208,7 +208,7 @@ def report_command(
     benchmarks: bool = typer.Option(
         True,
         "--benchmarks/--no-benchmarks",
-        help="Include SPY and QQQ benchmarks in the report.",
+        help="Include benchmarks in the report.",
         show_default=True,
     ),
     title: str = typer.Option(

@@ -39,6 +39,11 @@ make web
 The dashboard focuses on Fidelity exports: upload a CSV or rely on the fallback path shown in the UI. SavvyTrader data remains available through the CLI commands above.
 ```
 
+### Benchmarks
+
+- Default benchmarks are: SPY, QQQ, ARKK. These appear in CLI tables, the HTML report, and the web dashboard when benchmarks are enabled.
+- To customize the list, set `PORTFOLIO_BENCHMARKS` to a comma-separated list (e.g., `PORTFOLIO_BENCHMARKS="SPY,QQQ,IWM"`).
+
 ## Generate report
 
 ```bash

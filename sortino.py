@@ -5,7 +5,7 @@ from typing import Dict, Iterable
 
 import pandas as pd
 
-from benchmarks import get_benchmark_series, last_complete_month
+from benchmarks import configured_benchmarks, get_benchmark_series, last_complete_month
 from portfolio_cli.analysis import (
     ANNUAL_RF_RATE,
     JSON_FILE_PATH,
@@ -54,7 +54,7 @@ def build_benchmark_comparison_table(
     portfolio_monthly: pd.Series,
     annual_rf: float,
     current_year: int,
-    symbols: Iterable[str] = ("SPY", "QQQ"),
+    symbols: Iterable[str] | None = None,
 ) -> str:
     """Return a formatted benchmark comparison table."""
 
@@ -68,7 +68,7 @@ def build_benchmark_comparison_table(
         "Portfolio": calculate_metrics(pm.to_period("M"), annual_rf, current_year)
     }
 
-    for sym in symbols:
+    for sym in (symbols or configured_benchmarks()):
         series = get_benchmark_series(sym, months)
         metrics[sym] = calculate_metrics(series, annual_rf, current_year)
 

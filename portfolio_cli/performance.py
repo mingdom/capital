@@ -9,7 +9,7 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 import pandas as pd
 
-from benchmarks import get_benchmark_series
+from benchmarks import configured_benchmarks, get_benchmark_series
 from portfolio_cli.analysis import (
     ANNUAL_RF_RATE,
     FIDELITY_CSV_PATH,
@@ -106,7 +106,7 @@ def collect_performance_data(
         months_index = pd.concat(monthly_map.values()).sort_index().index
 
     if include_benchmarks and len(months_index) > 0:
-        for symbol in ("SPY", "QQQ"):
+        for symbol in configured_benchmarks():
             series = get_benchmark_series(symbol, months_index)
             if series.empty:
                 missing.append(f"benchmark {symbol} (no data)")

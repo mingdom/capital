@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
@@ -10,6 +11,26 @@ import yfinance as yf
 
 
 CACHE_PATH = Path("data/benchmarks.json")
+
+# Default benchmarks used across CLI, reports, and apps.
+# Centralize here so adding more is a single-line change.
+DEFAULT_BENCHMARKS: tuple[str, ...] = (
+    "SPY",
+    "QQQ",
+    "ARKK",
+)
+
+def configured_benchmarks() -> tuple[str, ...]:
+    """Return the list of benchmark tickers.
+
+    Can be overridden via env var PORTFOLIO_BENCHMARKS="TICKER1,TICKER2,..."
+    Falls back to DEFAULT_BENCHMARKS.
+    """
+    raw = os.getenv("PORTFOLIO_BENCHMARKS")
+    if not raw:
+        return DEFAULT_BENCHMARKS
+    parts = [p.strip().upper() for p in raw.split(",") if p.strip()]
+    return tuple(dict.fromkeys(parts)) or DEFAULT_BENCHMARKS
 
 
 def last_complete_month(today: date | None = None) -> pd.Period:
@@ -51,6 +72,10 @@ def fetch_monthly_returns(symbol: str, start_period: pd.Period, end_period: pd.P
         return pd.Series(dtype=float)
     if hist.empty:
         return pd.Series(dtype=float)
+    # Normalize timezone to tz-naive to avoid tz-drop warnings during period conversion
+    if isinstance(hist.index, pd.DatetimeIndex) and hist.index.tz is not None:
+        hist = hist.copy()
+        hist.index = hist.index.tz_localize(None)
     closes = hist["Close"].copy()
     rets = closes.pct_change().dropna()
     periods = rets.index.to_period("M")

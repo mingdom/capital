@@ -55,7 +55,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--no-benchmarks",
         action="store_true",
-        help="Skip SPY/QQQ benchmarks",
+        help="Skip benchmarks",
     )
     parser.add_argument(
         "--title",
