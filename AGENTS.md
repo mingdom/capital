@@ -17,9 +17,16 @@
 - `venv/` — local virtual environment (do not rely on it being present on other machines).
 
 ## Build, Test, and Development Commands
+The Makefile is the entrypoint for all commands. Prefer `make` targets over invoking tools directly.
 - Setup environment:
   - `python3 -m venv venv && source venv/bin/activate`
   - `pip install --upgrade pip pandas numpy`
+- Common `make` targets (see Makefile):
+  - `make install` — create venv and install requirements
+  - `make import` — process latest files from `data/import/`
+  - `make db-init` — initialize local SQLite DB (with encryption if passphrase set)
+  - `make test` — run tests
+  - `make report` — build HTML report
 - Run locally:
   - `python3 sortino.py` — computes monthly returns, CAGR, drawdown, Sharpe/Sortino.
 - Optional tooling (recommended):

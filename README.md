@@ -1,11 +1,17 @@
 # Mingdom Capital Performance Tracker
 
-## Setup
+## Setup (Makefile first)
 
 ```bash
 python3 -m venv venv
 ./venv/bin/pip install -U pip
 ./venv/bin/pip install -r requirements.txt -r dev-requirements.txt
+```
+
+Or use the Makefile (preferred):
+
+```bash
+make install
 ```
 
 ## Update data (drop-folder importer)
@@ -16,13 +22,15 @@ Accepted files in `data/import/`:
 - `.json` → SavvyTrader valuations dump (array with `summaryDate` and `dailyTotalValueChange`)
 - `.csv` → Fidelity performance export
 
-Run importer:
+Run importer (Makefile entrypoint):
 
 ```bash
 # Optional: set a passphrase to enable local DB encryption (recommended)
 export MINGDOM_DB_PASSPHRASE='your-strong-passphrase'
 
 # Import the latest JSON and CSV from data/import/
+make import
+# or directly
 ./venv/bin/python scripts/import_latest.py -v
 ```
 
@@ -62,6 +70,13 @@ The dashboard focuses on Fidelity exports: upload a CSV or rely on the fallback 
 - Set `MINGDOM_DB_PASSPHRASE` in your shell to enable encryption when running `scripts/import_latest.py`.
 - If not set, the importer will prompt interactively (TTY) or skip the DB step and only update the canonical files + archive.
 - The passphrase is never written to disk. A KDF salt is stored in the local DB `meta` table.
+
+Initialize the local DB explicitly (optional):
+
+```bash
+export MINGDOM_DB_PASSPHRASE='your-strong-passphrase'
+make db-init
+```
 
 ### Benchmarks
 
