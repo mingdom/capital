@@ -8,11 +8,29 @@ python3 -m venv venv
 ./venv/bin/pip install -r requirements.txt -r dev-requirements.txt
 ```
 
-## Update data
+## Update data (drop-folder importer)
 
-SavvyTrader: save the portfolio valuations JSON to `data/valuations.json`.
+Simplest flow: drop raw files in `data/import/` and run the importer.
 
-Fidelity: copy the investment income CSV export to `data/private/fidelity-performance.csv` (git-ignored).
+Accepted files in `data/import/`:
+- `.json` → SavvyTrader valuations dump (array with `summaryDate` and `dailyTotalValueChange`)
+- `.csv` → Fidelity performance export
+
+Run importer:
+
+```bash
+# Optional: set a passphrase to enable local DB encryption (recommended)
+export MINGDOM_DB_PASSPHRASE='your-strong-passphrase'
+
+# Import the latest JSON and CSV from data/import/
+./venv/bin/python scripts/import_latest.py -v
+```
+
+What it does:
+- Picks the latest `.json` by payload date (or mtime) and writes `data/valuations.json` atomically.
+- Picks the latest `.csv` by mtime and writes `data/private/fidelity-performance.csv` atomically.
+- If a passphrase is provided, stores encrypted payloads/contents into `data/localdb.sqlite3`.
+- Moves processed files to `data/import/archive/YYYY-MM-DD/` (kept locally, ignored by Git).
 
 ## Run analysis
 
@@ -38,6 +56,12 @@ make web
 
 The dashboard focuses on Fidelity exports: upload a CSV or rely on the fallback path shown in the UI. SavvyTrader data remains available through the CLI commands above.
 ```
+
+### Local encryption
+
+- Set `MINGDOM_DB_PASSPHRASE` in your shell to enable encryption when running `scripts/import_latest.py`.
+- If not set, the importer will prompt interactively (TTY) or skip the DB step and only update the canonical files + archive.
+- The passphrase is never written to disk. A KDF salt is stored in the local DB `meta` table.
 
 ### Benchmarks
 

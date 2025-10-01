@@ -19,3 +19,11 @@ venv/
 # Data
 data/private/
 dist/
+data/import/
+data/import/**
+data/localdb*
+data/*.tmp
+data/*.enc
+
+# Local env (not committed)
+.env.local

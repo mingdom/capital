@@ -5,7 +5,7 @@ BLACK=$(VENV)/bin/black
 RUFF=$(VENV)/bin/ruff
 PYTEST=$(VENV)/bin/pytest
 
-.PHONY: dev install format lint test run analyze run-benchmarks report clean hook web
+.PHONY: dev install format lint test run analyze run-benchmarks report clean hook web import
 
 $(PY):
 	python3 -m venv $(VENV)
@@ -46,6 +46,9 @@ report: $(PY)
 
 web: $(PY)
 	$(PY) -m portfolio_cli web
+
+import: $(PY)
+	$(PY) scripts/import_latest.py -v
 
 clean:
 	rm -rf $(VENV) __pycache__ .pytest_cache .coverage htmlcov
