@@ -30,8 +30,8 @@ export MINGDOM_DB_PASSPHRASE='your-strong-passphrase'
 
 # Import the latest JSON and CSV from data/import/
 make import
-# or directly
-./venv/bin/python scripts/import_latest.py -v
+# or directly as a module
+./venv/bin/python -m scripts.import_latest -v
 ```
 
 What it does:
@@ -76,6 +76,8 @@ Initialize the local DB explicitly (optional):
 ```bash
 export MINGDOM_DB_PASSPHRASE='your-strong-passphrase'
 make db-init
+# or directly as a module
+./venv/bin/python -m scripts.db_tools init -v
 ```
 
 ### Benchmarks

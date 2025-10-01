@@ -48,13 +48,13 @@ web: $(PY)
 	$(PY) -m portfolio_cli web
 
 import: $(PY)
-	$(PY) scripts/import_latest.py -v
+	$(PY) -m scripts.import_latest -v
 
 db-init: $(PY)
 	@if [ -z "$$MINGDOM_DB_PASSPHRASE" ]; then \
 		echo "MINGDOM_DB_PASSPHRASE is not set. You may be prompted if run outside Make."; \
 	fi
-	$(PY) scripts/db_tools.py init -v || true
+	$(PY) -m scripts.db_tools init -v || true
 
 clean:
 	rm -rf $(VENV) __pycache__ .pytest_cache .coverage htmlcov
