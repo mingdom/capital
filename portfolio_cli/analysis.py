@@ -28,6 +28,7 @@ class PerformanceMetrics:
     """Container for the key performance ratios."""
 
     cagr: float | None
+    three_month: float | None
     max_dd_monthly: float | None
     ytd: float | None
     sharpe: float | None
@@ -36,6 +37,7 @@ class PerformanceMetrics:
     def as_dict(self) -> dict[str, float | None]:
         return {
             "cagr": self.cagr,
+            "three_month": self.three_month,
             "max_dd_monthly": self.max_dd_monthly,
             "ytd": self.ytd,
             "sharpe": self.sharpe,
@@ -84,7 +86,14 @@ def calculate_metrics(monthly_returns: pd.Series, annual_rf: float, current_year
     """Compute CAGR, drawdown, Sharpe/Sortino, and year-to-date return."""
 
     if monthly_returns.empty:
-        return PerformanceMetrics(cagr=None, max_dd_monthly=None, ytd=None, sharpe=None, sortino=None)
+        return PerformanceMetrics(
+            cagr=None,
+            three_month=None,
+            max_dd_monthly=None,
+            ytd=None,
+            sharpe=None,
+            sortino=None,
+        )
 
     monthly_rf = annual_rf / 12
     mean_excess = float(np.mean(monthly_returns) - monthly_rf)
@@ -99,6 +108,10 @@ def calculate_metrics(monthly_returns: pd.Series, annual_rf: float, current_year
     num_years = len(monthly_returns) / 12
     cagr = (1 + total_cum_return) ** (1 / num_years) - 1 if num_years > 0 else None
 
+    # Trailing 3-month compounded return (uses available months if < 3)
+    recent3 = monthly_returns.dropna().tail(3)
+    three_month = float(np.prod(1 + recent3) - 1) if len(recent3) > 0 else None
+
     period_filter = monthly_returns.index.year == current_year
     ytd_months = monthly_returns[period_filter]
     ytd_perf = float(np.prod(1 + ytd_months) - 1) if not ytd_months.empty else None
@@ -107,6 +120,7 @@ def calculate_metrics(monthly_returns: pd.Series, annual_rf: float, current_year
 
     return PerformanceMetrics(
         cagr=cagr,
+        three_month=three_month,
         max_dd_monthly=max_dd_monthly,
         ytd=ytd_perf,
         sharpe=sharpe,
@@ -196,7 +210,7 @@ def load_fidelity_monthly_returns(csv_file: str | Path | TextIO) -> pd.Series:
 
 
 def run_portfolio_analysis(
-    source: str = "savvytrader",
+    source: str = "mingdom",
     json_file: str | Path = JSON_FILE_PATH,
     fidelity_file: str | Path = FIDELITY_CSV_PATH,
     input_path: str | Path | None = None,
@@ -210,7 +224,8 @@ def run_portfolio_analysis(
 
     source_key = source.lower()
 
-    if source_key == "savvytrader":
+    # Backward-compat: accept both 'mingdom' and the previous 'savvytrader' alias
+    if source_key in {"mingdom", "savvytrader"}:
         path = Path(input_path) if input_path is not None else Path(json_file)
         if not path.exists():
             raise FileNotFoundError(path)
@@ -223,7 +238,7 @@ def run_portfolio_analysis(
         monthly_returns = load_fidelity_monthly_returns(path)
     else:
         raise ValueError(
-            f"Unsupported source '{source}'. Expected 'savvytrader' or 'fidelity'."
+            f"Unsupported source '{source}'. Expected 'mingdom' or 'fidelity'."
         )
 
     metrics = calculate_metrics(monthly_returns, annual_rf, current_year)

@@ -4,21 +4,14 @@ import argparse
 import json
 import os
 import shutil
-import sqlite3
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 from typing import Iterable, Optional
 
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:  # only for static type checkers; avoids hard dependency at runtime
-    from scripts.crypto_db import DBHandle
-
 
 IMPORT_DIR = Path("data/import")
 ARCHIVE_DIR = IMPORT_DIR / "archive"
-LOCAL_DB_PATH = Path("data/localdb.sqlite3")
 CANONICAL_JSON = Path("data/valuations.json")
 CANONICAL_FIDELITY = Path("data/private/fidelity-performance.csv")
 
@@ -147,62 +140,6 @@ def archive_move(src: Path, archive_root: Path, dry_run: bool = False) -> Path:
         return dest
 
 
-def insert_file_row(db, *, source: str, original: Path, archive_path: Optional[Path], content_bytes: bytes) -> int:
-    from scripts.crypto_db import encrypt_bytes, now_iso  # lazy import
-
-    cipher, nonce = encrypt_bytes(db, content_bytes)
-    cur = db.conn.cursor()
-    meta = original.stat()
-    cur.execute(
-        """
-        INSERT OR IGNORE INTO files(source, original_name, path, sha256, size, mtime, imported_at, status, archive_path, notes, content_cipher, content_nonce)
-        VALUES(?,?,?,?,?,?,?,?,?,?,?,?)
-        """,
-        (
-            source,
-            original.name,
-            str(original),
-            sha256_hex(original),
-            meta.st_size,
-            meta.st_mtime,
-            now_iso(),
-            "archived" if archive_path else "imported",
-            str(archive_path) if archive_path else None,
-            None,
-            cipher,
-            nonce,
-        ),
-    )
-    db.conn.commit()
-    # Retrieve row id (on duplicate ignore, fetch existing id)
-    cur.execute("SELECT id FROM files WHERE sha256 = ?", (sha256_hex(original),))
-    row = cur.fetchone()
-    return int(row[0])
-
-
-def insert_valuations_row(db, *, as_of_date: Optional[datetime], source: str, file_id: int, payload_bytes: bytes) -> int:
-    from scripts.crypto_db import encrypt_bytes  # lazy import
-
-    cipher, nonce = encrypt_bytes(db, payload_bytes)
-    cur = db.conn.cursor()
-    cur.execute(
-        """
-        INSERT INTO valuations(as_of_date, source, file_id, payload_cipher, payload_nonce, ingested_at)
-        VALUES(?,?,?,?,?,?)
-        """,
-        (
-            (as_of_date or datetime.utcnow()).date().isoformat(),
-            source,
-            file_id,
-            cipher,
-            nonce,
-            __import__("scripts.crypto_db", fromlist=["now_iso"]).now_iso(),
-        ),
-    )
-    db.conn.commit()
-    return int(cur.lastrowid)
-
-
 def run(args: argparse.Namespace) -> int:
     IMPORT_DIR.mkdir(parents=True, exist_ok=True)
     ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
@@ -219,56 +156,13 @@ def run(args: argparse.Namespace) -> int:
         print(f"Selected JSON: {latest_json.path.name if latest_json else None}")
         print(f"Selected CSV: {latest_csv.path.name if latest_csv else None}")
 
-    # Prepare DB if passphrase available
-    db_handle = None
-    # Lazily import crypto only if needed
-    try:
-        from scripts.crypto_db import get_passphrase, open_encrypted_db
-    except Exception:  # pragma: no cover - cryptography not installed yet
-        get_passphrase = None  # type: ignore
-        open_encrypted_db = None  # type: ignore
-
-    passphrase = None
-    if get_passphrase is not None:
-        passphrase = get_passphrase()
-    if passphrase:
-        if args.verbose:
-            print("DB encryption enabled (passphrase provided).")
-        if not args.dry_run and open_encrypted_db is not None:
-            db_handle = open_encrypted_db(str(LOCAL_DB_PATH), passphrase)
-    else:
-        if args.verbose:
-            print("No passphrase provided; skipping DB ingestion.")
-
     # Process JSON → valuations.json
     if latest_json:
         if args.verbose:
             print(f"Copying {latest_json.path} -> {CANONICAL_JSON}")
         atomic_copy(latest_json.path, CANONICAL_JSON, dry_run=args.dry_run)
 
-        archive_path = archive_move(latest_json.path, ARCHIVE_DIR, dry_run=args.dry_run)
-
-        if db_handle is not None:
-            # Use the archive path after move; in dry-run the original still exists.
-            file_for_db = archive_path if not args.dry_run else latest_json.path
-            # Payload for valuations row should reflect canonical file unless dry-run.
-            payload = CANONICAL_JSON.read_bytes() if not args.dry_run else latest_json.path.read_bytes()
-            as_of = _max_summary_date(file_for_db)
-            file_bytes = file_for_db.read_bytes()
-            file_id = insert_file_row(
-                db_handle,
-                source="savvytrader",
-                original=file_for_db,
-                archive_path=archive_path if not args.dry_run else None,
-                content_bytes=file_bytes,
-            )
-            insert_valuations_row(
-                db_handle,
-                as_of_date=as_of,
-                source="savvytrader",
-                file_id=file_id,
-                payload_bytes=payload,
-            )
+        archive_move(latest_json.path, ARCHIVE_DIR, dry_run=args.dry_run)
 
     # Process CSV → fidelity-performance.csv
     if latest_csv:
@@ -276,18 +170,7 @@ def run(args: argparse.Namespace) -> int:
             print(f"Copying {latest_csv.path} -> {CANONICAL_FIDELITY}")
         atomic_copy(latest_csv.path, CANONICAL_FIDELITY, dry_run=args.dry_run)
 
-        archive_path = archive_move(latest_csv.path, ARCHIVE_DIR, dry_run=args.dry_run)
-
-        if db_handle is not None:
-            file_for_db = archive_path if not args.dry_run else latest_csv.path
-            file_bytes = file_for_db.read_bytes()
-            insert_file_row(
-                db_handle,
-                source="fidelity",
-                original=file_for_db,
-                archive_path=archive_path if not args.dry_run else None,
-                content_bytes=file_bytes,
-            )
+        archive_move(latest_csv.path, ARCHIVE_DIR, dry_run=args.dry_run)
 
     if not latest_json and not latest_csv:
         print("No valid .json or .csv files found in data/import/.")

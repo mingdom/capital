@@ -30,10 +30,12 @@ def parse_args() -> argparse.Namespace:
         help="Portfolio sources to include",
     )
     parser.add_argument(
+        "--mingdom-json",
         "--savvy-json",
+        dest="savvy_json",
         type=Path,
         default=JSON_FILE_PATH,
-        help="Path to SavvyTrader valuations JSON",
+        help="Path to Mingdom valuations JSON",
     )
     parser.add_argument(
         "--fidelity-csv",

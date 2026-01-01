@@ -24,7 +24,6 @@ The Makefile is the entrypoint for all commands. Prefer `make` targets over invo
 - Common `make` targets (see Makefile):
   - `make install` — create venv and install requirements
   - `make import` — process latest files from `data/import/`
-  - `make db-init` — initialize local SQLite DB (with encryption if passphrase set)
   - `make test` — run tests
   - `make report` — build HTML report
 - Run locally:

@@ -4,8 +4,7 @@ PIP=$(VENV)/bin/pip
 BLACK=$(VENV)/bin/black
 RUFF=$(VENV)/bin/ruff
 PYTEST=$(VENV)/bin/pytest
-
-.PHONY: dev install format lint test run analyze run-benchmarks report clean hook web import db-init
+.PHONY: dev install format lint test run report clean hook import
 
 $(PY):
 	python3 -m venv $(VENV)
@@ -35,26 +34,11 @@ $(PYTEST): install ; @true
 run: $(PY)
 	$(PY) -m portfolio_cli
 
-analyze: $(PY)
-	$(PY) -m portfolio_cli analyze
-
-run-benchmarks: $(PY)
-	$(PY) -m portfolio_cli analyze --benchmarks
-
 report: $(PY)
 	$(PY) scripts/build_report.py
 
-web: $(PY)
-	$(PY) -m portfolio_cli web
-
 import: $(PY)
 	$(PY) -m scripts.import_latest -v
-
-db-init: $(PY)
-	@if [ -z "$$MINGDOM_DB_PASSPHRASE" ]; then \
-		echo "MINGDOM_DB_PASSPHRASE is not set. You may be prompted if run outside Make."; \
-	fi
-	$(PY) -m scripts.db_tools init -v || true
 
 clean:
 	rm -rf $(VENV) __pycache__ .pytest_cache .coverage htmlcov

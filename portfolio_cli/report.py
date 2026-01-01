@@ -46,6 +46,7 @@ def _build_summary_table(bundle: PerformanceBundle, order: Iterable[str]) -> str
     rows_html = []
     definitions = [
         ("CAGR", lambda m: m.metrics.cagr, _fmt_pct),
+        ("3M", lambda m: m.metrics.three_month, _fmt_pct),
         ("YTD", lambda m: m.metrics.ytd, _fmt_pct),
         ("Max Drawdown", lambda m: m.metrics.max_dd_monthly, _fmt_pct),
         ("Sharpe", lambda m: m.metrics.sharpe, _fmt_ratio),

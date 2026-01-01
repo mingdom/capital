@@ -22,18 +22,21 @@ from portfolio_cli.analysis import (
 
 
 class SourceKind(str, Enum):
+    MINGDOM = "mingdom"
     SAVVYTRADER = "savvytrader"
     FIDELITY = "fidelity"
 
     @property
     def default_path(self) -> Path:
-        if self is SourceKind.SAVVYTRADER:
+        if self in {SourceKind.MINGDOM, SourceKind.SAVVYTRADER}:
             return JSON_FILE_PATH
         return FIDELITY_CSV_PATH
 
     @property
     def label(self) -> str:
-        return "SavvyTrader" if self is SourceKind.SAVVYTRADER else "Fidelity"
+        if self in {SourceKind.MINGDOM, SourceKind.SAVVYTRADER}:
+            return "Mingdom"
+        return "Fidelity"
 
 
 SUPPORTED_SOURCES: Tuple[str, ...] = tuple(kind.value for kind in SourceKind)
@@ -67,15 +70,17 @@ def collect_performance_data(
     if current_year is None:
         current_year = pd.Timestamp.today().year
 
-    requested = list(dict.fromkeys(sources or [SourceKind.SAVVYTRADER, SourceKind.FIDELITY]))
+    requested = list(dict.fromkeys(sources or [SourceKind.MINGDOM, SourceKind.FIDELITY]))
 
     monthly_map: Dict[str, pd.Series] = {}
     metrics_map: Dict[str, PortfolioAnalysis] = {}
     missing: List[str] = []
 
     for src in requested:
+        if src is SourceKind.SAVVYTRADER:
+            src = SourceKind.MINGDOM
         path = src.default_path
-        if src is SourceKind.SAVVYTRADER and savvy_json is not None:
+        if src is SourceKind.MINGDOM and savvy_json is not None:
             path = savvy_json
         if src is SourceKind.FIDELITY and fidelity_csv is not None:
             path = fidelity_csv

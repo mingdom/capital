@@ -4,9 +4,6 @@ from __future__ import annotations
 
 from datetime import datetime
 from pathlib import Path
-import os
-import shutil
-import subprocess
 import sys
 from typing import List, Optional
 
@@ -24,8 +21,8 @@ from portfolio_cli.shell import start_shell
 
 app = typer.Typer(
     help=(
-        "Portfolio analytics toolkit. Default source is SavvyTrader; use "
-        "--source fidelity to analyze Fidelity exports."
+        "Portfolio analytics toolkit. Default sources are Mingdom and Fidelity; "
+        "pass a source name (e.g., 'mingdom' or 'fidelity') to filter."
     ),
     no_args_is_help=False,
 )
@@ -41,15 +38,16 @@ def performance_command(
     sources: Optional[List[SourceKind]] = typer.Argument(  # type: ignore[arg-type]
         None,
         case_sensitive=False,
-        help="Portfolio sources to include (savvytrader fidelity). Defaults to both.",
+        help="Portfolio sources to include (mingdom, savvytrader, fidelity). Defaults to mingdom + fidelity.",
     ),
     savvy_json: Path = typer.Option(
         JSON_FILE_PATH,
+        "--mingdom-json",
         "--savvy-json",
         file_okay=True,
         dir_okay=False,
         readable=True,
-        help="Path to SavvyTrader valuations JSON file.",
+        help="Path to Mingdom valuations JSON file.",
         show_default=True,
     ),
     fidelity_csv: Path = typer.Option(
@@ -128,6 +126,7 @@ def performance_command(
 
     metric_rows = [
         ("CAGR", lambda m: m.metrics.cagr),
+        ("3M", lambda m: m.metrics.three_month),
         ("YTD", lambda m: m.metrics.ytd),
         ("Max Drawdown", lambda m: m.metrics.max_dd_monthly),
         ("Sharpe", lambda m: m.metrics.sharpe, True),
@@ -173,15 +172,16 @@ def report_command(
     sources: Optional[List[SourceKind]] = typer.Argument(  # type: ignore[arg-type]
         None,
         case_sensitive=False,
-        help="Portfolio sources to include (savvytrader fidelity). Defaults to both.",
+        help="Portfolio sources to include (mingdom, savvytrader, fidelity). Defaults to mingdom + fidelity.",
     ),
     savvy_json: Path = typer.Option(
         JSON_FILE_PATH,
+        "--mingdom-json",
         "--savvy-json",
         file_okay=True,
         dir_okay=False,
         readable=True,
-        help="Path to SavvyTrader valuations JSON file.",
+        help="Path to Mingdom valuations JSON file.",
         show_default=True,
     ),
     fidelity_csv: Path = typer.Option(
@@ -246,61 +246,6 @@ def report_command(
         console.print("[yellow]Notes:[/yellow]")
         for note in bundle.missing:
             console.print(f"• {note}")
-
-
-@app.command("web")
-def web_command(
-    host: str = typer.Option("localhost", "--host", help="Server host address."),
-    port: int = typer.Option(8501, "--port", help="Server port."),
-    open_browser: bool = typer.Option(True, "--open-browser/--no-open-browser", help="Open browser automatically."),
-    fidelity_csv: Path = typer.Option(
-        FIDELITY_CSV_PATH,
-        "--fidelity-csv",
-        help="Default Fidelity CSV path passed to the app.",
-    ),
-    annual_rf: float = typer.Option(
-        ANNUAL_RF_RATE,
-        "--rf",
-        min=0.0,
-        help="Default risk-free rate used in the app.",
-    ),
-    benchmarks: bool = typer.Option(
-        True,
-        "--benchmarks/--no-benchmarks",
-        help="Include benchmarks by default.",
-    ),
-) -> None:
-    """Launch the Streamlit dashboard for Fidelity CSV analysis."""
-
-    try:
-        import importlib
-
-        importlib.import_module("streamlit")
-    except ModuleNotFoundError as exc:  # pragma: no cover - import error surfaced to user
-        raise typer.Exit("Streamlit is not installed. Run `pip install streamlit` to use this command.") from exc
-
-    app_path = Path(__file__).resolve().parents[1] / "streamlit_app.py"
-    env = os.environ.copy()
-    env["PORTFOLIO_SOURCES"] = SourceKind.FIDELITY.value
-    env["PORTFOLIO_FIDELITY_CSV"] = str(fidelity_csv)
-    env["PORTFOLIO_INCLUDE_BENCHMARKS"] = "1" if benchmarks else "0"
-    env["PORTFOLIO_RISK_FREE"] = str(annual_rf)
-
-    cmd = [
-        sys.executable,
-        "-m",
-        "streamlit",
-        "run",
-        str(app_path),
-        "--server.address",
-        host,
-        "--server.port",
-        str(port),
-    ]
-    if not open_browser:
-        env["STREAMLIT_SERVER_HEADLESS"] = "true"
-
-    subprocess.run(cmd, env=env, check=False)
 
 
 @app.command("interactive")

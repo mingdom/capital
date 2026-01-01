@@ -2,12 +2,16 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
 import pandas as pd
 import yfinance as yf
+try:  # Python 3.9+
+    from zoneinfo import ZoneInfo
+except Exception:  # pragma: no cover - fallback for older environments
+    ZoneInfo = None  # type: ignore[assignment]
 
 
 CACHE_PATH = Path("data/benchmarks.json")
@@ -33,12 +37,38 @@ def configured_benchmarks() -> tuple[str, ...]:
     return tuple(dict.fromkeys(parts)) or DEFAULT_BENCHMARKS
 
 
-def last_complete_month(today: date | None = None) -> pd.Period:
+def last_complete_month(today: date | datetime | None = None) -> pd.Period:
+    """Return the most recent month with completed trading data.
+
+    We treat the current month as complete only after the last trading day has
+    ended, defined here as the last business day of the month at 1pm Pacific.
+    """
+    pacific = ZoneInfo("America/Los_Angeles") if ZoneInfo else None
     if today is None:
-        today = date.today()
-    first_of_month = today.replace(day=1)
-    last_day_prev_month = first_of_month - timedelta(days=1)
-    return pd.Period(last_day_prev_month, freq="M")
+        now = datetime.now(tz=pacific) if pacific else datetime.now()
+    elif isinstance(today, datetime):
+        if today.tzinfo is None and pacific is not None:
+            now = today.replace(tzinfo=pacific)
+        elif pacific is not None:
+            now = today.astimezone(pacific)
+        else:
+            now = today
+    else:
+        now = datetime.combine(today, time(0, 0), tzinfo=pacific)
+
+    month_start = pd.Timestamp(now.date().replace(day=1))
+    last_business_day = (month_start + pd.offsets.BMonthEnd(0)).date()
+    market_close = time(13, 0)
+
+    month_complete = (now.date() > last_business_day) or (
+        now.date() == last_business_day and now.time() >= market_close
+    )
+
+    if month_complete:
+        return pd.Period(now.date(), freq="M")
+
+    last_day_prev_month = month_start - pd.offsets.Day(1)
+    return pd.Period(last_day_prev_month.date(), freq="M")
 
 
 def _load_cache() -> Dict[str, Dict[str, float]]:
@@ -59,7 +89,8 @@ def _periods_to_str(periods: Iterable[pd.Period]) -> List[str]:
 
 
 def fetch_monthly_returns(symbol: str, start_period: pd.Period, end_period: pd.Period) -> pd.Series:
-    start = (start_period.to_timestamp("M") - pd.offsets.MonthBegin(1)).normalize()
+    # Fetch one extra month so pct_change yields returns starting at start_period.
+    start = (start_period - 1).to_timestamp("M")
     end = end_period.to_timestamp("M")
     try:
         hist = yf.Ticker(symbol).history(

@@ -1,7 +1,6 @@
 import json
 import sys
 from datetime import datetime, timedelta
-from pathlib import Path
 
 import pytest
 from typer.testing import CliRunner
@@ -28,7 +27,7 @@ def _sample_data():
     return rows
 
 
-def test_cli_performance_savvytrader(tmp_path):
+def test_cli_performance_mingdom(tmp_path):
     data_path = tmp_path / "valuations.json"
     with data_path.open("w") as handle:
         json.dump(_sample_data(), handle)
@@ -38,8 +37,8 @@ def test_cli_performance_savvytrader(tmp_path):
         app,
         [
             "performance",
-            "savvytrader",
-            "--savvy-json",
+            "mingdom",
+            "--mingdom-json",
             str(data_path),
             "--rf",
             "0.04",
@@ -86,7 +85,7 @@ def test_shell_runs_performance_command(tmp_path, capsys):
     start_shell(
         app,
         commands=[
-            f"performance savvytrader --savvy-json {data_path} --rf 0.04 --year 2024 --no-benchmarks",
+            f"performance mingdom --mingdom-json {data_path} --rf 0.04 --year 2024 --no-benchmarks",
             "exit",
         ],
     )
@@ -131,7 +130,7 @@ def test_shell_sources_command(capsys):
 
     out = capsys.readouterr().out
     assert "Supported sources" in out
-    assert "savvytrader" in out
+    assert "mingdom" in out
     assert "fidelity" in out
 
 
@@ -139,7 +138,7 @@ def test_shell_complete_performance_suggests_sources():
     shell = PortfolioShell(app)
 
     suggestions = shell.complete_performance("", "performance ", len("performance "), len("performance "))
-    assert set(suggestions) >= {"savvytrader", "fidelity"}
+    assert set(suggestions) >= {"mingdom", "fidelity"}
 
     partial = shell.complete_performance("fi", "performance fi", len("performance "), len("performance fi"))
     assert partial == ["fidelity"]
@@ -174,46 +173,6 @@ def test_shell_ls_alias(capsys):
     assert "Core commands" in out
 
 
-def test_cli_web_invokes_streamlit(monkeypatch, tmp_path):
-    called = {}
-
-    def fake_run(cmd, env=None, check=None):
-        called["cmd"] = cmd
-        called["env"] = env
-        called["check"] = check
-        return None
-
-    monkeypatch.setattr("portfolio_cli.cli.subprocess.run", fake_run)
-    monkeypatch.setitem(sys.modules, "streamlit", object())
-
-    csv_path = tmp_path / "fidelity.csv"
-    csv_path.write_text("Month,Beginning balance\n")
-
-    runner = CliRunner()
-    result = runner.invoke(
-        app,
-        [
-            "web",
-            "--port",
-            "9000",
-            "--no-open-browser",
-            "--fidelity-csv",
-            str(csv_path),
-            "--no-benchmarks",
-            "--rf",
-            str(ANNUAL_RF_RATE),
-        ],
-    )
-
-    assert result.exit_code == 0
-    expected_prefix = [sys.executable, "-m", "streamlit", "run", str((Path(__file__).resolve().parents[1] / "streamlit_app.py"))]
-    assert called["cmd"][:5] == expected_prefix
-    assert called["env"]["PORTFOLIO_SOURCES"] == "fidelity"
-    assert called["env"]["PORTFOLIO_INCLUDE_BENCHMARKS"] == "0"
-    assert called["env"]["PORTFOLIO_FIDELITY_CSV"] == str(csv_path)
-    assert called["env"]["PORTFOLIO_RISK_FREE"] == str(ANNUAL_RF_RATE)
-
-
 def test_cli_report_generates_file(tmp_path):
     data_path = tmp_path / "valuations.json"
     with data_path.open("w") as handle:
@@ -229,7 +188,7 @@ def test_cli_report_generates_file(tmp_path):
         app,
         [
             "report",
-            "--savvy-json",
+            "--mingdom-json",
             str(data_path),
             "--fidelity-csv",
             str(fidelity_path),

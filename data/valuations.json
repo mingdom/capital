@@ -3640,5 +3640,557 @@
         "dailyValuation": 0.628189,
         "dailyValuationDelta": -0.006795,
         "dailyTotalValueChange": -0.004156
+    },
+    {
+        "summaryDate": "2025-10-01",
+        "dailyValuation": 0.633627,
+        "dailyValuationDelta": 0.005438,
+        "dailyTotalValueChange": 0.003339
+    },
+    {
+        "summaryDate": "2025-10-02",
+        "dailyValuation": 0.645899,
+        "dailyValuationDelta": 0.012272,
+        "dailyTotalValueChange": 0.007512
+    },
+    {
+        "summaryDate": "2025-10-03",
+        "dailyValuation": 0.640668,
+        "dailyValuationDelta": -0.005231,
+        "dailyTotalValueChange": -0.003179
+    },
+    {
+        "summaryDate": "2025-10-04",
+        "dailyValuation": 0.640668,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-10-05",
+        "dailyValuation": 0.640668,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-10-06",
+        "dailyValuation": 0.655072,
+        "dailyValuationDelta": 0.014404,
+        "dailyTotalValueChange": 0.00878
+    },
+    {
+        "summaryDate": "2025-10-07",
+        "dailyValuation": 0.637572,
+        "dailyValuationDelta": -0.0175,
+        "dailyTotalValueChange": -0.010574
+    },
+    {
+        "summaryDate": "2025-10-08",
+        "dailyValuation": 0.650271,
+        "dailyValuationDelta": 0.012699,
+        "dailyTotalValueChange": 0.007755
+    },
+    {
+        "summaryDate": "2025-10-09",
+        "dailyValuation": 0.643858,
+        "dailyValuationDelta": -0.006413,
+        "dailyTotalValueChange": -0.003886
+    },
+    {
+        "summaryDate": "2025-10-10",
+        "dailyValuation": 0.58503,
+        "dailyValuationDelta": -0.058828,
+        "dailyTotalValueChange": -0.035786
+    },
+    {
+        "summaryDate": "2025-10-11",
+        "dailyValuation": 0.58503,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-10-12",
+        "dailyValuation": 0.58503,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-10-13",
+        "dailyValuation": 0.624341,
+        "dailyValuationDelta": 0.039311,
+        "dailyTotalValueChange": 0.024802
+    },
+    {
+        "summaryDate": "2025-10-14",
+        "dailyValuation": 0.612196,
+        "dailyValuationDelta": -0.012145,
+        "dailyTotalValueChange": -0.007477
+    },
+    {
+        "summaryDate": "2025-10-15",
+        "dailyValuation": 0.621967,
+        "dailyValuationDelta": 0.009771,
+        "dailyTotalValueChange": 0.006061
+    },
+    {
+        "summaryDate": "2025-10-16",
+        "dailyValuation": 0.611818,
+        "dailyValuationDelta": -0.010149,
+        "dailyTotalValueChange": -0.006257
+    },
+    {
+        "summaryDate": "2025-10-17",
+        "dailyValuation": 0.614591,
+        "dailyValuationDelta": 0.002773,
+        "dailyTotalValueChange": 0.00172
+    },
+    {
+        "summaryDate": "2025-10-18",
+        "dailyValuation": 0.614591,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-10-19",
+        "dailyValuation": 0.614591,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-10-20",
+        "dailyValuation": 0.634923,
+        "dailyValuationDelta": 0.020332,
+        "dailyTotalValueChange": 0.012593
+    },
+    {
+        "summaryDate": "2025-10-21",
+        "dailyValuation": 0.633636,
+        "dailyValuationDelta": -0.001287,
+        "dailyTotalValueChange": -0.000787
+    },
+    {
+        "summaryDate": "2025-10-22",
+        "dailyValuation": 0.621046,
+        "dailyValuationDelta": -0.01259,
+        "dailyTotalValueChange": -0.007707
+    },
+    {
+        "summaryDate": "2025-10-23",
+        "dailyValuation": 0.638574,
+        "dailyValuationDelta": 0.017528,
+        "dailyTotalValueChange": 0.010812
+    },
+    {
+        "summaryDate": "2025-10-24",
+        "dailyValuation": 0.656054,
+        "dailyValuationDelta": 0.01748,
+        "dailyTotalValueChange": 0.010668
+    },
+    {
+        "summaryDate": "2025-10-25",
+        "dailyValuation": 0.656054,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-10-26",
+        "dailyValuation": 0.656054,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-10-27",
+        "dailyValuation": 0.688876,
+        "dailyValuationDelta": 0.032822,
+        "dailyTotalValueChange": 0.019819
+    },
+    {
+        "summaryDate": "2025-10-28",
+        "dailyValuation": 0.691072,
+        "dailyValuationDelta": 0.002196,
+        "dailyTotalValueChange": 0.0013
+    },
+    {
+        "summaryDate": "2025-10-29",
+        "dailyValuation": 0.69941,
+        "dailyValuationDelta": 0.008338,
+        "dailyTotalValueChange": 0.004931
+    },
+    {
+        "summaryDate": "2025-10-30",
+        "dailyValuation": 0.682238,
+        "dailyValuationDelta": -0.017172,
+        "dailyTotalValueChange": -0.010104
+    },
+    {
+        "summaryDate": "2025-10-31",
+        "dailyValuation": 0.694362,
+        "dailyValuationDelta": 0.012124,
+        "dailyTotalValueChange": 0.007207
+    },
+    {
+        "summaryDate": "2025-11-01",
+        "dailyValuation": 0.694362,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-11-02",
+        "dailyValuation": 0.694362,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-11-03",
+        "dailyValuation": 0.709137,
+        "dailyValuationDelta": 0.014775,
+        "dailyTotalValueChange": 0.00872
+    },
+    {
+        "summaryDate": "2025-11-04",
+        "dailyValuation": 0.6704,
+        "dailyValuationDelta": -0.038737,
+        "dailyTotalValueChange": -0.022665
+    },
+    {
+        "summaryDate": "2025-11-05",
+        "dailyValuation": 0.677014,
+        "dailyValuationDelta": 0.006614,
+        "dailyTotalValueChange": 0.00396
+    },
+    {
+        "summaryDate": "2025-11-06",
+        "dailyValuation": 0.650395,
+        "dailyValuationDelta": -0.026619,
+        "dailyTotalValueChange": -0.015873
+    },
+    {
+        "summaryDate": "2025-11-07",
+        "dailyValuation": 0.644095,
+        "dailyValuationDelta": -0.0063,
+        "dailyTotalValueChange": -0.003817
+    },
+    {
+        "summaryDate": "2025-11-08",
+        "dailyValuation": 0.644095,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-11-09",
+        "dailyValuation": 0.644095,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-11-10",
+        "dailyValuation": 0.681659,
+        "dailyValuationDelta": 0.037564,
+        "dailyTotalValueChange": 0.022848
+    },
+    {
+        "summaryDate": "2025-11-11",
+        "dailyValuation": 0.674478,
+        "dailyValuationDelta": -0.007181,
+        "dailyTotalValueChange": -0.004271
+    },
+    {
+        "summaryDate": "2025-11-12",
+        "dailyValuation": 0.664514,
+        "dailyValuationDelta": -0.009964,
+        "dailyTotalValueChange": -0.00595
+    },
+    {
+        "summaryDate": "2025-11-13",
+        "dailyValuation": 0.625416,
+        "dailyValuationDelta": -0.039098,
+        "dailyTotalValueChange": -0.02349
+    },
+    {
+        "summaryDate": "2025-11-14",
+        "dailyValuation": 0.619601,
+        "dailyValuationDelta": -0.005815,
+        "dailyTotalValueChange": -0.003577
+    },
+    {
+        "summaryDate": "2025-11-15",
+        "dailyValuation": 0.619601,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-11-16",
+        "dailyValuation": 0.619601,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-11-17",
+        "dailyValuation": 0.615208,
+        "dailyValuationDelta": -0.004393,
+        "dailyTotalValueChange": -0.002713
+    },
+    {
+        "summaryDate": "2025-11-18",
+        "dailyValuation": 0.591671,
+        "dailyValuationDelta": -0.023537,
+        "dailyTotalValueChange": -0.014573
+    },
+    {
+        "summaryDate": "2025-11-19",
+        "dailyValuation": 0.603794,
+        "dailyValuationDelta": 0.012123,
+        "dailyTotalValueChange": 0.007616
+    },
+    {
+        "summaryDate": "2025-11-20",
+        "dailyValuation": 0.565203,
+        "dailyValuationDelta": -0.038591,
+        "dailyTotalValueChange": -0.024062
+    },
+    {
+        "summaryDate": "2025-11-21",
+        "dailyValuation": 0.590416,
+        "dailyValuationDelta": 0.025213,
+        "dailyTotalValueChange": 0.016109
+    },
+    {
+        "summaryDate": "2025-11-22",
+        "dailyValuation": 0.590416,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-11-23",
+        "dailyValuation": 0.590416,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-11-24",
+        "dailyValuation": 0.628882,
+        "dailyValuationDelta": 0.038466,
+        "dailyTotalValueChange": 0.024186
+    },
+    {
+        "summaryDate": "2025-11-25",
+        "dailyValuation": 0.65036,
+        "dailyValuationDelta": 0.021478,
+        "dailyTotalValueChange": 0.013186
+    },
+    {
+        "summaryDate": "2025-11-26",
+        "dailyValuation": 0.653292,
+        "dailyValuationDelta": 0.002932,
+        "dailyTotalValueChange": 0.001777
+    },
+    {
+        "summaryDate": "2025-11-27",
+        "dailyValuation": 0.653292,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-11-28",
+        "dailyValuation": 0.669739,
+        "dailyValuationDelta": 0.016447,
+        "dailyTotalValueChange": 0.009948
+    },
+    {
+        "summaryDate": "2025-11-29",
+        "dailyValuation": 0.669739,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-11-30",
+        "dailyValuation": 0.669739,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-12-01",
+        "dailyValuation": 0.659149,
+        "dailyValuationDelta": -0.01059,
+        "dailyTotalValueChange": -0.006342
+    },
+    {
+        "summaryDate": "2025-12-02",
+        "dailyValuation": 0.673513,
+        "dailyValuationDelta": 0.014364,
+        "dailyTotalValueChange": 0.008657
+    },
+    {
+        "summaryDate": "2025-12-03",
+        "dailyValuation": 0.682538,
+        "dailyValuationDelta": 0.009025,
+        "dailyTotalValueChange": 0.005393
+    },
+    {
+        "summaryDate": "2025-12-04",
+        "dailyValuation": 0.680232,
+        "dailyValuationDelta": -0.002306,
+        "dailyTotalValueChange": -0.001371
+    },
+    {
+        "summaryDate": "2025-12-05",
+        "dailyValuation": 0.692243,
+        "dailyValuationDelta": 0.012011,
+        "dailyTotalValueChange": 0.007149
+    },
+    {
+        "summaryDate": "2025-12-06",
+        "dailyValuation": 0.692243,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-12-07",
+        "dailyValuation": 0.692243,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-12-08",
+        "dailyValuation": 0.68237,
+        "dailyValuationDelta": -0.009873,
+        "dailyTotalValueChange": -0.005834
+    },
+    {
+        "summaryDate": "2025-12-09",
+        "dailyValuation": 0.678088,
+        "dailyValuationDelta": -0.004282,
+        "dailyTotalValueChange": -0.002545
+    },
+    {
+        "summaryDate": "2025-12-10",
+        "dailyValuation": 0.675446,
+        "dailyValuationDelta": -0.002642,
+        "dailyTotalValueChange": -0.001574
+    },
+    {
+        "summaryDate": "2025-12-11",
+        "dailyValuation": 0.675703,
+        "dailyValuationDelta": 0.000257,
+        "dailyTotalValueChange": 0.000153
+    },
+    {
+        "summaryDate": "2025-12-12",
+        "dailyValuation": 0.656625,
+        "dailyValuationDelta": -0.019078,
+        "dailyTotalValueChange": -0.011385
+    },
+    {
+        "summaryDate": "2025-12-13",
+        "dailyValuation": 0.656625,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-12-14",
+        "dailyValuation": 0.656625,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-12-15",
+        "dailyValuation": 0.647,
+        "dailyValuationDelta": -0.009625,
+        "dailyTotalValueChange": -0.00581
+    },
+    {
+        "summaryDate": "2025-12-16",
+        "dailyValuation": 0.644127,
+        "dailyValuationDelta": -0.002873,
+        "dailyTotalValueChange": -0.001744
+    },
+    {
+        "summaryDate": "2025-12-17",
+        "dailyValuation": 0.618316,
+        "dailyValuationDelta": -0.025811,
+        "dailyTotalValueChange": -0.015699
+    },
+    {
+        "summaryDate": "2025-12-18",
+        "dailyValuation": 0.640895,
+        "dailyValuationDelta": 0.022579,
+        "dailyTotalValueChange": 0.013952
+    },
+    {
+        "summaryDate": "2025-12-19",
+        "dailyValuation": 0.656308,
+        "dailyValuationDelta": 0.015413,
+        "dailyTotalValueChange": 0.009393
+    },
+    {
+        "summaryDate": "2025-12-20",
+        "dailyValuation": 0.656308,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-12-21",
+        "dailyValuation": 0.656308,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-12-22",
+        "dailyValuation": 0.670185,
+        "dailyValuationDelta": 0.013877,
+        "dailyTotalValueChange": 0.008378
+    },
+    {
+        "summaryDate": "2025-12-23",
+        "dailyValuation": 0.682151,
+        "dailyValuationDelta": 0.011966,
+        "dailyTotalValueChange": 0.007165
+    },
+    {
+        "summaryDate": "2025-12-24",
+        "dailyValuation": 0.685045,
+        "dailyValuationDelta": 0.002894,
+        "dailyTotalValueChange": 0.00172
+    },
+    {
+        "summaryDate": "2025-12-25",
+        "dailyValuation": 0.685045,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-12-26",
+        "dailyValuation": 0.686233,
+        "dailyValuationDelta": 0.001188,
+        "dailyTotalValueChange": 0.000706
+    },
+    {
+        "summaryDate": "2025-12-27",
+        "dailyValuation": 0.686233,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-12-28",
+        "dailyValuation": 0.686233,
+        "dailyValuationDelta": 0,
+        "dailyTotalValueChange": 0
+    },
+    {
+        "summaryDate": "2025-12-29",
+        "dailyValuation": 0.683383,
+        "dailyValuationDelta": -0.00285,
+        "dailyTotalValueChange": -0.001691
+    },
+    {
+        "summaryDate": "2025-12-30",
+        "dailyValuation": 0.685641,
+        "dailyValuationDelta": 0.002258,
+        "dailyTotalValueChange": 0.001342
+    },
+    {
+        "summaryDate": "2025-12-31",
+        "dailyValuation": 0.676104,
+        "dailyValuationDelta": -0.009537,
+        "dailyTotalValueChange": -0.005658
     }
 ]

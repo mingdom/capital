@@ -9,16 +9,16 @@ def test_render_html_contains_tables_and_metrics():
     index = pd.period_range("2024-01", periods=3, freq="M")
     combined = pd.DataFrame(
         {
-            "SavvyTrader": [0.01, -0.02, 0.03],
+            "Mingdom": [0.01, -0.02, 0.03],
             "Fidelity": [0.02, 0.0, -0.01],
             "SPY": [0.015, -0.01, 0.02],
         },
         index=index,
     )
 
-    perf = PerformanceMetrics(cagr=0.1, max_dd_monthly=-0.02, ytd=0.01, sharpe=1.2, sortino=1.5)
+    perf = PerformanceMetrics(cagr=0.1, three_month=0.02, max_dd_monthly=-0.02, ytd=0.01, sharpe=1.2, sortino=1.5)
     metrics = {
-        "SavvyTrader": PortfolioAnalysis(monthly_returns=combined["SavvyTrader"], metrics=perf),
+        "Mingdom": PortfolioAnalysis(monthly_returns=combined["Mingdom"], metrics=perf),
         "Fidelity": PortfolioAnalysis(monthly_returns=combined["Fidelity"], metrics=perf),
         "SPY": PortfolioAnalysis(monthly_returns=combined["SPY"], metrics=perf),
     }
@@ -35,7 +35,7 @@ def test_render_html_contains_tables_and_metrics():
     assert "Test Report" in html
     assert "Monthly Returns" in html
     assert "Summary Metrics" in html
-    assert "SavvyTrader" in html
+    assert "Mingdom" in html
     assert "Fidelity" in html
     assert "SPY" in html
     assert "CAGR" in html

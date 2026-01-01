@@ -18,7 +18,7 @@ from portfolio_cli.performance import SUPPORTED_SOURCES
 
 class PortfolioShell(cmd.Cmd):
     intro = (
-        "Welcome to the Mingdom Capital CLI. Default source is SavvyTrader. "
+        "Welcome to the Mingdom Capital CLI. Default source is Mingdom. "
         "Use 'sources' to view available formats, 'help' for commands, and press Tab "
         "to autocomplete known options."
     )
@@ -71,6 +71,7 @@ class PortfolioShell(cmd.Cmd):
             tokens = line[:begidx].split()
 
         flags = [
+            "--mingdom-json",
             "--savvy-json",
             "--fidelity-csv",
             "--rf",
@@ -111,6 +112,7 @@ class PortfolioShell(cmd.Cmd):
         flags = [
             "--output",
             "--title",
+            "--mingdom-json",
             "--savvy-json",
             "--fidelity-csv",
             "--rf",
@@ -157,9 +159,10 @@ class PortfolioShell(cmd.Cmd):
         """Describe supported portfolio data formats."""
 
         typer.echo("Supported sources:")
-        typer.echo("  savvytrader (default)")
+        typer.echo("  mingdom (default)")
         typer.echo("    File: data/valuations.json")
-        typer.echo("    Use: performance savvytrader [flags]")
+        typer.echo("    Use: performance mingdom [flags]")
+        typer.echo("    Alias: savvytrader")
         typer.echo("  fidelity")
         typer.echo("    File: data/private/fidelity-performance.csv")
         typer.echo("    Use: performance fidelity --fidelity-csv path/to/export.csv")
