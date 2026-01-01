@@ -1,95 +1,264 @@
 # Mingdom Capital Performance Tracker
 
-## Setup (Makefile first)
+A Python-based portfolio performance analytics toolkit that computes risk-adjusted returns (Sharpe, Sortino), drawdowns, CAGR, and benchmark comparisons. Built for tracking personal investment portfolios with support for multiple data sources.
 
+## Overview
+
+This toolkit provides:
+- **Portfolio Performance Analysis**: Calculate CAGR, Sharpe ratio, Sortino ratio, max drawdown, YTD, and 3-month trailing returns
+- **Benchmark Comparison**: Compare portfolio performance against market indices (SPY, QQQ, ARKK by default)
+- **Multiple Data Sources**: Support for SavvyTrader JSON exports and Fidelity CSV performance reports
+- **Interactive Shell**: REPL environment for ad-hoc analysis and exploration
+- **HTML Reports**: Generate static HTML reports with performance visualizations
+- **CLI & Programmatic API**: Use via command-line or import as a library
+
+## Architecture
+
+```
+mingdom-capital/
+├── portfolio_cli/          # Core package
+│   ├── __init__.py        # Public API exports
+│   ├── analysis.py        # Performance calculations (Sharpe, Sortino, CAGR, drawdown)
+│   ├── cli.py             # Typer-based CLI commands
+│   ├── performance.py     # Data loading and source adapters
+│   ├── report.py          # HTML report generation
+│   └── shell.py           # Interactive REPL
+├── benchmarks.py          # Benchmark data fetching & caching (yfinance)
+├── sortino.py             # Legacy compatibility layer
+├── scripts/               # Automation scripts
+│   ├── import_latest.py   # Data import & archival
+│   ├── build_report.py    # Standalone report builder
+│   └── pre-commit.sh      # Git pre-commit hook
+├── data/                  # Data files (gitignored)
+│   ├── import/            # Drop folder for new data
+│   ├── valuations.json    # Active SavvyTrader data
+│   ├── benchmarks.json    # Cached market data
+│   └── private/           # Fidelity CSVs (gitignored)
+├── tests/                 # Pytest test suite
+├── .agent/                # Agent logs & development notes
+├── Makefile               # Build automation (preferred entrypoint)
+└── README.md              # This file
+```
+
+## Quick Start
+
+### 1. Installation
+
+Using the Makefile (recommended):
+```bash
+make install
+```
+
+Manual setup:
 ```bash
 python3 -m venv venv
 ./venv/bin/pip install -U pip
 ./venv/bin/pip install -r requirements.txt -r dev-requirements.txt
 ```
 
-Or use the Makefile (preferred):
+### 2. Import Data
 
+Place source files in `data/import/`:
+- **SavvyTrader**: `.json` files (API response from valuations endpoint)
+- **Fidelity**: `.csv` files (performance export)
+
+Then run:
 ```bash
-make install
-```
-
-## Update data (drop-folder importer)
-
-Simplest flow: drop raw files in `data/import/` and run the importer.
-
-Accepted files in `data/import/`:
-- `.json` → SavvyTrader valuations dump (array with `summaryDate` and `dailyTotalValueChange`)
-- `.csv` → Fidelity performance export
-
-### How to fetch the SavvyTrader valuations JSON (manual)
-
-We currently pull this data via the SavvyTrader web app (no automated API client in this repo).
-
-Steps:
-1. Load the SavvyTrader app in your browser.
-2. Open Developer Tools → Network.
-3. Set the performance timeline to **Max**.
-4. In the Network tab, find the request to:
-   `https://api.savvytrader.com/core/portfolios/4737/valuations?range=all`
-5. Right‑click the request → **Copy → Copy response** (or **Copy as cURL** if you prefer).
-6. Save the JSON array to a file under `data/import/` (e.g., `data/import/valuations-YYYY-MM-DD.json`).
-
-Important: the copied request includes short‑lived access tokens. **Do not** commit or share those tokens.
-
-Run importer (Makefile entrypoint):
-
-```bash
-# Import the latest JSON and CSV from data/import/
 make import
-# or directly as a module
-./venv/bin/python -m scripts.import_latest -v
 ```
 
-What it does:
-- Picks the latest `.json` by payload date (or mtime) and writes `data/valuations.json` atomically.
-- Picks the latest `.csv` by mtime and writes `data/private/fidelity-performance.csv` atomically.
-- Moves processed files to `data/import/archive/YYYY-MM-DD/` (kept locally, ignored by Git).
+This processes the latest files and archives them to `data/import/archive/YYYY-MM-DD/`.
 
-## Run analysis
+### 3. Run Analysis
 
+**Interactive Shell (default)**:
 ```bash
-# Interactive shell (default source = Mingdom)
 make run
+```
 
-# CLI directly
+**CLI Commands**:
+```bash
+# Show performance for all sources (Mingdom + Fidelity)
 ./venv/bin/python -m portfolio_cli performance
+
+# Filter to specific source
+./venv/bin/python -m portfolio_cli performance mingdom
 ./venv/bin/python -m portfolio_cli performance mingdom --year 2024
+
+# Fidelity with custom CSV
 ./venv/bin/python -m portfolio_cli performance fidelity --fidelity-csv data/private/fidelity-performance.csv
 
-# Skip benchmark columns if needed
+# Hide benchmarks
 ./venv/bin/python -m portfolio_cli performance --no-benchmarks
-
-# Generate HTML report (all sources by default)
-./venv/bin/python -m portfolio_cli report --output dist/index.html
-
-# Generate report for a single source
-./venv/bin/python -m portfolio_cli report mingdom --output dist/index.html
-./venv/bin/python -m portfolio_cli report fidelity --fidelity-csv data/private/fidelity-performance.csv --output dist/index.html
 ```
 
-### Benchmarks
-
-- Default benchmarks are: SPY, QQQ, ARKK. These appear in CLI tables and the HTML report when benchmarks are enabled.
-- To customize the list, set `PORTFOLIO_BENCHMARKS` to a comma-separated list (e.g., `PORTFOLIO_BENCHMARKS="SPY,QQQ,IWM"`).
-
-## Generate report
+### 4. Generate HTML Report
 
 ```bash
 make report
+# Report saved to dist/index.html
 ```
 
-Tip: filter sources in the report by passing them after `report`, e.g. `./venv/bin/python -m portfolio_cli report mingdom -o dist/index.html`. Use `--no-benchmarks` to hide benchmarks.
+Filter by source:
+```bash
+./venv/bin/python -m portfolio_cli report mingdom --output dist/index.html
+./venv/bin/python -m portfolio_cli report fidelity --fidelity-csv data/private/fidelity.csv --output dist/index.html
+```
 
-The Summary Metrics now include 3M (trailing 3-month compounded return) alongside YTD and CAGR.
+## Data Sources
 
-## Tests
+### SavvyTrader
+
+**Manual Fetch Process**:
+1. Open SavvyTrader web app in browser
+2. Open Developer Tools → Network tab
+3. Set performance timeline to **Max**
+4. Find request to: `https://api.savvytrader.com/core/portfolios/{id}/valuations?range=all`
+5. Right-click → Copy → Copy response
+6. Save to `data/import/valuations-YYYY-MM-DD.json`
+
+⚠️ **Security**: Access tokens in the request are short-lived. Never commit or share these tokens.
+
+### Fidelity
+
+Export performance CSV from Fidelity's web interface and place in `data/import/` or `data/private/`.
+
+## Benchmarks
+
+**Default benchmarks**: SPY, QQQ, ARKK
+
+**Configuration**: Override via environment variable:
+```bash
+export PORTFOLIO_BENCHMARKS="SPY,QQQ,IWM"
+./venv/bin/python -m portfolio_cli performance
+```
+
+Benchmarks are cached in `data/benchmarks.json` using `yfinance`. The cache is automatically updated when needed.
+
+## Development
+
+### Code Style
+
+- Python 3.9+
+- 4-space indentation, UTF-8, max line length 100
+- Type hints required for new/edited functions
+- Use `snake_case` for functions/variables, `UPPER_SNAKE_CASE` for constants
+
+### Formatting & Linting
+
+```bash
+make format  # black
+make lint    # ruff
+```
+
+### Testing
 
 ```bash
 make test
+# or
+PYTHONPATH=. ./venv/bin/pytest -q
 ```
+
+**Coverage target**: >= 80% for changed lines
+
+**Test structure**:
+- `tests/test_sortino_smoke.py` - Legacy smoke tests
+- `tests/test_cli.py` - CLI interface tests
+- `tests/test_benchmarks.py` - Benchmark fetching tests
+- `tests/test_html_report.py` - Report generation tests
+
+### Git Hooks
+
+Install pre-commit hook (runs tests before commit):
+```bash
+make hook
+```
+
+## Performance Metrics
+
+| Metric | Description |
+|--------|-------------|
+| **CAGR** | Compound Annual Growth Rate (annualized return) |
+| **Sharpe Ratio** | Risk-adjusted return vs risk-free rate (excess return / volatility) |
+| **Sortino Ratio** | Risk-adjusted return vs downside risk (penalizes only downside volatility) |
+| **Max Drawdown** | Largest peak-to-trough decline (monthly basis) |
+| **YTD** | Year-to-date return (current year only) |
+| **3M** | Trailing 3-month compounded return |
+
+**Risk-free rate**: Configurable, defaults to 4.5% annual (defined in `portfolio_cli.analysis.ANNUAL_RF_RATE`)
+
+## Common Workflows
+
+### Add a New Data Source
+
+1. Implement loader in `portfolio_cli/performance.py` (see `load_fidelity_monthly_returns`)
+2. Add source to `SourceKind` enum in `portfolio_cli/cli.py`
+3. Update CLI help text and documentation
+4. Add tests in `tests/test_cli.py`
+
+### Add a New Metric
+
+1. Update `PerformanceMetrics` dataclass in `portfolio_cli/analysis.py`
+2. Implement calculation in `calculate_metrics()`
+3. Add display logic to `format_portfolio_summary()`
+4. Update report template in `portfolio_cli/report.py`
+5. Add tests in `tests/test_sortino_smoke.py`
+
+### Customize Benchmarks
+
+Edit `DEFAULT_BENCHMARKS` in `benchmarks.py` or use `PORTFOLIO_BENCHMARKS` environment variable.
+
+## Makefile Targets
+
+| Target | Description |
+|--------|-------------|
+| `make install` | Create venv and install dependencies |
+| `make dev` | Alias for `install` |
+| `make import` | Import latest data from `data/import/` |
+| `make run` | Launch interactive shell |
+| `make test` | Run pytest suite |
+| `make format` | Format code with black |
+| `make lint` | Lint with ruff |
+| `make report` | Generate HTML report to `dist/index.html` |
+| `make hook` | Install git pre-commit hook |
+| `make clean` | Remove venv and cache files |
+
+## Troubleshooting
+
+**Issue**: `ModuleNotFoundError` when running scripts
+- **Fix**: Ensure `PYTHONPATH=.` is set or run as module (`python -m portfolio_cli`)
+
+**Issue**: Empty benchmark data
+- **Fix**: Delete `data/benchmarks.json` and re-run to force fresh fetch
+
+**Issue**: Timezone warnings from pandas
+- **Fix**: Already handled in `benchmarks.py` using `tz_localize` and `tz_convert`
+
+**Issue**: Import fails with "No JSON/CSV found"
+- **Fix**: Ensure files are directly in `data/import/`, not subdirectories
+
+## Project Status
+
+**Current Version**: Active development
+**Stability**: Production-ready for personal use
+**Test Coverage**: Core logic >80%
+
+See `TASKS.md` for known issues and planned enhancements.
+
+## References
+
+- [Sortino Ratio](https://en.wikipedia.org/wiki/Sortino_ratio)
+- [Sharpe Ratio](https://en.wikipedia.org/wiki/Sharpe_ratio)
+- [CAGR](https://www.investopedia.com/terms/c/cagr.asp)
+- [yfinance](https://github.com/ranaroussi/yfinance)
+- [Typer CLI](https://typer.tiangolo.com/)
+
+---
+
+## Documentation
+
+- **AGENTS.md** - Concise guidelines for AI coding assistants (high-level principles)
+- **docs/development-guide.md** - Detailed development patterns, recipes, and examples
+- **TASKS.md** - Current known issues and planned work
+
+**For AI agents**: See `AGENTS.md` for quick reference. When you need detailed guidance, consult `docs/development-guide.md`.

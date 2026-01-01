@@ -1,66 +1,62 @@
-# Repository Guidelines
-## Core Tenets
-- When I ask you a question, just answer it, do NOT jump into writing code!
-- At the end of every task, summarize what you did.
-- `.agent` folder is for all developer logs and documentation as you make decisions and write code. Feel free to use this space for additional documentation.
-- When prompted, log decisions or progress in `.agent/devlog-YYYY-MM-DD.md` entries following the existing format (summary, current state, next ideas).
+# AI Agent Guidelines
 
-## Project Structure & Module Organization
-- `sortino.py` — main analysis script; exposes `convert_to_monthly_and_calculate_ratios`.
-- `data/valuations.json` — paste SavvyTrader valuations API response for local runs.
-- `data/` — extra data files (e.g., `prices.json`, historical snapshots).
-- `tests/` — pytest tests (e.g., `tests/test_sortino_smoke.py`).
-- `scripts/pre-commit.sh` — optional Git pre-commit hook.
-- `Makefile`, `requirements*.txt`, `pyproject.toml`, `pytest.ini` — tooling and config.
-- `2025-q2/` — static charts/assets used for reporting; not code.
-- `README.md` — Quickstart and usage notes.
-- `venv/` — local virtual environment (do not rely on it being present on other machines).
+## Core Principles
 
-## Build, Test, and Development Commands
-The Makefile is the entrypoint for all commands. Prefer `make` targets over invoking tools directly.
-- Setup environment:
-  - `python3 -m venv venv && source venv/bin/activate`
-  - `pip install --upgrade pip pandas numpy`
-- Common `make` targets (see Makefile):
-  - `make install` — create venv and install requirements
-  - `make import` — process latest files from `data/import/`
-  - `make test` — run tests
-  - `make report` — build HTML report
-- Run locally:
-  - `python3 sortino.py` — computes monthly returns, CAGR, drawdown, Sharpe/Sortino.
-- Optional tooling (recommended):
-  - `pip install black ruff pytest`
-  - `black .` — format; `ruff check .` — lint.
+1. **Answer questions before coding** - When asked a question, answer it. Don't jump straight to implementation.
+2. **Summarize after tasks** - Briefly explain what changed and how you validated it.
+3. **Make minimal changes** - Smallest diff that solves the root cause. No drive-by refactors.
+4. **Evidence over assumptions** - Run tests. Don't claim it works without verification.
 
-## Coding Style & Naming Conventions
-- Python, 4‑space indentation; UTF‑8; max line length 100.
-- Use snake_case for functions/variables; UPPER_SNAKE_CASE for constants.
-- Add type hints for new/edited functions; keep functions pure when practical.
-- Keep I/O (file/print) at the top‑level script; isolate logic into importable functions.
+## Architecture
 
-## Testing Guidelines
-- Framework: `pytest`.
-- Location: `tests/` mirroring targets (e.g., `tests/test_sortino.py`).
-- Write unit tests for monthly aggregation and ratio math; use small synthetic fixtures.
-- Run: `pytest -q`; target coverage >= 80% for changed lines (use `pytest --maxfail=1`).
+**Portfolio analytics toolkit**: Loads data (SavvyTrader JSON, Fidelity CSV) → calculates metrics (CAGR, Sharpe, Sortino, drawdown) → outputs (CLI, HTML, REPL).
 
-## Commit & Pull Request Guidelines
-- Commit messages: Conventional style (`feat:`, `fix:`, `docs:`, `chore:`). Keep scope small.
-- PRs must include: purpose, summary of changes, sample output (before/after) for numeric changes, and any data/source notes. Link related issues.
-- Avoid bundling refactors with logic changes; prefer separate PRs.
+```
+Data Sources → performance.py → analysis.py → cli.py/report.py
+                                    ↓
+                               benchmarks.py (yfinance cache)
+```
 
-## Security & Data Tips
-- Do not commit API keys or personal data. Sanitize `data/valuations.json` when sharing.
-- Large or transient datasets should be git‑ignored; prefer minimal repro samples.
+**Key modules**:
+- `portfolio_cli/analysis.py` - Pure calculation functions
+- `portfolio_cli/performance.py` - Data loading & normalization
+- `portfolio_cli/cli.py` - Typer-based CLI (I/O layer)
+- `benchmarks.py` - Market data fetching with persistent cache
+- `sortino.py` - Legacy compatibility (don't remove)
 
-## Agent‑Specific Instructions
-- Make minimal, focused changes; do not rename `sortino.py` without justification.
-- If you change commands or flags, update `README.md` accordingly.
-- Avoid adding heavy dependencies; prefer stdlib + `pandas`/`numpy` already in use.
+## Standards
 
-### Local Dev Best Practices (CI parity)
-- Always run tests locally before committing/pushing:
-  - Create venv and install deps: `python3 -m venv venv && ./venv/bin/pip install -U pip && ./venv/bin/pip install -r requirements.txt -r dev-requirements.txt`
-  - Run tests with project on path: `PYTHONPATH=. ./venv/bin/pytest -q`
-- Validate the report build locally: `./venv/bin/python scripts/build_report.py --output dist/index.html`
-- Only push after tests pass and the report generates without errors. This mirrors CI and avoids broken Pages deployments.
+- **Python 3.9+**, type hints required, 100 char line length
+- **Format/lint**: `make format` (black) and `make lint` (ruff) before committing
+- **Tests**: `make test` (pytest), aim for >80% coverage on changed code
+- **Makefile-first**: Prefer `make` targets over direct commands
+
+## Key Rules
+
+**Do**:
+- Keep calculations pure (no I/O in `analysis.py`)
+- Add tests for new metrics or data loaders
+- Update README if changing CLI commands/flags
+- Run `make test` before claiming success
+
+**Don't**:
+- Rename/remove `sortino.py` (backwards compatibility)
+- Add heavy dependencies without justification
+- Mix refactors with bug fixes
+- Commit sensitive data (API tokens, personal valuations)
+
+## Common Tasks
+
+**Add metric**: Update `PerformanceMetrics` dataclass → `calculate_metrics()` → CLI/report display
+**Add data source**: New loader in `performance.py` → add to `SourceKind` enum → update CLI help
+**Add benchmark**: Edit `DEFAULT_BENCHMARKS` in `benchmarks.py` or use `PORTFOLIO_BENCHMARKS` env var
+
+## When Stuck
+
+- Use `.agent/devlog-YYYY-MM-DD.md` for exploratory notes
+- See `docs/development-guide.md` for detailed patterns and examples
+- Check existing tests for similar scenarios
+
+---
+
+**Trust your judgment**. You're a senior engineer - these are guidelines, not rules. Make the right call for the situation.
