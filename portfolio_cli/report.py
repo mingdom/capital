@@ -40,14 +40,14 @@ def _build_monthly_table(df: pd.DataFrame) -> str:
     )
 
 
-def _build_summary_table(bundle: PerformanceBundle, order: Iterable[str]) -> str:
+def _build_summary_table(bundle: PerformanceBundle, order: Iterable[str], ytd_label: str) -> str:
     metrics = bundle.metrics
     header_cells = "".join(f"<th>{name}</th>" for name in order)
     rows_html = []
     definitions = [
         ("CAGR", lambda m: m.metrics.cagr, _fmt_pct),
         ("3M", lambda m: m.metrics.three_month, _fmt_pct),
-        ("YTD", lambda m: m.metrics.ytd, _fmt_pct),
+        (ytd_label, lambda m: m.metrics.ytd, _fmt_pct),
         ("Max Drawdown", lambda m: m.metrics.max_dd_monthly, _fmt_pct),
         ("Sharpe", lambda m: m.metrics.sharpe, _fmt_ratio),
         ("Sortino", lambda m: m.metrics.sortino, _fmt_ratio),
@@ -62,6 +62,41 @@ def _build_summary_table(bundle: PerformanceBundle, order: Iterable[str]) -> str
     rows = "\n".join(rows_html)
     return (
         "<table class='summary-table'>"
+        "<thead><tr><th>Metric</th>" + header_cells + "</tr></thead>"
+        "<tbody>" + rows + "</tbody></table>"
+    )
+
+
+def _build_risk_table(bundle: PerformanceBundle, order: Iterable[str]) -> str:
+    header_cells = "".join(f"<th>{name}</th>" for name in order)
+    rows_html = []
+    definitions = [
+        ("Vol (ann)", lambda r: r.volatility, _fmt_pct),
+        ("Downside Dev (ann)", lambda r: r.downside_dev, _fmt_pct),
+        ("Max Drawdown", lambda r: r.max_drawdown, _fmt_pct),
+        ("DD Duration (mo)", lambda r: r.drawdown_duration, lambda v: "—" if v is None else str(v)),
+        ("VaR 95 (mo)", lambda r: r.var_95, _fmt_pct),
+        ("CVaR 95 (mo)", lambda r: r.cvar_95, _fmt_pct),
+        ("VaR 99 (mo)", lambda r: r.var_99, _fmt_pct),
+        ("CVaR 99 (mo)", lambda r: r.cvar_99, _fmt_pct),
+        ("Hit Rate", lambda r: r.hit_rate, _fmt_pct),
+        ("Avg Up Month", lambda r: r.avg_up, _fmt_pct),
+        ("Avg Down Month", lambda r: r.avg_down, _fmt_pct),
+        ("Worst Month", lambda r: r.worst_month, _fmt_pct),
+        ("Best Month", lambda r: r.best_month, _fmt_pct),
+        ("Beta vs SPY", lambda r: r.beta_spy, _fmt_ratio),
+        ("Corr vs SPY", lambda r: r.corr_spy, _fmt_ratio),
+    ]
+    for label, getter, formatter in definitions:
+        cells = []
+        for name in order:
+            risk = bundle.risk_metrics.get(name)
+            value = getter(risk) if risk else None
+            cells.append(f"<td>{formatter(value)}</td>")
+        rows_html.append(f"<tr><td>{label}</td>{''.join(cells)}</tr>")
+    rows = "\n".join(rows_html)
+    return (
+        "<table class='risk-table'>"
         "<thead><tr><th>Metric</th>" + header_cells + "</tr></thead>"
         "<tbody>" + rows + "</tbody></table>"
     )
@@ -86,12 +121,56 @@ def render_html_report(
 
     monthly_html = _build_monthly_table(combined)
     order = list(combined.columns)
-    summary_html = _build_summary_table(bundle, order)
+    ytd_label = f"YTD ({bundle.current_year})"
+    summary_html = _build_summary_table(bundle, order, ytd_label)
+    risk_html = _build_risk_table(bundle, order)
 
     missing_html = ""
     if bundle.missing:
         missing_items = "".join(f"<li>{item}</li>" for item in bundle.missing)
         missing_html = f"<section class='notice'><h2>Notes</h2><ul>{missing_items}</ul></section>"
+
+    window_items = []
+    for name in order:
+        window = bundle.windows.get(name)
+        if window is None or window.count == 0:
+            window_items.append(f"<li>{name}: no data</li>")
+        else:
+            window_items.append(
+                f"<li>{name}: {window.start} → {window.end} ({window.count} months)</li>"
+            )
+    windows_html = "<ul>" + "".join(window_items) + "</ul>"
+
+    freq_html = ""
+    freq = bundle.freq_metrics.get("Mingdom")
+    if freq:
+        rows = [
+            "<tr><td>Vol (ann)</td>"
+            f"<td>{_fmt_pct(freq.daily.volatility)}</td>"
+            f"<td>{_fmt_pct(freq.weekly.volatility)}</td>"
+            f"<td>{_fmt_pct(freq.monthly.volatility)}</td></tr>",
+            "<tr><td>Sharpe</td>"
+            f"<td>{_fmt_ratio(freq.daily.sharpe)}</td>"
+            f"<td>{_fmt_ratio(freq.weekly.sharpe)}</td>"
+            f"<td>{_fmt_ratio(freq.monthly.sharpe)}</td></tr>",
+            "<tr><td>Sortino</td>"
+            f"<td>{_fmt_ratio(freq.daily.sortino)}</td>"
+            f"<td>{_fmt_ratio(freq.weekly.sortino)}</td>"
+            f"<td>{_fmt_ratio(freq.monthly.sortino)}</td></tr>",
+            "<tr><td>VaR 95 (period)</td>"
+            f"<td>{_fmt_pct(freq.daily.var_95)}</td>"
+            f"<td>{_fmt_pct(freq.weekly.var_95)}</td>"
+            f"<td>{_fmt_pct(freq.monthly.var_95)}</td></tr>",
+            "<tr><td>CVaR 95 (period)</td>"
+            f"<td>{_fmt_pct(freq.daily.cvar_95)}</td>"
+            f"<td>{_fmt_pct(freq.weekly.cvar_95)}</td>"
+            f"<td>{_fmt_pct(freq.monthly.cvar_95)}</td></tr>",
+        ]
+        freq_html = (
+            "<section><h2>Mingdom Risk by Frequency (informational)</h2>"
+            "<table class='risk-table'><thead><tr><th>Metric</th><th>Daily</th><th>Weekly</th><th>Monthly</th></tr></thead>"
+            f"<tbody>{''.join(rows)}</tbody></table></section>"
+        )
 
     styles = """
     body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; padding: 2rem; }
@@ -104,6 +183,7 @@ def render_html_report(
     thead th { background: #e2e8f0; font-weight: 600; }
     tbody tr:nth-child(even) { background: #f1f5f9; }
     .summary-table th { background: #1e293b; color: #f8fafc; }
+    .risk-table th { background: #0f172a; color: #f8fafc; }
     .summary-table tbody tr:nth-child(even) { background: #e2e8f0; }
     .notice { background: #fff7ed; border: 1px solid #f97316; padding: 1rem; border-radius: 0.5rem; }
     .footer { font-size: 0.875rem; color: #64748b; margin-top: 3rem; }
@@ -129,6 +209,17 @@ def render_html_report(
         <section>
           <h2>Summary Metrics</h2>
           {summary_html}
+        </section>
+        <section>
+          <h2>Risk & Benchmark Metrics</h2>
+          {risk_html}
+        </section>
+        {freq_html}
+        <section>
+          <h2>Methodology</h2>
+          <p>Returns are monthly simple returns. Risk-free rate: {bundle.annual_rf:.2%}. Beta/correlation computed vs SPY. VaR/CVaR are historical and period-specific.</p>
+          <h3>Data windows</h3>
+          {windows_html}
         </section>
         {missing_html}
         <div class="footer">Built with portfolio_cli.</div>

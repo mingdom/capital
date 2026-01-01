@@ -124,10 +124,11 @@ def performance_command(
     for name in columns:
         metrics_table.add_column(name, justify="right")
 
+    ytd_label = f"YTD ({current_year})"
     metric_rows = [
         ("CAGR", lambda m: m.metrics.cagr),
         ("3M", lambda m: m.metrics.three_month),
-        ("YTD", lambda m: m.metrics.ytd),
+        (ytd_label, lambda m: m.metrics.ytd),
         ("Max Drawdown", lambda m: m.metrics.max_dd_monthly),
         ("Sharpe", lambda m: m.metrics.sharpe, True),
         ("Sortino", lambda m: m.metrics.sortino, True),
@@ -149,6 +150,94 @@ def performance_command(
         metrics_table.add_row(label, *row_values)
 
     console.print(metrics_table)
+
+    risk_table = Table(title="Risk & Benchmark", box=box.MINIMAL_DOUBLE_HEAD, show_lines=False)
+    risk_table.add_column("Metric", style="bold")
+    for name in columns:
+        risk_table.add_column(name, justify="right")
+
+    def fmt_ratio(value: float | None) -> str:
+        return f"{value:.2f}" if value is not None else "—"
+
+    def fmt_int(value: int | None) -> str:
+        return f"{value}" if value is not None else "—"
+
+    risk_rows = [
+        ("Vol (ann)", lambda r: r.volatility, fmt_pct),
+        ("Downside Dev (ann)", lambda r: r.downside_dev, fmt_pct),
+        ("Max Drawdown", lambda r: r.max_drawdown, fmt_pct),
+        ("DD Duration (mo)", lambda r: r.drawdown_duration, fmt_int),
+        ("VaR 95 (mo)", lambda r: r.var_95, fmt_pct),
+        ("CVaR 95 (mo)", lambda r: r.cvar_95, fmt_pct),
+        ("VaR 99 (mo)", lambda r: r.var_99, fmt_pct),
+        ("CVaR 99 (mo)", lambda r: r.cvar_99, fmt_pct),
+        ("Hit Rate", lambda r: r.hit_rate, fmt_pct),
+        ("Avg Up Month", lambda r: r.avg_up, fmt_pct),
+        ("Avg Down Month", lambda r: r.avg_down, fmt_pct),
+        ("Worst Month", lambda r: r.worst_month, fmt_pct),
+        ("Best Month", lambda r: r.best_month, fmt_pct),
+        ("Beta vs SPY", lambda r: r.beta_spy, fmt_ratio),
+        ("Corr vs SPY", lambda r: r.corr_spy, fmt_ratio),
+    ]
+
+    for label, getter, formatter in risk_rows:
+        row_values = []
+        for name in columns:
+            risk = bundle.risk_metrics.get(name)
+            if risk is None:
+                row_values.append("—")
+                continue
+            value = getter(risk)
+            row_values.append(formatter(value))
+        risk_table.add_row(label, *row_values)
+
+    console.print()
+    console.print(risk_table)
+
+    if bundle.freq_metrics.get("Mingdom"):
+        freq = bundle.freq_metrics["Mingdom"]
+        freq_table = Table(
+            title="Mingdom Risk by Frequency (informational)",
+            box=box.MINIMAL_DOUBLE_HEAD,
+            show_lines=False,
+        )
+        freq_table.add_column("Metric", style="bold")
+        freq_table.add_column("Daily", justify="right")
+        freq_table.add_column("Weekly", justify="right")
+        freq_table.add_column("Monthly", justify="right")
+
+        def row(label: str, getter):
+            return [
+                label,
+                getter(freq.daily),
+                getter(freq.weekly),
+                getter(freq.monthly),
+            ]
+
+        rows = [
+            row("Vol (ann)", lambda r: fmt_pct(r.volatility)),
+            row("Sharpe", lambda r: fmt_ratio(r.sharpe)),
+            row("Sortino", lambda r: fmt_ratio(r.sortino)),
+            row("VaR 95 (period)", lambda r: fmt_pct(r.var_95)),
+            row("CVaR 95 (period)", lambda r: fmt_pct(r.cvar_95)),
+        ]
+        for items in rows:
+            freq_table.add_row(*items)
+        console.print()
+        console.print(freq_table)
+
+    console.print()
+    console.print(
+        f"Assumptions: monthly simple returns; RF={annual_rf:.2%}; "
+        "beta/corr vs SPY; VaR/CVaR are historical."
+    )
+    console.print("Data windows:")
+    for name in columns:
+        window = bundle.windows.get(name)
+        if window is None or window.count == 0:
+            console.print(f"• {name}: no data")
+            continue
+        console.print(f"• {name}: {window.start} → {window.end} ({window.count} months)")
 
     if bundle.missing:
         console.print()

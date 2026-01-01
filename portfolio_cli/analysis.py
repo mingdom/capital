@@ -82,6 +82,31 @@ def calculate_monthly_returns(df: pd.DataFrame, drop_zeros: bool = True) -> pd.S
     return monthly.sort_index()
 
 
+def compute_drawdown_stats(returns: pd.Series) -> tuple[float | None, int | None]:
+    """Return (max_drawdown, max_duration) for a return series.
+
+    Drawdown is computed on the cumulative wealth index. Duration is the longest
+    consecutive run of periods below the prior peak.
+    """
+    series = returns.dropna()
+    if series.empty:
+        return None, None
+    wealth = (1 + series).cumprod()
+    peak = wealth.cummax()
+    drawdown = wealth / peak - 1
+    max_dd = float(drawdown.min())
+    max_duration = 0
+    current = 0
+    for val in drawdown:
+        if val < 0:
+            current += 1
+            if current > max_duration:
+                max_duration = current
+        else:
+            current = 0
+    return max_dd, max_duration
+
+
 def calculate_metrics(monthly_returns: pd.Series, annual_rf: float, current_year: int) -> PerformanceMetrics:
     """Compute CAGR, drawdown, Sharpe/Sortino, and year-to-date return."""
 
@@ -116,7 +141,7 @@ def calculate_metrics(monthly_returns: pd.Series, annual_rf: float, current_year
     ytd_months = monthly_returns[period_filter]
     ytd_perf = float(np.prod(1 + ytd_months) - 1) if not ytd_months.empty else None
 
-    max_dd_monthly = float(monthly_returns.min()) if not monthly_returns.empty else None
+    max_dd_monthly, _ = compute_drawdown_stats(monthly_returns)
 
     return PerformanceMetrics(
         cagr=cagr,
@@ -267,7 +292,7 @@ def format_portfolio_summary(analysis: PortfolioAnalysis, current_year: int) -> 
 
     lines.append("")
     lines.append(f"CAGR (Annual): {_pct(metrics.cagr)}")
-    lines.append(f"Max Monthly Drawdown: {_pct(metrics.max_dd_monthly)}")
+    lines.append(f"Max Drawdown: {_pct(metrics.max_dd_monthly)}")
     lines.append(f"YTD Performance ({current_year}): {_pct(metrics.ytd)}")
     lines.append("")
     lines.append(f"Annualized Sharpe Ratio: {_val(metrics.sharpe)}")
@@ -277,5 +302,5 @@ def format_portfolio_summary(analysis: PortfolioAnalysis, current_year: int) -> 
     lines.append("- CAGR: annualized growth; >15% is strong.")
     lines.append("- Sharpe: risk-adjusted return; >1 good, >2 great.")
     lines.append("- Sortino: focuses on downside; higher than Sharpe when losses are limited.")
-    lines.append("- Max Monthly Drawdown: worst monthly loss; smaller is better.")
+    lines.append("- Max Drawdown: worst peak-to-trough decline; smaller is better.")
     return "\n".join(lines)
