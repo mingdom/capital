@@ -10,6 +10,7 @@ This toolkit provides:
 - **Multiple Data Sources**: Support for SavvyTrader JSON exports and Fidelity CSV performance reports
 - **Interactive Shell**: REPL environment for ad-hoc analysis and exploration
 - **HTML Reports**: Generate static HTML reports with performance visualizations
+- **Web Dashboard**: Modern Next.js dashboard with institutional-grade UI (dark mode, charts, risk metrics)
 - **CLI & Programmatic API**: Use via command-line or import as a library
 
 ## Architecture
@@ -104,6 +105,36 @@ Filter by source:
 ./venv/bin/python -m portfolio_cli report mingdom --output dist/index.html
 ./venv/bin/python -m portfolio_cli report fidelity --fidelity-csv data/private/fidelity.csv --output dist/index.html
 ```
+
+### 5. Web Dashboard (Next.js)
+
+The web dashboard provides an institutional-grade interface for portfolio analytics.
+
+**First-time setup**:
+```bash
+make web-install   # Install Node.js dependencies
+```
+
+**Development** (runs on http://localhost:3000):
+```bash
+make web-dev       # Exports data + starts dev server
+```
+
+**Build for production**:
+```bash
+make web-build     # Exports data + builds static site
+```
+
+The dashboard consumes data from `web/public/data/portfolio.json`, which is automatically generated from your Python analytics. Run `make web-export` to update the data without restarting the server.
+
+**Features**:
+- Dark mode by default
+- Hero metrics (CAGR, YTD, Sharpe, Max Drawdown)
+- Performance chart (growth of $100)
+- Benchmark comparison table
+- Per-portfolio deep dive with risk metrics
+- Monthly returns bar chart
+- VaR, volatility, beta/correlation stats
 
 ## Data Sources
 

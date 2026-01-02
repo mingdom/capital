@@ -29,6 +29,7 @@ class PerformanceMetrics:
 
     cagr: float | None
     three_month: float | None
+    one_year: float | None
     max_dd_monthly: float | None
     ytd: float | None
     sharpe: float | None
@@ -38,6 +39,7 @@ class PerformanceMetrics:
         return {
             "cagr": self.cagr,
             "three_month": self.three_month,
+            "one_year": self.one_year,
             "max_dd_monthly": self.max_dd_monthly,
             "ytd": self.ytd,
             "sharpe": self.sharpe,
@@ -108,12 +110,13 @@ def compute_drawdown_stats(returns: pd.Series) -> tuple[float | None, int | None
 
 
 def calculate_metrics(monthly_returns: pd.Series, annual_rf: float, current_year: int) -> PerformanceMetrics:
-    """Compute CAGR, drawdown, Sharpe/Sortino, and year-to-date return."""
+    """Compute CAGR, drawdown, Sharpe/Sortino, trailing returns, and year-to-date return."""
 
     if monthly_returns.empty:
         return PerformanceMetrics(
             cagr=None,
             three_month=None,
+            one_year=None,
             max_dd_monthly=None,
             ytd=None,
             sharpe=None,
@@ -137,6 +140,10 @@ def calculate_metrics(monthly_returns: pd.Series, annual_rf: float, current_year
     recent3 = monthly_returns.dropna().tail(3)
     three_month = float(np.prod(1 + recent3) - 1) if len(recent3) > 0 else None
 
+    # Trailing 12-month (1Y) compounded return
+    recent12 = monthly_returns.dropna().tail(12)
+    one_year = float(np.prod(1 + recent12) - 1) if len(recent12) > 0 else None
+
     period_filter = monthly_returns.index.year == current_year
     ytd_months = monthly_returns[period_filter]
     ytd_perf = float(np.prod(1 + ytd_months) - 1) if not ytd_months.empty else None
@@ -146,6 +153,7 @@ def calculate_metrics(monthly_returns: pd.Series, annual_rf: float, current_year
     return PerformanceMetrics(
         cagr=cagr,
         three_month=three_month,
+        one_year=one_year,
         max_dd_monthly=max_dd_monthly,
         ytd=ytd_perf,
         sharpe=sharpe,

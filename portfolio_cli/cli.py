@@ -127,6 +127,7 @@ def performance_command(
     ytd_label = f"YTD ({current_year})"
     metric_rows = [
         ("CAGR", lambda m: m.metrics.cagr),
+        ("1Y", lambda m: m.metrics.one_year),
         ("3M", lambda m: m.metrics.three_month),
         (ytd_label, lambda m: m.metrics.ytd),
         ("Max Drawdown", lambda m: m.metrics.max_dd_monthly),

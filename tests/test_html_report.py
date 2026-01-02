@@ -16,7 +16,7 @@ def test_render_html_contains_tables_and_metrics():
         index=index,
     )
 
-    perf = PerformanceMetrics(cagr=0.1, three_month=0.02, max_dd_monthly=-0.02, ytd=0.01, sharpe=1.2, sortino=1.5)
+    perf = PerformanceMetrics(cagr=0.1, three_month=0.02, one_year=0.08, max_dd_monthly=-0.02, ytd=0.01, sharpe=1.2, sortino=1.5)
     metrics = {
         "Mingdom": PortfolioAnalysis(monthly_returns=combined["Mingdom"], metrics=perf),
         "Fidelity": PortfolioAnalysis(monthly_returns=combined["Fidelity"], metrics=perf),
