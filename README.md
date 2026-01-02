@@ -47,15 +47,25 @@ mingdom-capital/
 
 Using the Makefile (recommended):
 ```bash
-make install
+```bash
+make install  # Installs Python + Node dependencies
 ```
 
-Manual setup:
+This installs both Python (CLI/analytics) and Node.js (web dashboard) dependencies in one command.
+
+<details>
+<summary>Manual setup (if needed)</summary>
+
 ```bash
+# Python
 python3 -m venv venv
 ./venv/bin/pip install -U pip
 ./venv/bin/pip install -r requirements.txt -r dev-requirements.txt
+
+# Node.js (web dashboard)
+cd web && npm install
 ```
+</details>
 
 ### 2. Import Data
 
@@ -110,31 +120,46 @@ Filter by source:
 
 The web dashboard provides an institutional-grade interface for portfolio analytics.
 
-**First-time setup**:
+**Run the dashboard** (http://localhost:3000):
 ```bash
-make web-install   # Install Node.js dependencies
-```
-
-**Development** (runs on http://localhost:3000):
-```bash
-make web-dev       # Exports data + starts dev server
+make web  # Exports data + starts dev server
 ```
 
 **Build for production**:
 ```bash
-make web-build     # Exports data + builds static site
+make build  # Exports data + builds static site
 ```
 
-The dashboard consumes data from `web/public/data/portfolio.json`, which is automatically generated from your Python analytics. Run `make web-export` to update the data without restarting the server.
+The dashboard automatically exports fresh data from your Python analytics before starting. Data is served from `web/public/data/portfolio.json`.
 
 **Features**:
-- Dark mode by default
-- Hero metrics (CAGR, YTD, Sharpe, Max Drawdown)
-- Performance chart (growth of $100)
-- Benchmark comparison table
-- Per-portfolio deep dive with risk metrics
+- Portfolio-focused dashboard with global selector
+- Hero metrics (CAGR, 1Y, YTD, Sortino)
+- Linear performance chart with multi-select benchmarks
+- Risk profile with benchmark comparison
 - Monthly returns bar chart
-- VaR, volatility, beta/correlation stats
+- Comprehensive comparison table
+
+**Deployment**:
+
+The dashboard is configured for **Vercel** deployment (see `web/DEPLOYMENT.md` for details):
+
+```bash
+# 1. Push to GitHub
+git push origin main
+
+# 2. Deploy to Vercel (one-click import)
+# Visit vercel.com → Import Project
+
+# 3. Set GOD_MODE (optional)
+# In Vercel: Settings → Environment Variables
+# Add: NEXT_PUBLIC_GOD_MODE=true
+```
+
+**Security**:
+- **Default (public)**: Only shows Mingdom portfolio
+- **GOD_MODE=true**: Shows all portfolios (Mingdom + Fidelity)
+- Local development has GOD_MODE enabled by default
 
 ## Data Sources
 

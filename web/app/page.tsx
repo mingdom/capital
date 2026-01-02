@@ -192,16 +192,26 @@ export default function Dashboard() {
   const [selectedPortfolio, setSelectedPortfolio] = useState<string>("Mingdom");
   const [selectedBenchmarks, setSelectedBenchmarks] = useState<string[]>(["SPY"]);
 
+  // GOD_MODE: if not set, only show Mingdom portfolio (public mode)
+  // Set NEXT_PUBLIC_GOD_MODE=true in Vercel to show all portfolios
+  const isGodMode = process.env.NEXT_PUBLIC_GOD_MODE === "true";
+
   useEffect(() => {
     loadPortfolioData()
       .then((d) => {
-        setData(d);
-        if (d.portfolios.length > 0) {
-          setSelectedPortfolio(d.portfolios[0]);
+        // Filter portfolios based on GOD_MODE
+        const filteredData = {
+          ...d,
+          portfolios: isGodMode ? d.portfolios : d.portfolios.filter(p => p === "Mingdom"),
+        };
+
+        setData(filteredData);
+        if (filteredData.portfolios.length > 0) {
+          setSelectedPortfolio(filteredData.portfolios[0]);
         }
       })
       .catch((err) => setError(err.message));
-  }, []);
+  }, [isGodMode]);
 
   if (error) {
     return (
@@ -238,19 +248,21 @@ export default function Dashboard() {
       <Header data={data} />
 
       <main className="container mx-auto px-4 py-8 space-y-8">
-        {/* Portfolio Selector */}
-        <div className="flex items-center gap-4">
-          <span className="text-sm font-medium text-muted-foreground">Portfolio:</span>
-          <Tabs value={selectedPortfolio} onValueChange={setSelectedPortfolio}>
-            <TabsList>
-              {data.portfolios.map((p) => (
-                <TabsTrigger key={p} value={p} className="min-w-[120px]">
-                  {p}
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
-        </div>
+        {/* Portfolio Selector - only show if multiple portfolios */}
+        {data.portfolios.length > 1 && (
+          <div className="flex items-center gap-4">
+            <span className="text-sm font-medium text-muted-foreground">Portfolio:</span>
+            <Tabs value={selectedPortfolio} onValueChange={setSelectedPortfolio}>
+              <TabsList>
+                {data.portfolios.map((p) => (
+                  <TabsTrigger key={p} value={p} className="min-w-[120px]">
+                    {p}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </div>
+        )}
 
         {/* Hero Metrics */}
         <HeroMetrics data={data} portfolio={selectedPortfolio} />
