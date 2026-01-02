@@ -2,12 +2,13 @@
 
 ## High Priority (UX & Polish)
 
-### Time Period Filter
-- [ ] Add time period selector (YTD, 1Y, 3Y, 5Y, All)
-- [ ] Filter chart data based on selected period
-- [ ] Update metrics calculations to reflect selected period
-- [ ] Ensure period selector is prominent and easy to use
+### Time Period Filter ✅
+- [x] Add time period selector (YTD, 1Y, 3Y, 5Y, All)
+- [x] Filter chart data based on selected period
+- [x] Update metrics calculations to reflect selected period
+- [x] Ensure period selector is prominent and easy to use
 - **Impact**: Allows users to analyze performance across different timeframes as track record grows
+- **Status**: Complete - deployed with tab selector and memoized filtering
 
 ### Sortable Comparison Table
 - [ ] Add click-to-sort functionality on column headers
