@@ -59,14 +59,30 @@ function Header({ data }: { data: PortfolioData }) {
 
   const generatedDate = mounted ? formatDate(data.generated_at) : "Loading...";
 
+  // Get metadata for the primary portfolio (Mingdom)
+  const meta = getPortfolioMeta("Mingdom");
+
   return (
     <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              Mingdom Capital
-            </h1>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold tracking-tight">
+                Mingdom Capital
+              </h1>
+              {meta.url && (
+                <a
+                  href={meta.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                >
+                  View on SavvyTrader
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              )}
+            </div>
             <p className="text-sm text-muted-foreground">
               Portfolio Performance Dashboard
             </p>
@@ -276,25 +292,6 @@ export default function Dashboard() {
 
         {/* Hero Metrics */}
         <HeroMetrics data={data} portfolio={selectedPortfolio} />
-
-        {/* Portfolio Link - subtle external link if available */}
-        {(() => {
-          const meta = getPortfolioMeta(selectedPortfolio);
-          if (!meta.url) return null;
-          return (
-            <div className="flex justify-end">
-              <a
-                href={meta.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {meta.urlLabel || "View portfolio"}
-                <ExternalLink className="h-3 w-3" />
-              </a>
-            </div>
-          );
-        })()}
 
         {/* Benchmark Selector */}
         <BenchmarkSelector
