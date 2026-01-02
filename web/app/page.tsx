@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { PortfolioData } from "@/lib/types";
 import { loadPortfolioData, toCumulativeWealth, toTimeSeries } from "@/lib/data";
+import { getPortfolioMeta } from "@/lib/portfolio-meta";
 import { MetricCard } from "@/components/metrics/metric-card";
 import { ComparisonTable } from "@/components/metrics/comparison-table";
 import { RiskMetricsCard } from "@/components/metrics/risk-metrics-card";
@@ -10,13 +11,14 @@ import { QuickStatsCard } from "@/components/metrics/quick-stats-card";
 import { PerformanceChart } from "@/components/charts/performance-chart";
 import { MonthlyReturnsChart } from "@/components/charts/monthly-returns-chart";
 import { Section } from "@/components/layout/section";
+import { InfoTooltip, METRIC_INFO } from "@/components/ui/info-tooltip";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { TrendingUp, Activity, AlertTriangle } from "lucide-react";
+import { TrendingUp, Activity, AlertTriangle, ExternalLink } from "lucide-react";
 
 function LoadingSkeleton() {
   return (
@@ -99,6 +101,7 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
             <TrendingUp className="h-4 w-4" />
             Annual Return
+            <InfoTooltip content={METRIC_INFO.cagr} />
           </div>
           <div className={`text-3xl font-bold ${metrics.cagr && metrics.cagr > 0 ? "text-emerald-500" : "text-red-500"}`}>
             {metrics.cagr ? `${(metrics.cagr * 100).toFixed(1)}%` : "—"}
@@ -113,6 +116,7 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
             <Activity className="h-4 w-4" />
             1 Year
+            <InfoTooltip content={METRIC_INFO.one_year} />
           </div>
           <div className={`text-3xl font-bold ${metrics.one_year && metrics.one_year > 0 ? "text-emerald-500" : "text-red-500"}`}>
             {metrics.one_year ? `${(metrics.one_year * 100).toFixed(1)}%` : "—"}
@@ -127,6 +131,7 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
             <Activity className="h-4 w-4" />
             Year to Date
+            <InfoTooltip content={METRIC_INFO.ytd} />
           </div>
           <div className={`text-3xl font-bold ${metrics.ytd && metrics.ytd > 0 ? "text-emerald-500" : "text-red-500"}`}>
             {metrics.ytd ? `${(metrics.ytd * 100).toFixed(1)}%` : "—"}
@@ -138,7 +143,10 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
 
       <Card>
         <CardContent className="p-6">
-          <div className="text-sm text-muted-foreground mb-2">Sortino Ratio</div>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+            Sortino Ratio
+            <InfoTooltip content={METRIC_INFO.sortino} />
+          </div>
           <div className="text-3xl font-bold">
             {metrics.sortino ? metrics.sortino.toFixed(2) : "—"}
           </div>
@@ -268,6 +276,25 @@ export default function Dashboard() {
 
         {/* Hero Metrics */}
         <HeroMetrics data={data} portfolio={selectedPortfolio} />
+
+        {/* Portfolio Link - subtle external link if available */}
+        {(() => {
+          const meta = getPortfolioMeta(selectedPortfolio);
+          if (!meta.url) return null;
+          return (
+            <div className="flex justify-end">
+              <a
+                href={meta.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {meta.urlLabel || "View portfolio"}
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            </div>
+          );
+        })()}
 
         {/* Benchmark Selector */}
         <BenchmarkSelector

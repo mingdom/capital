@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, Target, Calendar, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { InfoTooltip, METRIC_INFO } from "@/components/ui/info-tooltip";
 
 interface QuickStatsCardProps {
     metrics: {
@@ -32,18 +33,21 @@ function StatRow({
     icon: Icon,
     label,
     value,
-    valueClass = ""
+    valueClass = "",
+    info
 }: {
     icon: React.ComponentType<{ className?: string }>;
     label: string;
     value: string;
     valueClass?: string;
+    info?: string;
 }) {
     return (
         <div className="flex items-center justify-between py-2">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Icon className="h-4 w-4" />
                 <span>{label}</span>
+                {info && <InfoTooltip content={info} />}
             </div>
             <span className={`font-medium ${valueClass}`}>{value}</span>
         </div>
@@ -73,6 +77,7 @@ export function QuickStatsCard({ metrics, name, className }: QuickStatsCardProps
                     valueClass={metrics.hit_rate !== null && metrics.hit_rate >= 0.5
                         ? "text-emerald-500"
                         : "text-red-500"}
+                    info={METRIC_INFO.hit_rate}
                 />
 
                 <StatRow
@@ -80,6 +85,7 @@ export function QuickStatsCard({ metrics, name, className }: QuickStatsCardProps
                     label="Avg Up Month"
                     value={formatPercent(metrics.avg_up)}
                     valueClass="text-emerald-500"
+                    info={METRIC_INFO.avg_up}
                 />
 
                 <StatRow
@@ -87,6 +93,7 @@ export function QuickStatsCard({ metrics, name, className }: QuickStatsCardProps
                     label="Avg Down Month"
                     value={formatPercent(metrics.avg_down)}
                     valueClass="text-red-500"
+                    info={METRIC_INFO.avg_down}
                 />
 
                 <div className="border-t border-border/50 my-2" />
@@ -96,6 +103,7 @@ export function QuickStatsCard({ metrics, name, className }: QuickStatsCardProps
                     label="Up Capture"
                     value={formatCapturePercent(metrics.up_capture)}
                     valueClass={upCaptureGood ? "text-emerald-500" : "text-amber-500"}
+                    info={METRIC_INFO.up_capture}
                 />
 
                 <StatRow
@@ -103,6 +111,7 @@ export function QuickStatsCard({ metrics, name, className }: QuickStatsCardProps
                     label="Down Capture"
                     value={formatCapturePercent(metrics.down_capture)}
                     valueClass={downCaptureGood ? "text-emerald-500" : "text-red-500"}
+                    info={METRIC_INFO.down_capture}
                 />
 
                 <div className="border-t border-border/50 my-2" />
@@ -112,6 +121,7 @@ export function QuickStatsCard({ metrics, name, className }: QuickStatsCardProps
                     label="Best Month"
                     value={formatPercent(metrics.best_month)}
                     valueClass="text-emerald-500"
+                    info={METRIC_INFO.best_month}
                 />
 
                 <StatRow
@@ -119,6 +129,7 @@ export function QuickStatsCard({ metrics, name, className }: QuickStatsCardProps
                     label="Worst Month"
                     value={formatPercent(metrics.worst_month)}
                     valueClass="text-red-500"
+                    info={METRIC_INFO.worst_month}
                 />
             </CardContent>
         </Card>
