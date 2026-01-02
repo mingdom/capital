@@ -23,7 +23,7 @@ interface PerformanceChartProps {
     className?: string;
 }
 
-type TimeRange = "1W" | "1M" | "3M" | "6M" | "YTD" | "1Y" | "Max";
+type TimeRange = "1M" | "3M" | "6M" | "YTD" | "1Y" | "Max";
 
 export function PerformanceChart({
     data,
@@ -44,10 +44,6 @@ export function PerformanceChart({
         let startIndex = 0;
 
         switch (selectedRange) {
-            case "1W":
-                // Show last ~1 week (approximate with 1 data point for monthly data)
-                startIndex = Math.max(0, data.length - 1);
-                break;
             case "1M":
                 // Show last 1 month
                 startIndex = Math.max(0, data.length - 1);
@@ -119,7 +115,7 @@ export function PerformanceChart({
     // Dynamically adjust tick interval based on data length
     const tickInterval = Math.max(1, Math.ceil(filteredData.length / 8));
 
-    const timeRanges: TimeRange[] = ["1W", "1M", "3M", "6M", "YTD", "1Y", "Max"];
+    const timeRanges: TimeRange[] = ["1M", "3M", "6M", "YTD", "1Y", "Max"];
 
     return (
         <Card className={className}>
@@ -241,7 +237,7 @@ export function PerformanceChart({
                     </ResponsiveContainer>
                 </div>
                 <p className="text-xs text-muted-foreground mt-4 text-center">
-                    Growth of $100 invested at inception
+                    Growth of $100K invested at inception
                 </p>
             </CardContent>
         </Card>

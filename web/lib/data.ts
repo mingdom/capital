@@ -55,7 +55,7 @@ export function toTimeSeries(
 
 /**
  * Convert monthly returns to cumulative wealth index for comparison.
- * Starts at 100 for all series.
+ * Starts at 100,000 for all series.
  */
 export function toCumulativeWealth(
     monthlyReturns: Record<string, Record<string, number>>,
@@ -63,10 +63,10 @@ export function toCumulativeWealth(
 ): WealthPoint[] {
     const timeSeries = toTimeSeries(monthlyReturns, sources);
 
-    // Initialize wealth at 100 for each source
+    // Initialize wealth at 100,000 for each source
     const wealth: Record<string, number> = {};
     for (const source of sources) {
-        wealth[source] = 100;
+        wealth[source] = 100000;
     }
 
     return timeSeries.map((point) => {
