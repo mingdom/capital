@@ -38,6 +38,7 @@ Data Sources → performance.py → analysis.py → cli.py/report.py
 - Add tests for new metrics or data loaders
 - Update README if changing CLI commands/flags
 - Run `make test` before claiming success
+- **Check for Next.js Hydration Errors**: Whenever modifying the UI, use a browser tool to proactively check the console for hydration warnings (e.g., "Did not expect server HTML to contain...") and fix them before completing the task.
 
 **Don't**:
 - **NEVER `git push` without explicit permission** - Triggers Vercel deployment
