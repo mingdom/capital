@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RiskMetrics as RiskMetricsType } from "@/lib/types";
+import { RiskMetrics as RiskMetricsType, PerformanceMetrics } from "@/lib/types";
 import { formatPercent, formatNumber } from "@/lib/data";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -23,7 +23,9 @@ import { Info, TrendingUp, TrendingDown } from "lucide-react";
 interface RiskMetricsCardProps {
     metrics: RiskMetricsType;
     name: string;
+    performanceMetrics?: PerformanceMetrics;
     benchmarkMetrics?: Record<string, RiskMetricsType>;
+    benchmarkPerformance?: Record<string, PerformanceMetrics>;
     benchmarks?: string[];
     className?: string;
 }
@@ -94,7 +96,9 @@ function MetricRow({
 export function RiskMetricsCard({
     metrics,
     name,
+    performanceMetrics,
     benchmarkMetrics = {},
+    benchmarkPerformance = {},
     benchmarks = [],
     className
 }: RiskMetricsCardProps) {
@@ -103,6 +107,7 @@ export function RiskMetricsCard({
     );
 
     const compareMetrics = selectedBenchmark ? benchmarkMetrics[selectedBenchmark] : undefined;
+    const comparePerformance = selectedBenchmark ? benchmarkPerformance[selectedBenchmark] : undefined;
 
     return (
         <Card className={className}>
@@ -126,6 +131,32 @@ export function RiskMetricsCard({
                 </div>
             </CardHeader>
             <CardContent className="space-y-1">
+                {/* Risk-Adjusted Ratios Section - Featured at top */}
+                {performanceMetrics && (
+                    <>
+                        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                            Risk-Adjusted Returns
+                        </div>
+                        <MetricRow
+                            label="Sharpe Ratio"
+                            value={performanceMetrics.sharpe !== null ? performanceMetrics.sharpe.toFixed(2) : "—"}
+                            compareValue={comparePerformance?.sharpe !== null && comparePerformance?.sharpe !== undefined
+                                ? comparePerformance.sharpe.toFixed(2) : undefined}
+                            description="Return per unit of total risk (volatility)"
+                            higherIsBetter={true}
+                        />
+                        <MetricRow
+                            label="Sortino Ratio"
+                            value={performanceMetrics.sortino !== null ? performanceMetrics.sortino.toFixed(2) : "—"}
+                            compareValue={comparePerformance?.sortino !== null && comparePerformance?.sortino !== undefined
+                                ? comparePerformance.sortino.toFixed(2) : undefined}
+                            description="Return per unit of downside risk only"
+                            higherIsBetter={true}
+                        />
+                        <Separator className="my-4" />
+                    </>
+                )}
+
                 {/* Volatility Section */}
                 <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                     Volatility

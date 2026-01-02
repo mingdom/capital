@@ -110,8 +110,14 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
 
   if (!metrics) return null;
 
+  // Determine if YTD has meaningful data (show 1Y instead early in the year)
+  // YTD is meaningful if: it exists and is not nearly zero, OR we're past Q1
+  const currentMonth = new Date().getMonth(); // 0 = Jan, 1 = Feb, etc.
+  const ytdMeaningful = currentMonth >= 2 || (metrics.ytd !== null && Math.abs(metrics.ytd) > 0.01);
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* CAGR - Always show */}
       <Card className="relative overflow-hidden">
         <CardContent className="p-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
@@ -127,36 +133,54 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
         <div className={`absolute inset-0 opacity-5 ${metrics.cagr && metrics.cagr > 0 ? "bg-emerald-500" : "bg-red-500"}`} />
       </Card>
 
-      <Card className="relative overflow-hidden">
+      {/* YTD or 1Y - Conditional based on time of year */}
+      {ytdMeaningful ? (
+        <Card className="relative overflow-hidden">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+              <Activity className="h-4 w-4" />
+              Year to Date
+              <InfoTooltip content={METRIC_INFO.ytd} />
+            </div>
+            <div className={`text-3xl font-bold ${metrics.ytd && metrics.ytd > 0 ? "text-emerald-500" : "text-red-500"}`}>
+              {metrics.ytd ? `${(metrics.ytd * 100).toFixed(1)}%` : "—"}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">{data.current_year} performance</p>
+          </CardContent>
+          <div className={`absolute inset-0 opacity-5 ${metrics.ytd && metrics.ytd > 0 ? "bg-emerald-500" : "bg-red-500"}`} />
+        </Card>
+      ) : (
+        <Card className="relative overflow-hidden">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+              <Activity className="h-4 w-4" />
+              1 Year
+              <InfoTooltip content={METRIC_INFO.one_year} />
+            </div>
+            <div className={`text-3xl font-bold ${metrics.one_year && metrics.one_year > 0 ? "text-emerald-500" : "text-red-500"}`}>
+              {metrics.one_year ? `${(metrics.one_year * 100).toFixed(1)}%` : "—"}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">Trailing 12 months</p>
+          </CardContent>
+          <div className={`absolute inset-0 opacity-5 ${metrics.one_year && metrics.one_year > 0 ? "bg-emerald-500" : "bg-red-500"}`} />
+        </Card>
+      )}
+
+      {/* Beta vs SPY */}
+      <Card>
         <CardContent className="p-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-            <Activity className="h-4 w-4" />
-            1 Year
-            <InfoTooltip content={METRIC_INFO.one_year} />
+            Beta
+            <InfoTooltip content={METRIC_INFO.beta_spy} />
           </div>
-          <div className={`text-3xl font-bold ${metrics.one_year && metrics.one_year > 0 ? "text-emerald-500" : "text-red-500"}`}>
-            {metrics.one_year ? `${(metrics.one_year * 100).toFixed(1)}%` : "—"}
+          <div className="text-3xl font-bold">
+            {data.risk[portfolio]?.beta_spy ? data.risk[portfolio].beta_spy.toFixed(2) : "—"}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">Trailing 12 months</p>
+          <p className="text-xs text-muted-foreground mt-1">vs S&P 500</p>
         </CardContent>
-        <div className={`absolute inset-0 opacity-5 ${metrics.one_year && metrics.one_year > 0 ? "bg-emerald-500" : "bg-red-500"}`} />
       </Card>
 
-      <Card className="relative overflow-hidden">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-            <Activity className="h-4 w-4" />
-            Year to Date
-            <InfoTooltip content={METRIC_INFO.ytd} />
-          </div>
-          <div className={`text-3xl font-bold ${metrics.ytd && metrics.ytd > 0 ? "text-emerald-500" : "text-red-500"}`}>
-            {metrics.ytd ? `${(metrics.ytd * 100).toFixed(1)}%` : "—"}
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">{data.current_year} performance</p>
-        </CardContent>
-        <div className={`absolute inset-0 opacity-5 ${metrics.ytd && metrics.ytd > 0 ? "bg-emerald-500" : "bg-red-500"}`} />
-      </Card>
-
+      {/* Sortino Ratio */}
       <Card>
         <CardContent className="p-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
@@ -166,7 +190,7 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
           <div className="text-3xl font-bold">
             {metrics.sortino ? metrics.sortino.toFixed(2) : "—"}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">Monthly, annualized</p>
+          <p className="text-xs text-muted-foreground mt-1">Downside risk-adjusted</p>
         </CardContent>
       </Card>
     </div>
@@ -334,7 +358,9 @@ export default function Dashboard() {
             <RiskMetricsCard
               metrics={riskMetrics}
               name={selectedPortfolio}
+              performanceMetrics={data.performance[selectedPortfolio]}
               benchmarkMetrics={data.risk}
+              benchmarkPerformance={data.performance}
               benchmarks={data.benchmarks}
             />
           )}
