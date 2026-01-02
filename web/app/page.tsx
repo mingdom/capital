@@ -230,17 +230,17 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
         </CardContent>
       </Card>
 
-      {/* Sortino Ratio */}
+      {/* Sharpe Ratio */}
       <Card>
         <CardContent className="p-4 md:p-6">
           <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
-            Sortino Ratio
-            <InfoTooltip content={METRIC_INFO.sortino} />
+            Sharpe Ratio
+            <InfoTooltip content={METRIC_INFO.sharpe} />
           </div>
           <div className="text-xl md:text-3xl font-bold">
-            {metrics.sortino ? metrics.sortino.toFixed(2) : "—"}
+            {metrics.sharpe ? metrics.sharpe.toFixed(2) : "—"}
           </div>
-          <p className="text-[10px] md:text-xs text-muted-foreground mt-1 text-nowrap overflow-hidden text-ellipsis">Downside risk-adjusted</p>
+          <p className="text-[10px] md:text-xs text-muted-foreground mt-1">Risk-adjusted return</p>
         </CardContent>
       </Card>
     </div>
