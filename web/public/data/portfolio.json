@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-01-01T19:03:12.323990",
+  "generated_at": "2026-01-01T19:28:36.025601",
   "current_year": 2026,
   "annual_rf": 0.04,
   "last_period": "2025-12",
@@ -198,7 +198,9 @@
       "beta_spy": 1.267411,
       "corr_spy": 0.878802,
       "worst_month": -0.091526,
-      "best_month": 0.110503
+      "best_month": 0.110503,
+      "up_capture": 1.337113,
+      "down_capture": 0.764172
     },
     "Fidelity": {
       "volatility": 0.135577,
@@ -215,7 +217,9 @@
       "beta_spy": 0.996571,
       "corr_spy": 0.786096,
       "worst_month": -0.059454,
-      "best_month": 0.090163
+      "best_month": 0.090163,
+      "up_capture": 1.183474,
+      "down_capture": 0.741159
     },
     "SPY": {
       "volatility": 0.106943,
@@ -232,7 +236,9 @@
       "beta_spy": 1.0,
       "corr_spy": 1.0,
       "worst_month": -0.058551,
-      "best_month": 0.062845
+      "best_month": 0.062845,
+      "up_capture": 1.0,
+      "down_capture": 1.0
     },
     "QQQ": {
       "volatility": 0.138351,
@@ -249,7 +255,9 @@
       "beta_spy": 1.163334,
       "corr_spy": 0.899239,
       "worst_month": -0.077238,
-      "best_month": 0.091783
+      "best_month": 0.091783,
+      "up_capture": 1.049037,
+      "down_capture": 0.919359
     },
     "ARKK": {
       "volatility": 0.376259,
@@ -266,7 +274,9 @@
       "beta_spy": 2.643978,
       "corr_spy": 0.75149,
       "worst_month": -0.14486,
-      "best_month": 0.263456
+      "best_month": 0.263456,
+      "up_capture": 1.894869,
+      "down_capture": 2.569034
     }
   },
   "windows": {

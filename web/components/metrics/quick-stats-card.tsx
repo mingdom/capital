@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Target, Calendar } from "lucide-react";
+import { TrendingUp, TrendingDown, Target, Calendar, ArrowUpRight, ArrowDownRight } from "lucide-react";
 
 interface QuickStatsCardProps {
     metrics: {
@@ -10,6 +10,8 @@ interface QuickStatsCardProps {
         avg_down: number | null;
         best_month: number | null;
         worst_month: number | null;
+        up_capture: number | null;
+        down_capture: number | null;
     };
     name: string;
     className?: string;
@@ -19,6 +21,11 @@ function formatPercent(value: number | null): string {
     if (value === null) return "—";
     const sign = value >= 0 ? "+" : "";
     return `${sign}${(value * 100).toFixed(1)}%`;
+}
+
+function formatCapturePercent(value: number | null): string {
+    if (value === null) return "—";
+    return `${(value * 100).toFixed(0)}%`;
 }
 
 function StatRow({
@@ -48,6 +55,11 @@ export function QuickStatsCard({ metrics, name, className }: QuickStatsCardProps
         ? `${(metrics.hit_rate * 100).toFixed(0)}%`
         : "—";
 
+    // Up capture > 100% is good (capturing more upside)
+    // Down capture < 100% is good (losing less in downturns)
+    const upCaptureGood = metrics.up_capture !== null && metrics.up_capture >= 1;
+    const downCaptureGood = metrics.down_capture !== null && metrics.down_capture < 1;
+
     return (
         <Card className={className}>
             <CardHeader className="pb-2">
@@ -75,6 +87,22 @@ export function QuickStatsCard({ metrics, name, className }: QuickStatsCardProps
                     label="Avg Down Month"
                     value={formatPercent(metrics.avg_down)}
                     valueClass="text-red-500"
+                />
+
+                <div className="border-t border-border/50 my-2" />
+
+                <StatRow
+                    icon={ArrowUpRight}
+                    label="Up Capture"
+                    value={formatCapturePercent(metrics.up_capture)}
+                    valueClass={upCaptureGood ? "text-emerald-500" : "text-amber-500"}
+                />
+
+                <StatRow
+                    icon={ArrowDownRight}
+                    label="Down Capture"
+                    value={formatCapturePercent(metrics.down_capture)}
+                    valueClass={downCaptureGood ? "text-emerald-500" : "text-red-500"}
                 />
 
                 <div className="border-t border-border/50 my-2" />

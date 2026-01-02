@@ -91,6 +91,8 @@ class RiskMetrics:
     corr_spy: float | None
     worst_month: float | None
     best_month: float | None
+    up_capture: float | None
+    down_capture: float | None
 
 
 @dataclass(frozen=True)
@@ -152,6 +154,44 @@ def _beta_corr(series: pd.Series, bench: pd.Series | None) -> tuple[float | None
     return beta, corr
 
 
+def _capture_ratios(series: pd.Series, bench: pd.Series | None) -> tuple[float | None, float | None]:
+    """Calculate up-capture and down-capture ratios vs benchmark.
+
+    Up-capture: Average portfolio return / average benchmark return when benchmark > 0
+    Down-capture: Average portfolio return / average benchmark return when benchmark < 0
+
+    Ideal: High up-capture (>100%), low down-capture (<100%)
+    """
+    if bench is None:
+        return None, None
+    aligned = pd.concat([series, bench], axis=1).dropna()
+    if len(aligned) < 2:
+        return None, None
+
+    portfolio = aligned.iloc[:, 0]
+    benchmark = aligned.iloc[:, 1]
+
+    # Up-capture: performance when benchmark is positive
+    up_mask = benchmark > 0
+    if up_mask.sum() < 1:
+        up_capture = None
+    else:
+        bench_up_mean = float(benchmark[up_mask].mean())
+        port_up_mean = float(portfolio[up_mask].mean())
+        up_capture = port_up_mean / bench_up_mean if bench_up_mean != 0 else None
+
+    # Down-capture: performance when benchmark is negative
+    down_mask = benchmark < 0
+    if down_mask.sum() < 1:
+        down_capture = None
+    else:
+        bench_down_mean = float(benchmark[down_mask].mean())
+        port_down_mean = float(portfolio[down_mask].mean())
+        down_capture = port_down_mean / bench_down_mean if bench_down_mean != 0 else None
+
+    return up_capture, down_capture
+
+
 def _risk_metrics(
     series: pd.Series,
     *,
@@ -169,6 +209,7 @@ def _risk_metrics(
     avg_up = float(clean[clean > 0].mean()) if (clean > 0).any() else None
     avg_down = float(clean[clean < 0].mean()) if (clean < 0).any() else None
     beta, corr = _beta_corr(clean, benchmark)
+    up_capture, down_capture = _capture_ratios(clean, benchmark)
     worst_month = float(clean.min()) if not clean.empty else None
     best_month = float(clean.max()) if not clean.empty else None
     return RiskMetrics(
@@ -187,6 +228,8 @@ def _risk_metrics(
         corr_spy=corr,
         worst_month=worst_month,
         best_month=best_month,
+        up_capture=up_capture,
+        down_capture=down_capture,
     )
 
 

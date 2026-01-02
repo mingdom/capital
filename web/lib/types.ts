@@ -43,6 +43,8 @@ export interface RiskMetrics {
   corr_spy: number | null;
   worst_month: number | null;
   best_month: number | null;
+  up_capture: number | null;
+  down_capture: number | null;
 }
 
 export interface DataWindow {

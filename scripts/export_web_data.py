@@ -96,6 +96,8 @@ def bundle_to_dict(bundle: PerformanceBundle) -> dict:
             "corr_spy": serialize_value(rm.corr_spy),
             "worst_month": serialize_value(rm.worst_month),
             "best_month": serialize_value(rm.best_month),
+            "up_capture": serialize_value(rm.up_capture),
+            "down_capture": serialize_value(rm.down_capture),
         }
 
     # Data windows (date ranges)
