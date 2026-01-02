@@ -173,34 +173,3 @@ def test_shell_ls_alias(capsys):
     assert "Core commands" in out
 
 
-def test_cli_report_generates_file(tmp_path):
-    data_path = tmp_path / "valuations.json"
-    with data_path.open("w") as handle:
-        json.dump(_sample_data(), handle)
-
-    fidelity_path = tmp_path / "fidelity.csv"
-    fidelity_path.write_text(_fidelity_csv())
-
-    output_path = tmp_path / "report.html"
-
-    runner = CliRunner()
-    result = runner.invoke(
-        app,
-        [
-            "report",
-            "--mingdom-json",
-            str(data_path),
-            "--fidelity-csv",
-            str(fidelity_path),
-            "--no-benchmarks",
-            "--output",
-            str(output_path),
-            "--title",
-            "Test Report",
-        ],
-    )
-
-    assert result.exit_code == 0
-    html = output_path.read_text()
-    assert "Test Report" in html
-    assert "Monthly Returns" in html

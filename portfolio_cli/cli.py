@@ -15,7 +15,7 @@ from rich.table import Table
 
 from portfolio_cli.analysis import ANNUAL_RF_RATE, FIDELITY_CSV_PATH, JSON_FILE_PATH
 from portfolio_cli.performance import SUPPORTED_SOURCES, SourceKind, collect_performance_data
-from portfolio_cli.report import render_html_report
+
 from portfolio_cli.shell import start_shell
 
 
@@ -246,96 +246,6 @@ def performance_command(
         for note in bundle.missing:
             console.print(f"• {note}")
 
-
-@app.command("report")
-def report_command(
-    output: Path = typer.Option(
-        Path("dist/index.html"),
-        "--output",
-        "-o",
-        file_okay=True,
-        dir_okay=False,
-        writable=True,
-        help="Destination HTML file for the report.",
-        show_default=True,
-    ),
-    sources: Optional[List[SourceKind]] = typer.Argument(  # type: ignore[arg-type]
-        None,
-        case_sensitive=False,
-        help="Portfolio sources to include (mingdom, savvytrader, fidelity). Defaults to mingdom + fidelity.",
-    ),
-    savvy_json: Path = typer.Option(
-        JSON_FILE_PATH,
-        "--mingdom-json",
-        "--savvy-json",
-        file_okay=True,
-        dir_okay=False,
-        readable=True,
-        help="Path to Mingdom valuations JSON file.",
-        show_default=True,
-    ),
-    fidelity_csv: Path = typer.Option(
-        FIDELITY_CSV_PATH,
-        "--fidelity-csv",
-        file_okay=True,
-        dir_okay=False,
-        readable=True,
-        help="Path to Fidelity investment income CSV export.",
-        show_default=True,
-    ),
-    annual_rf: float = typer.Option(
-        ANNUAL_RF_RATE,
-        "--rf",
-        min=0.0,
-        help="Annual risk-free rate used for Sharpe/Sortino calculations (e.g., 0.04).",
-        show_default=True,
-    ),
-    year: Optional[int] = typer.Option(
-        None,
-        "--year",
-        help="Calendar year to use for YTD performance (defaults to the current year).",
-    ),
-    benchmarks: bool = typer.Option(
-        True,
-        "--benchmarks/--no-benchmarks",
-        help="Include benchmarks in the report.",
-        show_default=True,
-    ),
-    title: str = typer.Option(
-        "Mingdom Capital Performance",
-        "--title",
-        help="Title used at the top of the HTML report.",
-    ),
-) -> None:
-    """Generate an HTML report covering the selected portfolios."""
-
-    current_year = year or datetime.now().year
-    console = Console()
-
-    bundle = collect_performance_data(
-        sources=sources,
-        savvy_json=savvy_json,
-        fidelity_csv=fidelity_csv,
-        annual_rf=annual_rf,
-        current_year=current_year,
-        include_benchmarks=benchmarks,
-    )
-
-    if bundle.combined.empty:
-        console.print("[bold red]No portfolio data available — report not created.[/bold red]")
-        for note in bundle.missing:
-            console.print(f"• {note}")
-        raise typer.Exit(code=1)
-
-    html = render_html_report(bundle, title=title)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    output.write_text(html, encoding="utf-8")
-
-    console.print(f"[green]Report written to {output}[/green]")
-    if bundle.missing:
-        console.print("[yellow]Notes:[/yellow]")
-        for note in bundle.missing:
-            console.print(f"• {note}")
 
 
 @app.command("interactive")

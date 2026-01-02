@@ -68,9 +68,6 @@ $(PYTEST): install ; @true
 run: $(PY)
 	$(PY) -m portfolio_cli
 
-report: $(PY)
-	$(PY) scripts/build_report.py
-
 import: $(PY)
 	$(PY) -m scripts.import_latest -v
 
@@ -113,7 +110,6 @@ help:
 	@echo "  make format     Format code with black"
 	@echo "  make lint       Lint code with ruff"
 	@echo "  make import     Import latest data"
-	@echo "  make report     Generate HTML report"
 	@echo ""
 	@echo "Utilities:"
 	@echo "  make clean      Remove build artifacts"
