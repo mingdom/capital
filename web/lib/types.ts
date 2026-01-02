@@ -17,6 +17,12 @@ export interface PortfolioData {
   warnings: string[];
 }
 
+/**
+ * Monthly returns data: source -> period -> return value
+ */
+export type MonthlyReturns = Record<string, Record<string, number>>;
+
+
 export interface PerformanceMetrics {
   cagr: number | null;
   one_year: number | null;

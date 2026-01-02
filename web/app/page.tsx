@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { PortfolioData } from "@/lib/types";
 import { loadPortfolioData, toCumulativeWealth, toTimeSeries } from "@/lib/data";
+import { TimePeriod, filterMonthlyReturnsByPeriod, getPeriodLabel, hasSufficientData } from "@/lib/periods";
 import { MetricCard } from "@/components/metrics/metric-card";
 import { ComparisonTable } from "@/components/metrics/comparison-table";
 import { RiskMetricsCard } from "@/components/metrics/risk-metrics-card";
@@ -191,6 +192,7 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
   const [selectedPortfolio, setSelectedPortfolio] = useState<string>("Mingdom");
   const [selectedBenchmarks, setSelectedBenchmarks] = useState<string[]>(["SPY"]);
+  const [timePeriod, setTimePeriod] = useState<TimePeriod>("all");
 
   // GOD_MODE: if not set, only show Mingdom portfolio (public mode)
   // Set NEXT_PUBLIC_GOD_MODE=true in Vercel to show all portfolios
@@ -212,6 +214,12 @@ export default function Dashboard() {
       })
       .catch((err) => setError(err.message));
   }, [isGodMode]);
+
+  // Filter data by selected time period
+  const filteredMonthlyReturns = useMemo(() => {
+    if (!data) return {};
+    return filterMonthlyReturnsByPeriod(data.monthly_returns, timePeriod, data.current_year);
+  }, [data, timePeriod]);
 
   if (error) {
     return (
@@ -238,8 +246,8 @@ export default function Dashboard() {
   }
 
   const chartSeries = [selectedPortfolio, ...selectedBenchmarks];
-  const wealthData = toCumulativeWealth(data.monthly_returns, chartSeries);
-  const timeSeriesData = toTimeSeries(data.monthly_returns, [selectedPortfolio]);
+  const wealthData = toCumulativeWealth(filteredMonthlyReturns, chartSeries);
+  const timeSeriesData = toTimeSeries(filteredMonthlyReturns, [selectedPortfolio]);
   const metrics = data.performance[selectedPortfolio];
   const riskMetrics = data.risk[selectedPortfolio];
 
@@ -262,7 +270,7 @@ export default function Dashboard() {
               </TabsList>
             </Tabs>
           </div>
-        )}
+        )}\n\n        {/* Time Period Selector */}\n        <div className="flex items-center gap-4">\n          <span className="text-sm font-medium text-muted-foreground">Period:</span>\n          <Tabs value={timePeriod} onValueChange={(v) => setTimePeriod(v as TimePeriod)}>\n            <TabsList>\n              <TabsTrigger value="ytd">YTD</TabsTrigger>\n              <TabsTrigger value="1y">1Y</TabsTrigger>\n              <TabsTrigger value="3y">3Y</TabsTrigger>\n              <TabsTrigger value="5y">5Y</TabsTrigger>\n              <TabsTrigger value="all">All</TabsTrigger>\n            </TabsList>\n          </Tabs>\n        </div>
 
         {/* Hero Metrics */}
         <HeroMetrics data={data} portfolio={selectedPortfolio} />
@@ -278,7 +286,7 @@ export default function Dashboard() {
         <PerformanceChart
           data={wealthData}
           series={chartSeries}
-          title={`${selectedPortfolio} Growth (Growth of $100)`}
+          title={`${selectedPortfolio} Growth - ${getPeriodLabel(timePeriod)} (Growth of $100)`}
         />
 
         {/* Analysis Grid */}
