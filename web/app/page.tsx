@@ -38,8 +38,36 @@ function LoadingSkeleton() {
 }
 
 function Header({ data }: { data: PortfolioData }) {
-  const [mounted, setMounted] = useState(false);
+  return (
+    <header className="border-b border-border/50 bg-card/60 backdrop-blur-md sticky top-0 z-50 transition-all duration-300">
+      <div className="container mx-auto px-4 py-2.5 md:py-4">
+        <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-col">
+            <h1 className="text-lg md:text-2xl font-bold tracking-tight">
+              Mingdom Capital
+            </h1>
+            <p className="hidden md:block text-sm text-muted-foreground">
+              Portfolio Performance Dashboard
+            </p>
+          </div>
 
+          <div className="flex items-center gap-4">
+            {data.warnings.length > 0 && (
+              <Badge variant="destructive" className="gap-1 scale-90 md:scale-100">
+                <AlertTriangle className="h-3 w-3" />
+                <span className="hidden sm:inline">{data.warnings.length} warning{data.warnings.length > 1 ? "s" : ""}</span>
+                <span className="sm:hidden">{data.warnings.length}</span>
+              </Badge>
+            )}
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function DashboardFooter({ data }: { data: PortfolioData }) {
+  const [mounted, setMounted] = useState(false);
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -47,61 +75,83 @@ function Header({ data }: { data: PortfolioData }) {
   const formatDate = (isoString: string) => {
     const date = new Date(isoString);
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const month = months[date.getMonth()];
-    const day = date.getDate();
-    const year = date.getFullYear();
     const hours = date.getHours();
     const minutes = date.getMinutes().toString().padStart(2, "0");
     const ampm = hours >= 12 ? "PM" : "AM";
     const hour12 = hours % 12 || 12;
-    return `${month} ${day}, ${year} ${hour12}:${minutes} ${ampm}`;
+    return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()} ${hour12}:${minutes} ${ampm}`;
   };
 
-  const generatedDate = mounted ? formatDate(data.generated_at) : "Loading...";
-
-  // Get metadata for the primary portfolio (Mingdom)
   const meta = getPortfolioMeta("Mingdom");
 
   return (
-    <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold tracking-tight">
-                Mingdom Capital
-              </h1>
+    <footer className="border-t border-border/50 py-10 md:py-16 mt-16 mb-8">
+      <div className="flex flex-col gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+              Portfolio
+            </h3>
+            <div className="flex flex-col gap-2.5 text-sm text-muted-foreground">
+              <p className="font-medium text-foreground">Mingdom Capital Dashboard</p>
               {meta.url && (
                 <a
                   href={meta.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                  className="inline-flex items-center gap-1.5 text-primary hover:underline hover:text-primary/80 transition-colors"
                 >
                   View on SavvyTrader
-                  <ExternalLink className="h-3 w-3" />
+                  <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               )}
+              <p className="max-w-xs leading-relaxed">
+                Automated performance tracking and risk analytics for managed capital.
+              </p>
             </div>
-            <p className="text-sm text-muted-foreground">
-              Portfolio Performance Dashboard
-            </p>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-xs text-muted-foreground">Last updated</p>
-              <p className="text-sm font-medium">{generatedDate}</p>
+
+          <div className="space-y-4">
+            <h3 className="text-sm font-semibold text-foreground uppercase tracking-wider">
+              System Status
+            </h3>
+            <div className="flex flex-col gap-2 text-sm text-muted-foreground">
+              <div className="flex justify-between md:justify-start md:gap-4">
+                <span className="opacity-70">Analysis:</span>
+                <span className="text-foreground">{mounted ? formatDate(data.generated_at) : "Loading..."}</span>
+              </div>
+              <div className="flex justify-between md:justify-start md:gap-4">
+                <span className="opacity-70">Data to:</span>
+                <span className="text-foreground">{data.last_period || "Latest"}</span>
+              </div>
+              <div className="flex justify-between md:justify-start md:gap-4">
+                <span className="opacity-70">Risk-Free:</span>
+                <span className="text-foreground">{(data.annual_rf * 100).toFixed(1)}%</span>
+              </div>
             </div>
-            {data.warnings.length > 0 && (
-              <Badge variant="destructive" className="gap-1">
-                <AlertTriangle className="h-3 w-3" />
-                {data.warnings.length} warning{data.warnings.length > 1 ? "s" : ""}
-              </Badge>
-            )}
+          </div>
+        </div>
+
+        <div className="pt-8 border-t border-border/20 flex flex-col md:flex-row justify-between items-center gap-6 text-xs text-muted-foreground/60">
+          <p>© {new Date().getFullYear()} Mingdom Capital. All rights reserved.</p>
+          <div className="flex items-center gap-6">
+            <a
+              href="https://github.com/mingdom/capital"
+              className="hover:text-muted-foreground transition-colors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              GitHub
+            </a>
+            <span className="hidden md:inline">•</span>
+            <p>
+              Powered by{" "}
+              <span className="text-muted-foreground/80">Mingdom Capital Analytics</span>
+            </p>
           </div>
         </div>
       </div>
-    </header>
+    </footer>
   );
 }
 
@@ -116,19 +166,19 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
   const ytdMeaningful = currentMonth >= 2 || (metrics.ytd !== null && Math.abs(metrics.ytd) > 0.01);
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
       {/* CAGR - Always show */}
       <Card className="relative overflow-hidden">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-            <TrendingUp className="h-4 w-4" />
+        <CardContent className="p-4 md:p-6">
+          <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
+            <TrendingUp className="h-3 w-3 md:h-4 md:w-4" />
             Annual Return
             <InfoTooltip content={METRIC_INFO.cagr} />
           </div>
-          <div className={`text-3xl font-bold ${metrics.cagr && metrics.cagr > 0 ? "text-emerald-500" : "text-red-500"}`}>
+          <div className={`text-xl md:text-3xl font-bold ${metrics.cagr && metrics.cagr > 0 ? "text-emerald-500" : "text-red-500"}`}>
             {metrics.cagr ? `${(metrics.cagr * 100).toFixed(1)}%` : "—"}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">CAGR since inception</p>
+          <p className="text-[10px] md:text-xs text-muted-foreground mt-1">CAGR since inception</p>
         </CardContent>
         <div className={`absolute inset-0 opacity-5 ${metrics.cagr && metrics.cagr > 0 ? "bg-emerald-500" : "bg-red-500"}`} />
       </Card>
@@ -136,31 +186,31 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
       {/* YTD or 1Y - Conditional based on time of year */}
       {ytdMeaningful ? (
         <Card className="relative overflow-hidden">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-              <Activity className="h-4 w-4" />
+          <CardContent className="p-4 md:p-6">
+            <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
+              <Activity className="h-3 w-3 md:h-4 md:w-4" />
               Year to Date
               <InfoTooltip content={METRIC_INFO.ytd} />
             </div>
-            <div className={`text-3xl font-bold ${metrics.ytd && metrics.ytd > 0 ? "text-emerald-500" : "text-red-500"}`}>
+            <div className={`text-xl md:text-3xl font-bold ${metrics.ytd && metrics.ytd > 0 ? "text-emerald-500" : "text-red-500"}`}>
               {metrics.ytd ? `${(metrics.ytd * 100).toFixed(1)}%` : "—"}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">{data.current_year} performance</p>
+            <p className="text-[10px] md:text-xs text-muted-foreground mt-1">{data.current_year} performance</p>
           </CardContent>
           <div className={`absolute inset-0 opacity-5 ${metrics.ytd && metrics.ytd > 0 ? "bg-emerald-500" : "bg-red-500"}`} />
         </Card>
       ) : (
         <Card className="relative overflow-hidden">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-              <Activity className="h-4 w-4" />
+          <CardContent className="p-4 md:p-6">
+            <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
+              <Activity className="h-3 w-3 md:h-4 md:w-4" />
               1 Year
               <InfoTooltip content={METRIC_INFO.one_year} />
             </div>
-            <div className={`text-3xl font-bold ${metrics.one_year && metrics.one_year > 0 ? "text-emerald-500" : "text-red-500"}`}>
+            <div className={`text-xl md:text-3xl font-bold ${metrics.one_year && metrics.one_year > 0 ? "text-emerald-500" : "text-red-500"}`}>
               {metrics.one_year ? `${(metrics.one_year * 100).toFixed(1)}%` : "—"}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Trailing 12 months</p>
+            <p className="text-[10px] md:text-xs text-muted-foreground mt-1">Trailing 12 months</p>
           </CardContent>
           <div className={`absolute inset-0 opacity-5 ${metrics.one_year && metrics.one_year > 0 ? "bg-emerald-500" : "bg-red-500"}`} />
         </Card>
@@ -168,29 +218,29 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
 
       {/* Beta vs SPY */}
       <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+        <CardContent className="p-4 md:p-6">
+          <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
             Beta
             <InfoTooltip content={METRIC_INFO.beta_spy} />
           </div>
-          <div className="text-3xl font-bold">
+          <div className="text-xl md:text-3xl font-bold">
             {data.risk[portfolio]?.beta_spy ? data.risk[portfolio].beta_spy.toFixed(2) : "—"}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">vs S&P 500</p>
+          <p className="text-[10px] md:text-xs text-muted-foreground mt-1">vs S&P 500</p>
         </CardContent>
       </Card>
 
       {/* Sortino Ratio */}
       <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+        <CardContent className="p-4 md:p-6">
+          <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
             Sortino Ratio
             <InfoTooltip content={METRIC_INFO.sortino} />
           </div>
-          <div className="text-3xl font-bold">
+          <div className="text-xl md:text-3xl font-bold">
             {metrics.sortino ? metrics.sortino.toFixed(2) : "—"}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">Downside risk-adjusted</p>
+          <p className="text-[10px] md:text-xs text-muted-foreground mt-1 text-nowrap overflow-hidden text-ellipsis">Downside risk-adjusted</p>
         </CardContent>
       </Card>
     </div>
@@ -297,7 +347,7 @@ export default function Dashboard() {
     <div className="min-h-screen bg-background">
       <Header data={data} />
 
-      <main className="container mx-auto px-4 py-8 space-y-8">
+      <main className="container mx-auto px-4 py-6 md:py-8 space-y-6 md:space-y-8">
         {/* Portfolio Selector - only show if multiple portfolios */}
         {data.portfolios.length > 1 && (
           <div className="flex items-center gap-4">
@@ -376,24 +426,7 @@ export default function Dashboard() {
         </Section>
 
         {/* Footer */}
-        <footer className="border-t border-border/50 pt-8 mt-12">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <p>
-              Data as of {data.last_period || "—"} • Risk-free rate: {(data.annual_rf * 100).toFixed(1)}%
-            </p>
-            <p>
-              Powered by{" "}
-              <a
-                href="https://github.com/mingdom/capital"
-                className="underline underline-offset-4 hover:text-foreground"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Mingdom Capital Analytics
-              </a>
-            </p>
-          </div>
-        </footer>
+        <DashboardFooter data={data} />
       </main>
     </div>
   );
