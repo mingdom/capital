@@ -1,110 +1,134 @@
 # Active Tasks
 
-## High Priority (UX & Polish)
+## High Priority (PM Requested - Decision Usefulness)
 
-### Time Period Filter
-- [ ] Add time period selector (YTD, 1Y, 3Y, 5Y, All)
-- [ ] Filter chart data based on selected period
-- [ ] Update metrics calculations to reflect selected period
-- [ ] Ensure period selector is prominent and easy to use
-- **Impact**: Allows users to analyze performance across different timeframes as track record grows
+### Up/Down Capture Ratios ⭐ NEW
+- [ ] Calculate up-capture vs SPY (portfolio return / SPY return when SPY > 0)
+- [ ] Calculate down-capture vs SPY (portfolio return / SPY return when SPY < 0)
+- [ ] Add to Python export (analysis.py)
+- [ ] Display in Risk Profile card on dashboard
+- **Impact**: Tells you if you're "getting paid" for the beta - core institutional metric
+- **Effort**: Low (1-2 hours)
+
+### Stress Months Panel ⭐ NEW
+- [ ] Filter months where SPY ≤ -2% (and ≤ -5%)
+- [ ] Calculate portfolio performance in those months
+- [ ] Compare to benchmark performance
+- [ ] Display as new card or section on dashboard
+- **Impact**: Answers "how do I perform in selloffs?" - the #1 investor question
+- **Effort**: Low (2-3 hours)
+
+### Rolling Beta/Correlation Chart ⭐ NEW
+- [ ] Calculate 6M and 12M rolling beta vs SPY
+- [ ] Calculate 6M and 12M rolling correlation vs SPY
+- [ ] Export rolling series to JSON
+- [ ] Create new line chart component
+- [ ] Add sample size warning (limited data points with short track record)
+- **Impact**: Shows if beta spikes in selloffs - PM's top request
+- **Effort**: Medium (3-4 hours)
+- **Note**: With ~20 months data, 12M rolling gives ~8 data points
+
+### Underwater (Drawdown) Chart ⭐ NEW
+- [ ] Calculate cumulative wealth series
+- [ ] Track running peak and drawdown percentage
+- [ ] Create area chart showing underwater periods
+- [ ] Show time-to-recovery annotation
+- **Impact**: Makes drawdown risk visceral and visual
+- **Effort**: Medium (2-3 hours)
+
+---
+
+## Medium Priority (UX Polish)
 
 ### Sortable Comparison Table
 - [ ] Add click-to-sort functionality on column headers
 - [ ] Add visual indicators for sort direction (↑/↓)
 - [ ] Highlight selected portfolio row
-- [ ] Persist sort state across portfolio switches
-- **Impact**: Makes it easier to compare performance across different metrics
+- **Impact**: Makes it easier to compare performance across metrics
+- **Effort**: Low
 
 ### Mobile Responsiveness Audit
 - [ ] Test hero metrics on mobile (should collapse to 2x2 grid)
 - [ ] Test benchmark checkboxes on mobile (should stack vertically)
-- [ ] Test chart touch interactions and zoom
 - [ ] Verify comparison table horizontal scroll works well
-- [ ] Test portfolio selector tabs on small screens
 - **Impact**: Ensures dashboard works across all devices
+- **Effort**: Low
 
-## Medium Priority (Data Insights)
+### Sample Size Warnings
+- [ ] Add warning badge when data < 36 months
+- [ ] Show "Limited track record" indicator
+- [ ] Adjust confidence in displayed metrics
+- **Impact**: Reduces false confidence from short windows
+- **Effort**: Low
 
-### Rolling Returns Chart
-- [ ] Create new chart component for rolling 12-month returns
-- [ ] Show trailing returns over time (line chart)
-- [ ] Add to portfolio analysis section
-- [ ] Include benchmark overlays (optional)
-- **Impact**: Helps visualize consistency vs volatility over time
+---
+
+## Low Priority (Nice-to-Have)
+
+### Time Period Filter
+- [ ] Add time period selector (YTD, 1Y, 3Y, 5Y, All)
+- [ ] Filter chart data based on selected period
+- **Impact**: Useful as track record grows
+- **Status**: Deferred - needs rethinking, less urgent than decision-useful metrics
 
 ### Distribution/Histogram Chart
-- [ ] Create histogram component for monthly returns distribution
-- [ ] Show distribution for selected portfolio
-- [ ] Add normal distribution overlay for reference
-- [ ] Display mean, median, skew statistics
-- **Impact**: Visual understanding of risk beyond just Sharpe/Sortino ratios
+- [ ] Create histogram for monthly returns distribution
+- [ ] Add normal distribution overlay
+- **Impact**: Visual understanding of risk
 
 ### Year-by-Year Performance Table
 - [ ] Create calendar year returns table
 - [ ] Side-by-side comparison: portfolios vs benchmarks
-- [ ] Color-code positive/negative years
-- [ ] Add summary statistics row (mean, best, worst year)
-- **Impact**: Easy to see which periods drove overall performance
+- **Impact**: Easy to see which periods drove performance
 
 ### Export Functionality
 - [ ] Add "Export to CSV" button for comparison table
 - [ ] Add "Download Chart as PNG" option
-- [ ] Include metadata in exports (date range, portfolio name)
-- [ ] Toast notification on successful export
-- **Impact**: Useful for reports and presentations
-
-## Low Priority (Nice-to-Have)
-
-### Keyboard Shortcuts
-- [ ] Implement keyboard shortcut system
-  - `M` = switch to Mingdom
-  - `F` = switch to Fidelity
-  - `1-5` = toggle benchmarks (SPY, QQQ, ARKK)
-- [ ] Add help modal showing available shortcuts (press `?`)
-- [ ] Visual feedback when shortcuts are used
-- **Impact**: Power user feature for faster navigation
-
-### Shareable URLs
-- [ ] Add URL params support (`?portfolio=fidelity&benchmarks=SPY,QQQ`)
-- [ ] Update URL when user changes selections
-- [ ] Parse URL params on page load
-- [ ] Add "Copy Link" button to share current view
-- **Impact**: Allows sharing specific dashboard views
-
-### Dark/Light Mode Toggle
-- [ ] Create theme switcher component
-- [ ] Persist theme preference in localStorage
-- [ ] Update chart colors to work in both modes
-- [ ] Test all components in light mode
-- [ ] Add toggle button to header
-- **Impact**: User preference for display mode
+- **Impact**: Useful for reports
 
 ---
 
-# Backlog Tasks (need grooming/prioritization)
+## Backlog (Requires New Data Sources)
 
-## Web Dashboard Polish
-- [ ] Add loading states for data fetching
-- [ ] Improve error handling with retry logic
-- [ ] Add empty states for missing data
-- [ ] Performance optimization (code splitting, lazy loading)
+### VIX Integration
+- [ ] Add VIX data ingestion
+- [ ] High-vol regime slicing (VIX > threshold)
+- **Blocked**: Requires new data source
 
-## Analytics Enhancements
-- [ ] Add correlation matrix between portfolios and benchmarks
-- [ ] Add monthly contribution analysis (which months drive returns)
-- [ ] Add drawdown recovery analysis
-- [ ] Add beta/alpha decomposition charts
+### Holdings-Based Attribution
+- [ ] Return attribution by position/sector
+- [ ] Risk contribution analysis (marginal risk contribution)
+- [ ] Concentration metrics (top-10, HHI, max single-name)
+- **Blocked**: Requires position-level data we don't currently ingest
 
-## Documentation
-- [ ] Create user guide for web dashboard
-- [ ] Document keyboard shortcuts
-- [ ] Add tooltips for all metrics explaining calculations
-- [ ] Create video walkthrough of dashboard features
+### Options Risk Summaries
+- [ ] Net delta, gamma, vega
+- [ ] Short option max loss
+- **Blocked**: Requires options position data
 
-## Infrastructure
-- [ ] Add TypeScript strict mode
-- [ ] Set up E2E tests with Playwright
-- [ ] Add visual regression testing
-- [ ] Set up CI/CD pipeline for web dashboard
-- [ ] Consider deployment strategy (Vercel, Netlify, etc.)
+### Custom Benchmark Builder
+- [ ] SPY/QQQ blend + cash
+- [ ] Alpha / tracking error / information ratio
+- **Blocked**: UI complexity, lower priority
+
+---
+
+## Completed ✅
+
+### Vercel Deployment
+- [x] Configure Next.js for static export
+- [x] Set up GOD_MODE environment variable
+- [x] Create vercel.json for subdirectory build
+- [x] Deploy to production
+
+### Risk Profile Comparison
+- [x] Add benchmark comparison dropdown
+- [x] Show portfolio vs benchmark metrics side-by-side
+- [x] Visual indicators (better/worse arrows)
+
+### Dashboard MVP
+- [x] Portfolio selector with tabs
+- [x] Hero metrics (CAGR, 1Y, YTD, Sortino)
+- [x] Performance chart with benchmark overlays
+- [x] Monthly returns bar chart
+- [x] Comparison table

@@ -6,8 +6,10 @@ import { loadPortfolioData, toCumulativeWealth, toTimeSeries } from "@/lib/data"
 import { MetricCard } from "@/components/metrics/metric-card";
 import { ComparisonTable } from "@/components/metrics/comparison-table";
 import { RiskMetricsCard } from "@/components/metrics/risk-metrics-card";
+import { QuickStatsCard } from "@/components/metrics/quick-stats-card";
 import { PerformanceChart } from "@/components/charts/performance-chart";
 import { MonthlyReturnsChart } from "@/components/charts/monthly-returns-chart";
+import { Section } from "@/components/layout/section";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent } from "@/components/ui/card";
@@ -274,20 +276,36 @@ export default function Dashboard() {
           onChange={setSelectedBenchmarks}
         />
 
-        {/* Main Chart */}
-        <PerformanceChart
-          data={wealthData}
-          series={chartSeries}
-          title={`${selectedPortfolio} Growth (Growth of $100)`}
-        />
-
-        {/* Analysis Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <MonthlyReturnsChart
-            data={timeSeriesData}
-            series={selectedPortfolio}
-            title={`${selectedPortfolio} Monthly Returns`}
+        {/* Growth Section */}
+        <Section title="Growth">
+          <PerformanceChart
+            data={wealthData}
+            series={chartSeries}
+            title={`${selectedPortfolio} Growth (Growth of $100)`}
           />
+        </Section>
+
+        {/* Returns Section */}
+        <Section title="Returns">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <MonthlyReturnsChart
+                data={timeSeriesData}
+                series={selectedPortfolio}
+                title={`${selectedPortfolio} Monthly Returns`}
+              />
+            </div>
+            {riskMetrics && (
+              <QuickStatsCard
+                metrics={riskMetrics}
+                name={selectedPortfolio}
+              />
+            )}
+          </div>
+        </Section>
+
+        {/* Risk Section */}
+        <Section title="Risk">
           {riskMetrics && (
             <RiskMetricsCard
               metrics={riskMetrics}
@@ -296,14 +314,16 @@ export default function Dashboard() {
               benchmarks={data.benchmarks}
             />
           )}
-        </div>
+        </Section>
 
-        {/* Comparison Table */}
-        <ComparisonTable
-          performance={data.performance}
-          portfolios={data.portfolios}
-          benchmarks={data.benchmarks}
-        />
+        {/* Comparison Section */}
+        <Section title="Comparison">
+          <ComparisonTable
+            performance={data.performance}
+            portfolios={data.portfolios}
+            benchmarks={data.benchmarks}
+          />
+        </Section>
 
         {/* Footer */}
         <footer className="border-t border-border/50 pt-8 mt-12">

@@ -40,6 +40,7 @@ Data Sources → performance.py → analysis.py → cli.py/report.py
 - Run `make test` before claiming success
 
 **Don't**:
+- **NEVER `git push` without explicit permission** - Triggers Vercel deployment
 - Rename/remove `sortino.py` (backwards compatibility)
 - Add heavy dependencies without justification
 - Mix refactors with bug fixes
