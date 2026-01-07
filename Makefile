@@ -20,14 +20,17 @@ install: $(PY)
 # Alias for install
 dev: install
 
-# Run web dashboard (most common command)
-web: web-export
+# Run web dashboard with EXISTING data (fast)
+web:
 	@echo "Cleaning up port 3000 and removing Next.js lock..."
 	@lsof -ti:3000 | xargs kill -9 2>/dev/null || true
 	@pkill -9 -f "next dev" 2>/dev/null || true
 	@rm -rf web/.next/dev/lock 2>/dev/null || true
 	@sleep 1
 	cd web && npm run dev
+
+# Run web dashboard with TOTAL REFRESH (slow)
+web-full: web-export web
 
 # Build production web dashboard (without GOD_MODE)
 build: web-export
@@ -61,7 +64,14 @@ lint: $(RUFF)
 $(RUFF): install ; @true
 
 test: $(PYTEST)
+	@echo "Running Python tests..."
 	PYTHONPATH=. $(PYTEST) -q
+	@echo ""
+	@echo "Running Next.js unit tests..."
+	cd web && npm run test
+	@echo ""
+	@echo "Running Next.js build check..."
+	cd web && npm run build
 
 $(PYTEST): install ; @true
 
@@ -71,12 +81,16 @@ run: $(PY)
 import: $(PY)
 	$(PY) -m scripts.import_latest -v
 
+report: $(PY)
+	$(PY) -m portfolio_cli report stock-performance
+
 # ============================================================
 # Web Dashboard (Internal Targets)
 # ============================================================
 
 web-export: $(PY)
 	$(PY) -m scripts.export_web_data -v
+	$(PY) -m scripts.export_holdings_performance
 
 # ============================================================
 # Utilities
@@ -98,19 +112,20 @@ hook:
 help:
 	@echo "Mingdom Capital - Portfolio Analytics"
 	@echo ""
-	@echo "Common Commands:"
+	@echo "Main Commands:"
 	@echo "  make install    Install all dependencies (Python + Node)"
-	@echo "  make web        Run web dashboard (exports data + starts dev server)"
+	@echo "  make web        Run web dashboard with existing data (fast)"
+	@echo "  make web-full   Refresh all data and run dashboard (slow)"
+	@echo "  make report     Generate stock performance report in CLI"
 	@echo "  make build      Build production web dashboard"
-	@echo "  make preview    Preview production build locally (public mode)"
-	@echo "  make test       Run Python tests"
-	@echo "  make run        Run CLI tool"
+	@echo "  make test       Run all tests (Python + Next.js + build)"
+	@echo "  make run        Run interactive CLI tool"
 	@echo ""
 	@echo "Development:"
 	@echo "  make format     Format code with black"
 	@echo "  make lint       Lint code with ruff"
-	@echo "  make import     Import latest data"
+	@echo "  make import     Import latest data from external sources"
 	@echo ""
 	@echo "Utilities:"
-	@echo "  make clean      Remove build artifacts"
+	@echo "  make clean      Remove build artifacts and virtualenv"
 	@echo "  make hook       Install git pre-commit hook"

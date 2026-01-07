@@ -1,4 +1,4 @@
-import { PortfolioData, TimeSeriesPoint, WealthPoint } from "./types";
+import { PortfolioData, TimeSeriesPoint, WealthPoint, HoldingsPerformanceData } from "./types";
 
 /**
  * Load portfolio data from the static JSON file.
@@ -7,6 +7,17 @@ export async function loadPortfolioData(): Promise<PortfolioData> {
     const response = await fetch("/data/portfolio.json");
     if (!response.ok) {
         throw new Error(`Failed to load portfolio data: ${response.status}`);
+    }
+    return response.json();
+}
+
+/**
+ * Load holdings performance data from the static JSON file.
+ */
+export async function loadHoldingsPerformanceData(): Promise<HoldingsPerformanceData> {
+    const response = await fetch("/data/holdings-performance.json");
+    if (!response.ok) {
+        throw new Error(`Failed to load holdings performance data: ${response.status}`);
     }
     return response.json();
 }

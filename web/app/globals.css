@@ -6,8 +6,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -84,30 +84,49 @@
 
 /* Dark mode - Neutral/Zinc palette (institutional dark gray) */
 .dark {
-  --background: #09090b;        /* zinc-950 - near black */
-  --foreground: #fafafa;        /* zinc-50 - bright white text */
-  --card: #18181b;              /* zinc-900 - card background */
-  --card-foreground: #fafafa;   /* zinc-50 */
-  --popover: #18181b;           /* zinc-900 */
+  --background: #09090b;
+  /* zinc-950 - near black */
+  --foreground: #fafafa;
+  /* zinc-50 - bright white text */
+  --card: #18181b;
+  /* zinc-900 - card background */
+  --card-foreground: #fafafa;
+  /* zinc-50 */
+  --popover: #18181b;
+  /* zinc-900 */
   --popover-foreground: #fafafa;
-  --primary: #fafafa;           /* zinc-50 - primary actions */
+  --primary: #fafafa;
+  /* zinc-50 - primary actions */
   --primary-foreground: #18181b;
-  --secondary: #27272a;         /* zinc-800 */
+  --secondary: #27272a;
+  /* zinc-800 */
   --secondary-foreground: #fafafa;
-  --muted: #27272a;             /* zinc-800 */
-  --muted-foreground: #a1a1aa;  /* zinc-400 - readable muted text */
-  --accent: #27272a;            /* zinc-800 */
+  --muted: #27272a;
+  /* zinc-800 */
+  --muted-foreground: #a1a1aa;
+  /* zinc-400 - readable muted text */
+  --accent: #27272a;
+  /* zinc-800 */
   --accent-foreground: #fafafa;
-  --destructive: #ef4444;       /* red-500 */
-  --border: #3f3f46;            /* zinc-700 - visible borders */
-  --input: #3f3f46;             /* zinc-700 */
-  --ring: #a1a1aa;              /* zinc-400 */
+  --destructive: #ef4444;
+  /* red-500 */
+  --border: #3f3f46;
+  /* zinc-700 - visible borders */
+  --input: #3f3f46;
+  /* zinc-700 */
+  --ring: #a1a1aa;
+  /* zinc-400 */
   /* Chart colors - vibrant for visibility */
-  --chart-1: #3b82f6;           /* blue-500 */
-  --chart-2: #10b981;           /* emerald-500 */
-  --chart-3: #f59e0b;           /* amber-500 */
-  --chart-4: #8b5cf6;           /* violet-500 */
-  --chart-5: #ec4899;           /* pink-500 */
+  --chart-1: #3b82f6;
+  /* blue-500 */
+  --chart-2: #10b981;
+  /* emerald-500 */
+  --chart-3: #f59e0b;
+  /* amber-500 */
+  --chart-4: #8b5cf6;
+  /* violet-500 */
+  --chart-5: #ec4899;
+  /* pink-500 */
   --sidebar: #18181b;
   --sidebar-foreground: #fafafa;
   --sidebar-primary: #3b82f6;
@@ -122,6 +141,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

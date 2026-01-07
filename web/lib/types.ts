@@ -84,3 +84,31 @@ export interface WealthPoint {
   date: Date;
   [key: string]: string | number | Date;
 }
+/**
+ * Holdings performance data for web dashboard.
+ */
+export interface HoldingsPerformanceData {
+  generated_at: string;
+  periods: Record<string, PeriodPerformance>;
+}
+
+export interface PeriodPerformance {
+  summary: PerformanceSummary;
+  holdings: StockPerformance[];
+}
+
+export interface PerformanceSummary {
+  net_return: number;
+  gainers_count: number;
+  losers_count: number;
+  avg_return: number;
+}
+
+export interface StockPerformance {
+  symbol: string;
+  current_price: number;
+  period_start_price: number;
+  period_return: number;
+  allocation: number;
+  total_return_pct: number;
+}

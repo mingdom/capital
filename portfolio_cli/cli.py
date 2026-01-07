@@ -255,6 +255,59 @@ def interactive_command() -> None:
     start_shell(app)
 
 
+# --- Report Subcommands ---
+report_app = typer.Typer(
+    help="Generate portfolio reports (stock performance, changes, etc.)",
+)
+app.add_typer(report_app, name="report")
+
+
+@report_app.command("stock-performance")
+def report_stock_performance(
+    period: Optional[List[str]] = typer.Option(
+        None,
+        "--period",
+        "-p",
+        help="Period(s) to show: 3mo, ytd, 1y. Can specify multiple. Defaults to all.",
+    ),
+    top: int = typer.Option(
+        5,
+        "--top",
+        "-n",
+        min=1,
+        max=50,
+        help="Number of top performers to show per period.",
+    ),
+    bottom: bool = typer.Option(
+        True,
+        "--bottom/--no-bottom",
+        help="Also show bottom performers.",
+    ),
+) -> None:
+    """Rank portfolio holdings by return over specified periods."""
+    from portfolio_cli.reports.stock_performance import (
+        PERIODS,
+        generate_performance_report,
+    )
+
+    # Validate periods
+    valid_periods = ["3mo", "ytd", "1y"]
+    if period:
+        for p in period:
+            if p not in valid_periods:
+                Console().print(f"[red]Invalid period: {p}. Use: {', '.join(valid_periods)}[/red]")
+                raise typer.Exit(code=1)
+        selected_periods = period
+    else:
+        selected_periods = PERIODS
+
+    generate_performance_report(
+        periods=selected_periods,
+        top_n=top,
+        show_bottom=bottom,
+    )
+
+
 def run() -> None:
     """Run the CLI."""
 
@@ -266,3 +319,4 @@ def run() -> None:
 
 if __name__ == "__main__":
     run()
+

@@ -1,0 +1,747 @@
+{
+  "generated_at": "2026-01-07T10:06:49.918244",
+  "periods": {
+    "3mo": {
+      "summary": {
+        "net_return": 0.03362952484408177,
+        "gainers_count": 19,
+        "losers_count": 11,
+        "avg_return": -0.00658752870911729
+      },
+      "holdings": [
+        {
+          "symbol": "GOOGL",
+          "current_price": 313.106,
+          "period_start_price": 241.3721160888672,
+          "period_return": 0.2971920910894371,
+          "allocation": 0.176196,
+          "total_return_pct": 0.935442
+        },
+        {
+          "symbol": "MRK",
+          "current_price": 105.221,
+          "period_start_price": 86.75847625732422,
+          "period_return": 0.21280368834413646,
+          "allocation": 0.006579,
+          "total_return_pct": 0.150359
+        },
+        {
+          "symbol": "XBI",
+          "current_price": 121.939,
+          "period_start_price": 106.16876220703125,
+          "period_return": 0.14853933930412092,
+          "allocation": 0.005083,
+          "total_return_pct": -0.012136
+        },
+        {
+          "symbol": "U",
+          "current_price": 44.132,
+          "period_start_price": 38.959999084472656,
+          "period_return": 0.13275156665978005,
+          "allocation": 0.002759,
+          "total_return_pct": -0.003665
+        },
+        {
+          "symbol": "APP",
+          "current_price": 673.742,
+          "period_start_price": 600.3200073242188,
+          "period_return": 0.12230475709620606,
+          "allocation": 0.014042,
+          "total_return_pct": 1.538823
+        },
+        {
+          "symbol": "ASML",
+          "current_price": 1070.084,
+          "period_start_price": 978.8034057617188,
+          "period_return": 0.09325733206582526,
+          "allocation": 0.011151,
+          "total_return_pct": 0.469084
+        },
+        {
+          "symbol": "CRM",
+          "current_price": 264.913,
+          "period_start_price": 244.9346466064453,
+          "period_return": 0.08156605719261678,
+          "allocation": 0.013803,
+          "total_return_pct": 0.056403
+        },
+        {
+          "symbol": "VHT",
+          "current_price": 287.757,
+          "period_start_price": 267.4433288574219,
+          "period_return": 0.07595504897939577,
+          "allocation": 0.02399,
+          "total_return_pct": 0.02741
+        },
+        {
+          "symbol": "SPGI",
+          "current_price": 522.572,
+          "period_start_price": 486.6531677246094,
+          "period_return": 0.07380786699351483,
+          "allocation": 0.014159,
+          "total_return_pct": 0.040911
+        },
+        {
+          "symbol": "MCO",
+          "current_price": 510.904,
+          "period_start_price": 491.48443603515625,
+          "period_return": 0.039512062928183246,
+          "allocation": 0.010648,
+          "total_return_pct": 0.072843
+        },
+        {
+          "symbol": "BKNG",
+          "current_price": 5355.33,
+          "period_start_price": 5182.015625,
+          "period_return": 0.03344535940105351,
+          "allocation": 0.033485,
+          "total_return_pct": 0.186376
+        },
+        {
+          "symbol": "BN",
+          "current_price": 45.89,
+          "period_start_price": 44.93375015258789,
+          "period_return": 0.021281327380083724,
+          "allocation": 0.009564,
+          "total_return_pct": 0.042277
+        },
+        {
+          "symbol": "CME",
+          "current_price": 273.088,
+          "period_start_price": 267.60638427734375,
+          "period_return": 0.02048387499221692,
+          "allocation": 0.005692,
+          "total_return_pct": -0.015111
+        },
+        {
+          "symbol": "TSM",
+          "current_price": 303.83,
+          "period_start_price": 299.0726318359375,
+          "period_return": 0.01590706623624537,
+          "allocation": 0.031662,
+          "total_return_pct": 0.370994
+        },
+        {
+          "symbol": "AMZN",
+          "current_price": 230.864,
+          "period_start_price": 227.74000549316406,
+          "period_return": 0.013717372580504802,
+          "allocation": 0.125104,
+          "total_return_pct": 0.157706
+        },
+        {
+          "symbol": "BRK.B",
+          "current_price": 502.702,
+          "period_start_price": 496.739990234375,
+          "period_return": 0.012002274596035574,
+          "allocation": 0.005239,
+          "total_return_pct": 0.029871
+        },
+        {
+          "symbol": "MA",
+          "current_price": 570.867,
+          "period_start_price": 564.5499877929688,
+          "period_return": 0.011189464783670814,
+          "allocation": 0.078527,
+          "total_return_pct": 0.073427
+        },
+        {
+          "symbol": "ADBE",
+          "current_price": 349.99,
+          "period_start_price": 347.4700012207031,
+          "period_return": 0.007252421131159038,
+          "allocation": 0.009483,
+          "total_return_pct": 0.038475
+        },
+        {
+          "symbol": "PGR",
+          "current_price": 227.72,
+          "period_start_price": 227.69760131835938,
+          "period_return": 9.837030127211027e-05,
+          "allocation": 0.007119,
+          "total_return_pct": 0.00172
+        },
+        {
+          "symbol": "INTC",
+          "current_price": 36.921,
+          "period_start_price": 37.79999923706055,
+          "period_return": -0.023253948539732866,
+          "allocation": 0.018468,
+          "total_return_pct": 0.171331
+        },
+        {
+          "symbol": "SNPS",
+          "current_price": 469.72,
+          "period_start_price": 484.4100036621094,
+          "period_return": -0.0303255580005653,
+          "allocation": 0.00979,
+          "total_return_pct": 0.034033
+        },
+        {
+          "symbol": "NVDA",
+          "current_price": 186.627,
+          "period_start_price": 192.5592803955078,
+          "period_return": -0.030807553826142135,
+          "allocation": 0.050566,
+          "total_return_pct": 0.488501
+        },
+        {
+          "symbol": "XLU",
+          "current_price": 42.687,
+          "period_start_price": 44.94825744628906,
+          "period_return": -0.05030801136153399,
+          "allocation": 0.007117,
+          "total_return_pct": -0.025344
+        },
+        {
+          "symbol": "META",
+          "current_price": 660.185,
+          "period_start_price": 732.9122314453125,
+          "period_return": -0.09923047852795894,
+          "allocation": 0.096318,
+          "total_return_pct": 0.183547
+        },
+        {
+          "symbol": "MELI",
+          "current_price": 2014.26,
+          "period_start_price": 2275.0,
+          "period_return": -0.11461098901098901,
+          "allocation": 0.027288,
+          "total_return_pct": -0.043115
+        },
+        {
+          "symbol": "UBER",
+          "current_price": 81.695,
+          "period_start_price": 96.0,
+          "period_return": -0.14901041666666673,
+          "allocation": 0.085135,
+          "total_return_pct": -0.009509
+        },
+        {
+          "symbol": "ANET",
+          "current_price": 130.95,
+          "period_start_price": 158.22999572753906,
+          "period_return": -0.17240723291501134,
+          "allocation": 0.008188,
+          "total_return_pct": -0.034313
+        },
+        {
+          "symbol": "NFLX",
+          "current_price": 93.753,
+          "period_start_price": 123.10700225830078,
+          "period_return": -0.2384429944668035,
+          "allocation": 0.005862,
+          "total_return_pct": -0.051598
+        },
+        {
+          "symbol": "VEEV",
+          "current_price": 223.176,
+          "period_start_price": 298.4700012207031,
+          "period_return": -0.25226656251134305,
+          "allocation": 0.013954,
+          "total_return_pct": -0.006108
+        },
+        {
+          "symbol": "FIG",
+          "current_price": 37.365,
+          "period_start_price": 67.94000244140625,
+          "period_return": -0.45002945750223017,
+          "allocation": 0.003894,
+          "total_return_pct": -0.252769
+        }
+      ]
+    },
+    "ytd": {
+      "summary": {
+        "net_return": 0.002535240635260833,
+        "gainers_count": 16,
+        "losers_count": 14,
+        "avg_return": 0.0044150714737124265
+      },
+      "holdings": [
+        {
+          "symbol": "APP",
+          "current_price": 673.742,
+          "period_start_price": 618.3200073242188,
+          "period_return": 0.0896331867306381,
+          "allocation": 0.014042,
+          "total_return_pct": 1.538823
+        },
+        {
+          "symbol": "PGR",
+          "current_price": 227.72,
+          "period_start_price": 212.1199951171875,
+          "period_return": 0.07354330210216224,
+          "allocation": 0.007119,
+          "total_return_pct": 0.00172
+        },
+        {
+          "symbol": "ADBE",
+          "current_price": 349.99,
+          "period_start_price": 333.29998779296875,
+          "period_return": 0.05007504595949268,
+          "allocation": 0.009483,
+          "total_return_pct": 0.038475
+        },
+        {
+          "symbol": "CRM",
+          "current_price": 264.913,
+          "period_start_price": 253.6199951171875,
+          "period_return": 0.044527265595106065,
+          "allocation": 0.013803,
+          "total_return_pct": 0.056403
+        },
+        {
+          "symbol": "NFLX",
+          "current_price": 93.753,
+          "period_start_price": 90.98999786376953,
+          "period_return": 0.03036599847345027,
+          "allocation": 0.005862,
+          "total_return_pct": -0.051598
+        },
+        {
+          "symbol": "MCO",
+          "current_price": 510.904,
+          "period_start_price": 498.9800109863281,
+          "period_return": 0.02389672682499216,
+          "allocation": 0.010648,
+          "total_return_pct": 0.072843
+        },
+        {
+          "symbol": "MELI",
+          "current_price": 2014.26,
+          "period_start_price": 1973.699951171875,
+          "period_return": 0.020550260845901454,
+          "allocation": 0.027288,
+          "total_return_pct": -0.043115
+        },
+        {
+          "symbol": "SPGI",
+          "current_price": 522.572,
+          "period_start_price": 512.6599731445312,
+          "period_return": 0.01933450508076688,
+          "allocation": 0.014159,
+          "total_return_pct": 0.040911
+        },
+        {
+          "symbol": "AMZN",
+          "current_price": 230.864,
+          "period_start_price": 226.5,
+          "period_return": 0.019267108167770438,
+          "allocation": 0.125104,
+          "total_return_pct": 0.157706
+        },
+        {
+          "symbol": "VEEV",
+          "current_price": 223.176,
+          "period_start_price": 219.49000549316406,
+          "period_return": 0.016793450337540424,
+          "allocation": 0.013954,
+          "total_return_pct": -0.006108
+        },
+        {
+          "symbol": "META",
+          "current_price": 660.185,
+          "period_start_price": 650.4099731445312,
+          "period_return": 0.01502902362983375,
+          "allocation": 0.096318,
+          "total_return_pct": 0.183547
+        },
+        {
+          "symbol": "MA",
+          "current_price": 570.867,
+          "period_start_price": 563.1300048828125,
+          "period_return": 0.013739269884575822,
+          "allocation": 0.078527,
+          "total_return_pct": 0.073427
+        },
+        {
+          "symbol": "CME",
+          "current_price": 273.088,
+          "period_start_price": 269.67999267578125,
+          "period_return": 0.012637227146160591,
+          "allocation": 0.005692,
+          "total_return_pct": -0.015111
+        },
+        {
+          "symbol": "BRK.B",
+          "current_price": 502.702,
+          "period_start_price": 496.8500061035156,
+          "period_return": 0.011778190247752852,
+          "allocation": 0.005239,
+          "total_return_pct": 0.029871
+        },
+        {
+          "symbol": "BKNG",
+          "current_price": 5355.33,
+          "period_start_price": 5323.2001953125,
+          "period_return": 0.006035806189628706,
+          "allocation": 0.033485,
+          "total_return_pct": 0.186376
+        },
+        {
+          "symbol": "XBI",
+          "current_price": 121.939,
+          "period_start_price": 121.5199966430664,
+          "period_return": 0.003448019819851549,
+          "allocation": 0.005083,
+          "total_return_pct": -0.012136
+        },
+        {
+          "symbol": "U",
+          "current_price": 44.132,
+          "period_start_price": 44.25,
+          "period_return": -0.0026666666666667143,
+          "allocation": 0.002759,
+          "total_return_pct": -0.003665
+        },
+        {
+          "symbol": "VHT",
+          "current_price": 287.757,
+          "period_start_price": 288.75,
+          "period_return": -0.003438961038961022,
+          "allocation": 0.02399,
+          "total_return_pct": 0.02741
+        },
+        {
+          "symbol": "GOOGL",
+          "current_price": 313.106,
+          "period_start_price": 315.1499938964844,
+          "period_return": -0.0064857811710945495,
+          "allocation": 0.176196,
+          "total_return_pct": 0.935442
+        },
+        {
+          "symbol": "FIG",
+          "current_price": 37.365,
+          "period_start_price": 37.61000061035156,
+          "period_return": -0.006514241062897721,
+          "allocation": 0.003894,
+          "total_return_pct": -0.252769
+        },
+        {
+          "symbol": "XLU",
+          "current_price": 42.687,
+          "period_start_price": 43.18000030517578,
+          "period_return": -0.011417329821479645,
+          "allocation": 0.007117,
+          "total_return_pct": -0.025344
+        },
+        {
+          "symbol": "MRK",
+          "current_price": 105.221,
+          "period_start_price": 106.44999694824219,
+          "period_return": -0.01154529810686367,
+          "allocation": 0.006579,
+          "total_return_pct": 0.150359
+        },
+        {
+          "symbol": "NVDA",
+          "current_price": 186.627,
+          "period_start_price": 188.85000610351562,
+          "period_return": -0.011771278960388829,
+          "allocation": 0.050566,
+          "total_return_pct": 0.488501
+        },
+        {
+          "symbol": "UBER",
+          "current_price": 81.695,
+          "period_start_price": 82.86000061035156,
+          "period_return": -0.014059867267319665,
+          "allocation": 0.085135,
+          "total_return_pct": -0.009509
+        },
+        {
+          "symbol": "BN",
+          "current_price": 45.89,
+          "period_start_price": 46.630001068115234,
+          "period_return": -0.015869634380541186,
+          "allocation": 0.009564,
+          "total_return_pct": 0.042277
+        },
+        {
+          "symbol": "ANET",
+          "current_price": 130.95,
+          "period_start_price": 133.60000610351562,
+          "period_return": -0.019835374120135633,
+          "allocation": 0.008188,
+          "total_return_pct": -0.034313
+        },
+        {
+          "symbol": "SNPS",
+          "current_price": 469.72,
+          "period_start_price": 480.4200134277344,
+          "period_return": -0.022272205837952384,
+          "allocation": 0.00979,
+          "total_return_pct": 0.034033
+        },
+        {
+          "symbol": "TSM",
+          "current_price": 303.83,
+          "period_start_price": 319.6099853515625,
+          "period_return": -0.04937262937578421,
+          "allocation": 0.031662,
+          "total_return_pct": 0.370994
+        },
+        {
+          "symbol": "INTC",
+          "current_price": 36.921,
+          "period_start_price": 39.380001068115234,
+          "period_return": -0.06244288982780683,
+          "allocation": 0.018468,
+          "total_return_pct": 0.171331
+        },
+        {
+          "symbol": "ASML",
+          "current_price": 1070.084,
+          "period_start_price": 1163.780029296875,
+          "period_return": -0.08051008518635913,
+          "allocation": 0.011151,
+          "total_return_pct": 0.469084
+        }
+      ]
+    },
+    "1y": {
+      "summary": {
+        "net_return": 0.25994979501788357,
+        "gainers_count": 26,
+        "losers_count": 3,
+        "avg_return": 0.2296397392745728
+      },
+      "holdings": [
+        {
+          "symbol": "APP",
+          "current_price": 673.742,
+          "period_start_price": 330.0050048828125,
+          "period_return": 1.0416114605269435,
+          "allocation": 0.014042,
+          "total_return_pct": 1.538823
+        },
+        {
+          "symbol": "U",
+          "current_price": 44.132,
+          "period_start_price": 23.079999923706055,
+          "period_return": 0.9121317220920308,
+          "allocation": 0.002759,
+          "total_return_pct": -0.003665
+        },
+        {
+          "symbol": "INTC",
+          "current_price": 36.921,
+          "period_start_price": 20.010000228881836,
+          "period_return": 0.8451274151766042,
+          "allocation": 0.018468,
+          "total_return_pct": 0.171331
+        },
+        {
+          "symbol": "GOOGL",
+          "current_price": 313.106,
+          "period_start_price": 194.7273712158203,
+          "period_return": 0.6079198216720044,
+          "allocation": 0.176196,
+          "total_return_pct": 0.935442
+        },
+        {
+          "symbol": "TSM",
+          "current_price": 303.83,
+          "period_start_price": 208.60916137695312,
+          "period_return": 0.4564556896472272,
+          "allocation": 0.031662,
+          "total_return_pct": 0.370994
+        },
+        {
+          "symbol": "ASML",
+          "current_price": 1070.084,
+          "period_start_price": 750.4093017578125,
+          "period_return": 0.4260004473470127,
+          "allocation": 0.011151,
+          "total_return_pct": 0.469084
+        },
+        {
+          "symbol": "NVDA",
+          "current_price": 186.627,
+          "period_start_price": 140.10166931152344,
+          "period_return": 0.3320826291157534,
+          "allocation": 0.050566,
+          "total_return_pct": 0.488501
+        },
+        {
+          "symbol": "XBI",
+          "current_price": 121.939,
+          "period_start_price": 92.52445220947266,
+          "period_return": 0.31791107202595115,
+          "allocation": 0.005083,
+          "total_return_pct": -0.012136
+        },
+        {
+          "symbol": "UBER",
+          "current_price": 81.695,
+          "period_start_price": 66.1500015258789,
+          "period_return": 0.23499619222290785,
+          "allocation": 0.085135,
+          "total_return_pct": -0.009509
+        },
+        {
+          "symbol": "CME",
+          "current_price": 273.088,
+          "period_start_price": 222.76602172851562,
+          "period_return": 0.2258961123470242,
+          "allocation": 0.005692,
+          "total_return_pct": -0.015111
+        },
+        {
+          "symbol": "BN",
+          "current_price": 45.89,
+          "period_start_price": 37.7923583984375,
+          "period_return": 0.2142666386731052,
+          "allocation": 0.009564,
+          "total_return_pct": 0.042277
+        },
+        {
+          "symbol": "XLU",
+          "current_price": 42.687,
+          "period_start_price": 36.95927047729492,
+          "period_return": 0.15497409577453036,
+          "allocation": 0.007117,
+          "total_return_pct": -0.025344
+        },
+        {
+          "symbol": "MELI",
+          "current_price": 2014.26,
+          "period_start_price": 1771.219970703125,
+          "period_return": 0.1372161749059293,
+          "allocation": 0.027288,
+          "total_return_pct": -0.043115
+        },
+        {
+          "symbol": "ANET",
+          "current_price": 130.95,
+          "period_start_price": 115.29000091552734,
+          "period_return": 0.1358313727132909,
+          "allocation": 0.008188,
+          "total_return_pct": -0.034313
+        },
+        {
+          "symbol": "VHT",
+          "current_price": 287.757,
+          "period_start_price": 253.68746948242188,
+          "period_return": 0.13429725396799239,
+          "allocation": 0.02399,
+          "total_return_pct": 0.02741
+        },
+        {
+          "symbol": "BKNG",
+          "current_price": 5355.33,
+          "period_start_price": 4760.7265625,
+          "period_return": 0.12489762427938224,
+          "allocation": 0.033485,
+          "total_return_pct": 0.186376
+        },
+        {
+          "symbol": "MA",
+          "current_price": 570.867,
+          "period_start_price": 508.4784851074219,
+          "period_return": 0.12269646940793925,
+          "allocation": 0.078527,
+          "total_return_pct": 0.073427
+        },
+        {
+          "symbol": "BRK.B",
+          "current_price": 502.702,
+          "period_start_price": 452.9200134277344,
+          "period_return": 0.10991341759334418,
+          "allocation": 0.005239,
+          "total_return_pct": 0.029871
+        },
+        {
+          "symbol": "MCO",
+          "current_price": 510.904,
+          "period_start_price": 460.4885559082031,
+          "period_return": 0.1094825125292517,
+          "allocation": 0.010648,
+          "total_return_pct": 0.072843
+        },
+        {
+          "symbol": "MRK",
+          "current_price": 105.221,
+          "period_start_price": 97.35982513427734,
+          "period_return": 0.0807435187448276,
+          "allocation": 0.006579,
+          "total_return_pct": 0.150359
+        },
+        {
+          "symbol": "META",
+          "current_price": 660.185,
+          "period_start_price": 615.9476928710938,
+          "period_return": 0.0718199088021655,
+          "allocation": 0.096318,
+          "total_return_pct": 0.183547
+        },
+        {
+          "symbol": "SPGI",
+          "current_price": 522.572,
+          "period_start_price": 487.74359130859375,
+          "period_return": 0.07140720926330006,
+          "allocation": 0.014159,
+          "total_return_pct": 0.040911
+        },
+        {
+          "symbol": "NFLX",
+          "current_price": 93.753,
+          "period_start_price": 87.91899871826172,
+          "period_return": 0.06635654826362913,
+          "allocation": 0.005862,
+          "total_return_pct": -0.051598
+        },
+        {
+          "symbol": "VEEV",
+          "current_price": 223.176,
+          "period_start_price": 211.72999572753906,
+          "period_return": 0.05405943656273441,
+          "allocation": 0.013954,
+          "total_return_pct": -0.006108
+        },
+        {
+          "symbol": "AMZN",
+          "current_price": 230.864,
+          "period_start_price": 222.11000061035156,
+          "period_return": 0.03941290066000053,
+          "allocation": 0.125104,
+          "total_return_pct": 0.157706
+        },
+        {
+          "symbol": "PGR",
+          "current_price": 227.72,
+          "period_start_price": 223.2516632080078,
+          "period_return": 0.02001479732685777,
+          "allocation": 0.007119,
+          "total_return_pct": 0.00172
+        },
+        {
+          "symbol": "SNPS",
+          "current_price": 469.72,
+          "period_start_price": 487.6199951171875,
+          "period_return": -0.03670890303193094,
+          "allocation": 0.00979,
+          "total_return_pct": 0.034033
+        },
+        {
+          "symbol": "ADBE",
+          "current_price": 349.99,
+          "period_start_price": 422.6300048828125,
+          "period_return": -0.1718761186938306,
+          "allocation": 0.009483,
+          "total_return_pct": 0.038475
+        },
+        {
+          "symbol": "CRM",
+          "current_price": 264.913,
+          "period_start_price": 322.822509765625,
+          "period_return": -0.17938498095336766,
+          "allocation": 0.013803,
+          "total_return_pct": 0.056403
+        }
+      ]
+    }
+  }
+}

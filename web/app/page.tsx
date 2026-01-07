@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { TrendingUp, Activity, AlertTriangle, ExternalLink } from "lucide-react";
+import { StockPerformanceSection } from "@/components/holdings/stock-performance-section";
 
 function LoadingSkeleton() {
   return (
@@ -402,6 +403,7 @@ export default function Dashboard() {
           </div>
         </Section>
 
+
         {/* Risk Section */}
         <Section title="Risk">
           {riskMetrics && (
@@ -416,6 +418,13 @@ export default function Dashboard() {
           )}
         </Section>
 
+        {/* Holdings Performance Section - Mingdom only */}
+        {selectedPortfolio === "Mingdom" && (
+          <Section title="Holdings">
+            <StockPerformanceSection />
+          </Section>
+        )}
+
         {/* Comparison Section */}
         <Section title="Comparison">
           <ComparisonTable
@@ -424,6 +433,7 @@ export default function Dashboard() {
             benchmarks={data.benchmarks}
           />
         </Section>
+
 
         {/* Footer */}
         <DashboardFooter data={data} />
