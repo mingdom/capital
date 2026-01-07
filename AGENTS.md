@@ -5,6 +5,7 @@
 - error handling: check for error case and exit/handle early, reduce branching
 - if unclear: ask for clarification
 - use make and makefile for all commands
+- you have skills! check: `~/projects/dot-agents/master/skills`
 
 ## Available Make Commands
 
