@@ -139,8 +139,8 @@ export function getValueColor(value: number | null): string {
  */
 export const CHART_COLORS: Record<string, string> = {
     // Portfolios - bold, saturated colors
-    Mingdom: "#3b82f6",   // Bright blue
-    Fidelity: "#8b5cf6",  // Vivid purple
+    Mingdom: "#7c3aed",   // Royal purple (distinct)
+    Fidelity: "#3b82f6",  // Blue
 
     // Benchmarks - distinct, high-contrast colors
     SPY: "#10b981",       // Emerald green

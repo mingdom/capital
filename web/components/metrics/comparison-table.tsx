@@ -16,18 +16,18 @@ import { cn } from "@/lib/utils";
 
 interface ComparisonTableProps {
     performance: Record<string, PerformanceMetrics>;
-    portfolios: string[];
+    selectedPortfolio: string;
     benchmarks: string[];
     className?: string;
 }
 
 export function ComparisonTable({
     performance,
-    portfolios,
+    selectedPortfolio,
     benchmarks,
     className,
 }: ComparisonTableProps) {
-    const allSeries = [...portfolios, ...benchmarks];
+    const allSeries = [selectedPortfolio, ...benchmarks];
 
     return (
         <Card className={className}>
@@ -54,19 +54,18 @@ export function ComparisonTable({
                                 const metrics = performance[name];
                                 if (!metrics) return null;
 
-                                const isPortfolio = portfolios.includes(name);
+                                const isMainPortfolio = name === selectedPortfolio;
 
                                 return (
-                                    <TableRow key={name} className={isPortfolio ? "bg-muted/30" : ""}>
-                                        <TableCell className="font-medium">
-                                            <div className="flex items-center gap-2">
-                                                {name}
-                                                {isPortfolio ? (
-                                                    <Badge variant="outline" className="text-xs">Portfolio</Badge>
-                                                ) : (
-                                                    <Badge variant="secondary" className="text-xs">Benchmark</Badge>
-                                                )}
-                                            </div>
+                                    <TableRow
+                                        key={name}
+                                        className={cn(
+                                            "transition-colors",
+                                            isMainPortfolio ? "bg-primary/[0.03] hover:bg-primary/[0.05] border-l-2 border-l-primary font-bold" : "hover:bg-muted/10 text-muted-foreground/80"
+                                        )}
+                                    >
+                                        <TableCell className="font-medium whitespace-nowrap">
+                                            {name}
                                         </TableCell>
                                         <TableCell className={cn("text-right font-mono", getValueColor(metrics.cagr))}>
                                             {formatPercent(metrics.cagr)}

@@ -31,7 +31,7 @@ export function PerformanceChart({
     title,
     className,
 }: PerformanceChartProps) {
-    const [selectedRange, setSelectedRange] = useState<TimeRange>("1Y");
+    const [selectedRange, setSelectedRange] = useState<TimeRange>("YTD");
 
     // Filter data based on selected time range
     const filteredData = useMemo(() => {
@@ -169,7 +169,7 @@ export function PerformanceChart({
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="h-[400px] w-full">
+                <div className="h-[200px] md:h-[280px] w-full mt-4">
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart
                             data={filteredData}

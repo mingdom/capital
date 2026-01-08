@@ -157,6 +157,28 @@ export function RiskMetricsCard({
                     </>
                 )}
 
+                {/* Market Relationship Section - Moved Up */}
+                {(metrics.beta_spy !== null || metrics.corr_spy !== null) && (
+                    <>
+                        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                            Market Relationship
+                        </div>
+                        <MetricRow
+                            label="Beta (SPY)"
+                            value={formatNumber(metrics.beta_spy, 2)}
+                            compareValue={compareMetrics ? formatNumber(compareMetrics.beta_spy, 2) : undefined}
+                            description="Portfolio sensitivity to S&P 500 movements"
+                        />
+                        <MetricRow
+                            label="Correlation (SPY)"
+                            value={formatNumber(metrics.corr_spy, 2)}
+                            compareValue={compareMetrics ? formatNumber(compareMetrics.corr_spy, 2) : undefined}
+                            description="How closely returns move with S&P 500"
+                        />
+                        <Separator className="my-4" />
+                    </>
+                )}
+
                 {/* Volatility Section */}
                 <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
                     Volatility
@@ -220,65 +242,6 @@ export function RiskMetricsCard({
 
                 <Separator className="my-4" />
 
-                {/* Win/Loss Section */}
-                <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                    Win/Loss
-                </div>
-                <MetricRow
-                    label="Hit Rate"
-                    value={formatPercent(metrics.hit_rate)}
-                    compareValue={compareMetrics ? formatPercent(compareMetrics.hit_rate) : undefined}
-                    description="Percentage of months with positive returns"
-                    higherIsBetter={true}
-                />
-                <MetricRow
-                    label="Avg Up Month"
-                    value={formatPercent(metrics.avg_up)}
-                    compareValue={compareMetrics ? formatPercent(compareMetrics.avg_up) : undefined}
-                    description="Average return in positive months"
-                    higherIsBetter={true}
-                />
-                <MetricRow
-                    label="Avg Down Month"
-                    value={formatPercent(metrics.avg_down)}
-                    compareValue={compareMetrics ? formatPercent(compareMetrics.avg_down) : undefined}
-                    description="Average return in negative months"
-                    higherIsBetter={false}
-                />
-                <MetricRow
-                    label="Best Month"
-                    value={formatPercent(metrics.best_month)}
-                    compareValue={compareMetrics ? formatPercent(compareMetrics.best_month) : undefined}
-                    higherIsBetter={true}
-                />
-                <MetricRow
-                    label="Worst Month"
-                    value={formatPercent(metrics.worst_month)}
-                    compareValue={compareMetrics ? formatPercent(compareMetrics.worst_month) : undefined}
-                    higherIsBetter={false}
-                />
-
-                {/* Beta/Correlation (if available) */}
-                {(metrics.beta_spy !== null || metrics.corr_spy !== null) && (
-                    <>
-                        <Separator className="my-4" />
-                        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                            Market Relationship
-                        </div>
-                        <MetricRow
-                            label="Beta (SPY)"
-                            value={formatNumber(metrics.beta_spy, 2)}
-                            compareValue={compareMetrics ? formatNumber(compareMetrics.beta_spy, 2) : undefined}
-                            description="Portfolio sensitivity to S&P 500 movements"
-                        />
-                        <MetricRow
-                            label="Correlation (SPY)"
-                            value={formatNumber(metrics.corr_spy, 2)}
-                            compareValue={compareMetrics ? formatNumber(compareMetrics.corr_spy, 2) : undefined}
-                            description="How closely returns move with S&P 500"
-                        />
-                    </>
-                )}
             </CardContent>
         </Card>
     );
