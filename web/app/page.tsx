@@ -95,6 +95,11 @@ function Header({ data }: { data: PortfolioData }) {
 }
 
 function DashboardFooter({ data }: { data: PortfolioData }) {
+  const formatDate = (dateStr: string) => {
+    const [year, month, day] = dateStr.split("-").map(Number);
+    return `${month}.${day}.${year}`;
+  };
+
   const formatPeriodDate = (period: string) => {
     if (!period) return "latest available data";
     const [year, month] = period.split("-").map(Number);
@@ -104,13 +109,18 @@ function DashboardFooter({ data }: { data: PortfolioData }) {
     return `${monthNum}.${dayNum}.${year}`;
   };
 
+  // Use latest_date if available, otherwise fall back to last_period
+  const displayDate = (data as any).latest_date
+    ? formatDate((data as any).latest_date)
+    : data.last_period ? formatPeriodDate(data.last_period) : "latest available data";
+
   return (
     <footer className="border-t border-border/40 py-8 mt-12 mb-8 text-xs text-muted-foreground/60">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <p>© {new Date().getFullYear()} Mingdom Capital. All rights reserved.</p>
           <p className="text-center">
-            Data as of {formatPeriodDate(data.last_period)}. Risk-adjusted metrics calculated using {(data.annual_rf * 100).toFixed(1)}% risk-free rate.
+            Data as of {displayDate}. Risk-adjusted metrics calculated using {(data.annual_rf * 100).toFixed(1)}% risk-free rate.
           </p>
         </div>
       </div>

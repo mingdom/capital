@@ -59,7 +59,7 @@ format: $(BLACK)
 $(BLACK): install ; @true
 
 lint: $(RUFF)
-	$(RUFF) check .
+	$(RUFF) check --fix .
 
 $(RUFF): install ; @true
 
@@ -80,6 +80,9 @@ run: $(PY)
 
 import: $(PY)
 	$(PY) -m scripts.import_latest -v
+	@echo ""
+	@echo "Exporting data for web dashboard..."
+	@$(MAKE) web-export
 
 report: $(PY)
 	$(PY) -m portfolio_cli report stock-performance

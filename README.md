@@ -165,15 +165,27 @@ git push origin main
 
 ### SavvyTrader
 
-**Manual Fetch Process**:
-1. Open SavvyTrader web app in browser
-2. Open Developer Tools → Network tab
-3. Set performance timeline to **Max**
-4. Find request to: `https://api.savvytrader.com/core/portfolios/{id}/valuations?range=all`
-5. Right-click → Copy → Copy response
-6. Save to `data/import/valuations-YYYY-MM-DD.json`
+**Automated Fetch Process** (Recommended):
+1. Log in to SavvyTrader at `https://savvytrader.com/mingdom/mingdom-capital`
+2. Extract the `idToken` from browser localStorage (Developer Tools → Application → Local Storage)
+   - Look for key starting with `CognitoIdentityServiceProvider...idToken`
+3. Run the fetch script:
+   ```bash
+   ./venv/bin/python scripts/fetch_savvytrader.py "<ID_TOKEN>"
+   ```
+4. Import the data:
+   ```bash
+   make import
+   ```
 
-⚠️ **Security**: Access tokens in the request are short-lived. Never commit or share these tokens.
+This process:
+- Fetches all available portfolio data (valuations, holdings, prices, metadata)
+- Creates a timestamped archive in `data/savvytrader/YYYY-MM-DD_HHMMSS/`
+- Stages the primary files in `data/import/` for import
+
+**For detailed API documentation**, see `docs/savvytrader-api.md`.
+
+⚠️ **Security**: Access tokens are short-lived. Never commit or share these tokens.
 
 ### Fidelity
 

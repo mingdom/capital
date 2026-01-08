@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 import pytest
 from typer.testing import CliRunner
 
-from portfolio_cli.analysis import ANNUAL_RF_RATE, load_fidelity_monthly_returns
+from portfolio_cli.analysis import load_fidelity_monthly_returns
 from portfolio_cli.cli import app
 from portfolio_cli.shell import PortfolioShell, start_shell
 

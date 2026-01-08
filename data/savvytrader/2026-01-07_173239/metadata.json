@@ -1,0 +1,346 @@
+{
+  "id": 4737,
+  "name": "Mingdom Capital",
+  "description": "I'm a software engineer who reached financial independence in my 30s and now manage my family fund. Been active in the stock market since 2009.\n\nAfter achieving 72% performance in 2023, I decided to share my portfolio here in a bid to keep outperforming the market.\n\nI focus on high quality companies at fair value. I will never use leverage and will not chase speculative names.\n\nMore on my investment principles: https://www.mingdom.co/p/investment-principles-2024",
+  "descriptionVideoUrl": null,
+  "currentCash": 491104.57,
+  "createdDate": "2024-02-02T03:51:01.000Z",
+  "urlSlug": "mingdom-capital",
+  "holdings": [
+    {
+      "id": 47071,
+      "portfolioId": 4737,
+      "symbol": "GOOGL",
+      "quantity": 2600,
+      "pricePerShare": 161.77495,
+      "totalPrice": 420614.87,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-07T18:52:28.000Z"
+    },
+    {
+      "id": 47074,
+      "portfolioId": 4737,
+      "symbol": "AMZN",
+      "quantity": 2400,
+      "pricePerShare": 199.414967,
+      "totalPrice": 478595.92,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-07T18:55:19.000Z"
+    },
+    {
+      "id": 47075,
+      "portfolioId": 4737,
+      "symbol": "NVDA",
+      "quantity": 1300,
+      "pricePerShare": 125.379167,
+      "totalPrice": 162992.92,
+      "holdingType": "stock",
+      "updatedDate": "2025-12-29T17:21:28.000Z"
+    },
+    {
+      "id": 47076,
+      "portfolioId": 4737,
+      "symbol": "MELI",
+      "quantity": 65,
+      "pricePerShare": 2105.018154,
+      "totalPrice": 136826.18,
+      "holdingType": "stock",
+      "updatedDate": "2025-11-20T18:25:07.000Z"
+    },
+    {
+      "id": 48575,
+      "portfolioId": 4737,
+      "symbol": "META",
+      "quantity": 770,
+      "pricePerShare": 566.519156,
+      "totalPrice": 436219.75,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-07T18:55:36.000Z"
+    },
+    {
+      "id": 56922,
+      "portfolioId": 4737,
+      "symbol": "UBER",
+      "quantity": 4700,
+      "pricePerShare": 82.479312,
+      "totalPrice": 387652.77,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-07T18:54:49.000Z"
+    },
+    {
+      "id": 57973,
+      "portfolioId": 4737,
+      "symbol": "BKNG",
+      "quantity": 30,
+      "pricePerShare": 4514.024,
+      "totalPrice": 135420.72,
+      "holdingType": "stock",
+      "updatedDate": "2025-11-21T20:30:33.000Z"
+    },
+    {
+      "id": 58937,
+      "portfolioId": 4737,
+      "symbol": "APP",
+      "quantity": 120,
+      "pricePerShare": 324.14575,
+      "totalPrice": 38897.49,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-02T18:50:08.000Z"
+    },
+    {
+      "id": 76356,
+      "portfolioId": 4737,
+      "symbol": "CRM",
+      "quantity": 250,
+      "pricePerShare": 250.768982,
+      "totalPrice": 62692.25,
+      "holdingType": "stock",
+      "updatedDate": "2025-12-29T17:19:02.000Z"
+    },
+    {
+      "id": 78352,
+      "portfolioId": 4737,
+      "symbol": "MA",
+      "quantity": 600,
+      "pricePerShare": 531.817129,
+      "totalPrice": 319090.28,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-07T18:54:00.000Z"
+    },
+    {
+      "id": 84189,
+      "portfolioId": 4737,
+      "symbol": "TSM",
+      "quantity": 400,
+      "pricePerShare": 221.612946,
+      "totalPrice": 88645.18,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-02T15:40:26.000Z"
+    },
+    {
+      "id": 91481,
+      "portfolioId": 4737,
+      "symbol": "ASML",
+      "quantity": 40,
+      "pricePerShare": 728.4024,
+      "totalPrice": 29136.1,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-02T16:15:00.000Z"
+    },
+    {
+      "id": 108847,
+      "portfolioId": 4737,
+      "symbol": "ANET",
+      "quantity": 200,
+      "pricePerShare": 135.6029,
+      "totalPrice": 27120.58,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-02T16:21:17.000Z"
+    },
+    {
+      "id": 110459,
+      "portfolioId": 4737,
+      "symbol": "INTC",
+      "quantity": 2400,
+      "pricePerShare": 31.520546,
+      "totalPrice": 75649.31,
+      "holdingType": "stock",
+      "updatedDate": "2025-11-04T16:32:42.000Z"
+    },
+    {
+      "id": 112255,
+      "portfolioId": 4737,
+      "symbol": "BN",
+      "quantity": 1000,
+      "pricePerShare": 44.028611,
+      "totalPrice": 44028.61,
+      "holdingType": "stock",
+      "updatedDate": "2025-12-03T15:19:22.000Z"
+    },
+    {
+      "id": 114101,
+      "portfolioId": 4737,
+      "symbol": "ADBE",
+      "quantity": 130,
+      "pricePerShare": 337.023154,
+      "totalPrice": 43813.01,
+      "holdingType": "stock",
+      "updatedDate": "2025-12-04T15:55:25.000Z"
+    },
+    {
+      "id": 116337,
+      "portfolioId": 4737,
+      "symbol": "BRK.B",
+      "quantity": 50,
+      "pricePerShare": 488.1213,
+      "totalPrice": 24406.07,
+      "holdingType": "stock",
+      "updatedDate": "2025-11-05T16:08:49.000Z"
+    },
+    {
+      "id": 124765,
+      "portfolioId": 4737,
+      "symbol": "FIG",
+      "quantity": 500,
+      "pricePerShare": 50.0046,
+      "totalPrice": 25002.3,
+      "holdingType": "stock",
+      "updatedDate": "2025-11-05T18:40:48.000Z"
+    },
+    {
+      "id": 127186,
+      "portfolioId": 4737,
+      "symbol": "VHT",
+      "quantity": 400,
+      "pricePerShare": 280.079975,
+      "totalPrice": 112031.99,
+      "holdingType": "stock",
+      "updatedDate": "2025-12-29T17:20:56.000Z"
+    },
+    {
+      "id": 128903,
+      "portfolioId": 4737,
+      "symbol": "MCO",
+      "quantity": 100,
+      "pricePerShare": 476.215,
+      "totalPrice": 47621.5,
+      "holdingType": "stock",
+      "updatedDate": "2025-12-03T15:33:31.000Z"
+    },
+    {
+      "id": 129573,
+      "portfolioId": 4737,
+      "symbol": "XLU",
+      "quantity": 800,
+      "pricePerShare": 43.797,
+      "totalPrice": 35037.6,
+      "holdingType": "stock",
+      "updatedDate": "2025-12-05T07:02:49.000Z"
+    },
+    {
+      "id": 130439,
+      "portfolioId": 4737,
+      "symbol": "U",
+      "quantity": 300,
+      "pricePerShare": 44.294333,
+      "totalPrice": 13288.3,
+      "holdingType": "stock",
+      "updatedDate": "2025-12-18T18:55:46.000Z"
+    },
+    {
+      "id": 130813,
+      "portfolioId": 4737,
+      "symbol": "SNPS",
+      "quantity": 100,
+      "pricePerShare": 454.26,
+      "totalPrice": 45426,
+      "holdingType": "stock",
+      "updatedDate": "2025-12-03T15:19:49.000Z"
+    },
+    {
+      "id": 131141,
+      "portfolioId": 4737,
+      "symbol": "NFLX",
+      "quantity": 500,
+      "pricePerShare": 95.7162,
+      "totalPrice": 47858.1,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-02T20:56:33.000Z"
+    },
+    {
+      "id": 131142,
+      "portfolioId": 4737,
+      "symbol": "SPGI",
+      "quantity": 130,
+      "pricePerShare": 502.033154,
+      "totalPrice": 65264.31,
+      "holdingType": "stock",
+      "updatedDate": "2025-12-18T18:53:13.000Z"
+    },
+    {
+      "id": 133008,
+      "portfolioId": 4737,
+      "symbol": "VEEV",
+      "quantity": 300,
+      "pricePerShare": 224.5475,
+      "totalPrice": 67364.25,
+      "holdingType": "stock",
+      "updatedDate": "2025-12-29T17:18:34.000Z"
+    },
+    {
+      "id": 133752,
+      "portfolioId": 4737,
+      "symbol": "XBI",
+      "quantity": 100,
+      "pricePerShare": 123.437,
+      "totalPrice": 12343.7,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-05T20:04:13.000Z"
+    },
+    {
+      "id": 133753,
+      "portfolioId": 4737,
+      "symbol": "CME",
+      "quantity": 100,
+      "pricePerShare": 277.278,
+      "totalPrice": 27727.8,
+      "holdingType": "stock",
+      "updatedDate": "2025-12-29T17:22:28.000Z"
+    },
+    {
+      "id": 133754,
+      "portfolioId": 4737,
+      "symbol": "PGR",
+      "quantity": 250,
+      "pricePerShare": 221.097,
+      "totalPrice": 55274.25,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-02T16:20:11.000Z"
+    },
+    {
+      "id": 134752,
+      "portfolioId": 4737,
+      "symbol": "INTU",
+      "quantity": 50,
+      "pricePerShare": 631.977,
+      "totalPrice": 31598.85,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-02T20:44:55.000Z"
+    },
+    {
+      "id": 134932,
+      "portfolioId": 4737,
+      "symbol": "PINS",
+      "quantity": 1000,
+      "pricePerShare": 26.839,
+      "totalPrice": 26839,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-05T14:30:08.000Z"
+    },
+    {
+      "id": 135146,
+      "portfolioId": 4737,
+      "symbol": "MSFT",
+      "quantity": 50,
+      "pricePerShare": 474.007,
+      "totalPrice": 23700.35,
+      "holdingType": "stock",
+      "updatedDate": "2026-01-05T20:04:03.000Z"
+    }
+  ],
+  "user": {
+    "id": 20734
+  },
+  "marginEnabled": false,
+  "marginLimit": 0,
+  "marginInterestRate": 0,
+  "maximumBuyMargin": 0,
+  "maximumWithdrawMargin": 0,
+  "isShared": true,
+  "requireSubscription": true,
+  "monthlyPrice": 49.99,
+  "yearlyPrice": 299,
+  "sharedViewPercentageOnly": true,
+  "communityEnabled": true,
+  "notifyOfSubscribers": true
+}

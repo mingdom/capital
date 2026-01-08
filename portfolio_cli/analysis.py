@@ -17,7 +17,6 @@ from typing import Any, Iterable, TextIO, cast
 import numpy as np
 import pandas as pd
 
-
 JSON_FILE_PATH = Path("data/valuations.json")
 FIDELITY_CSV_PATH = Path("data/private/fidelity-performance.csv")
 ANNUAL_RF_RATE = 0.04

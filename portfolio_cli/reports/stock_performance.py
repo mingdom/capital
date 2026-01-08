@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from datetime import date
-from typing import Dict, List, Literal, Optional
+from typing import List, Literal, Optional
 
 from rich import box
 from rich.console import Console
@@ -16,7 +16,6 @@ from .utils import (
     get_period_start_date,
     load_holdings,
 )
-
 
 Period = Literal["3mo", "ytd", "1y"]
 PERIODS: List[Period] = ["3mo", "ytd", "1y"]
@@ -115,7 +114,7 @@ def format_performance_table(
     table.add_column("Symbol", style="bold", width=8)
     table.add_column("Return", justify="right", width=10)
     table.add_column("Current $", justify="right", width=12)
-    table.add_column(f"Start $", justify="right", width=12)
+    table.add_column("Start $", justify="right", width=12)
     table.add_column("Alloc", justify="right", width=8)
     table.add_column("Total Ret", justify="right", width=10)
 

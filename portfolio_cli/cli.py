@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+import sys
 from datetime import datetime
 from pathlib import Path
-import sys
 from typing import List, Optional
 
 import pandas as pd
@@ -14,10 +14,8 @@ from rich.console import Console
 from rich.table import Table
 
 from portfolio_cli.analysis import ANNUAL_RF_RATE, FIDELITY_CSV_PATH, JSON_FILE_PATH
-from portfolio_cli.performance import SUPPORTED_SOURCES, SourceKind, collect_performance_data
-
+from portfolio_cli.performance import SourceKind, collect_performance_data
 from portfolio_cli.shell import start_shell
-
 
 app = typer.Typer(
     help=(

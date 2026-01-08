@@ -10,7 +10,6 @@ from typing import Iterable
 
 import click
 import typer
-
 from typer.main import get_command
 
 from portfolio_cli.performance import SUPPORTED_SOURCES

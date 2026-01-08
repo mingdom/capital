@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import json
 import os
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, time
 from pathlib import Path
-from typing import Dict, Iterable, List, Tuple
+from typing import Dict, Iterable, List
 
 import pandas as pd
 import yfinance as yf
+
 try:  # Python 3.9+
     from zoneinfo import ZoneInfo
 except Exception:  # pragma: no cover - fallback for older environments

@@ -4,13 +4,11 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from pathlib import Path
 from typing import Dict, List, Optional
 
-import pandas as pd
 import yfinance as yf
-
 
 PRICES_JSON_PATH = Path("data/prices.json")
 
@@ -109,7 +107,6 @@ def fetch_historical_prices(
     Returns a dict mapping symbol -> closing price at start_date.
     Uses the first available trading day on or after start_date.
     """
-    end = end_date or date.today()
     # Fetch a small window to find the first available price
     # If the stock didn't exist at the start of the period, it will be skipped
     start_str = start_date.strftime("%Y-%m-%d")

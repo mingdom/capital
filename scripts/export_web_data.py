@@ -123,11 +123,26 @@ def bundle_to_dict(bundle: PerformanceBundle) -> dict:
                   if s.label in performance]
     benchmarks = [k for k in performance.keys() if k not in portfolios]
 
+    # Get the actual latest date from valuations.json
+    latest_date = None
+    try:
+        import json
+        from pathlib import Path
+        valuations_path = Path("data/valuations.json")
+        if valuations_path.exists():
+            with open(valuations_path) as f:
+                val_data = json.load(f)
+                if val_data and isinstance(val_data, list) and len(val_data) > 0:
+                    latest_date = val_data[-1].get("summaryDate")
+    except Exception:
+        pass
+
     return {
         "generated_at": datetime.now().isoformat(),
         "current_year": bundle.current_year,
         "annual_rf": bundle.annual_rf,
         "last_period": str(bundle.last_period) if bundle.last_period else None,
+        "latest_date": latest_date,
         "portfolios": portfolios,
         "benchmarks": benchmarks,
         "monthly_returns": monthly_returns,

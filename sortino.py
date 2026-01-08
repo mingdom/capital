@@ -77,7 +77,13 @@ def build_benchmark_comparison_table(
     lines.append(header)
     lines.append("-" * len(header))
     for name, perf in metrics.items():
-        row = f"{name:<12} {_fmt_pct(perf.cagr):>8} {_fmt_pct(perf.max_dd_monthly):>10} {_fmt_pct(perf.ytd):>8} {_fmt_val(perf.sharpe):>8} {_fmt_val(perf.sortino):>8}"
+        row = (
+            f"{name:<12} {_fmt_pct(perf.cagr):>8} {_fmt_pct(perf.max_dd_monthly):>10} "
+            f"{_fmt_pct(perf.ytd):>8} {_fmt_val(perf.sharpe):>8} {_fmt_val(perf.sortino):>8}"
+        )
+
+
+
         lines.append(row)
     return "\n".join(lines)
 

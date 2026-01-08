@@ -1,29 +1,28 @@
 """Export holdings performance data to JSON for web dashboard."""
 
 import json
-from datetime import datetime, date
+from datetime import date, datetime
 from pathlib import Path
-from calendar import monthrange
-from portfolio_cli.reports.stock_performance import calculate_performance, PERIODS
-from portfolio_cli.reports.utils import load_holdings, get_period_start_date
+
+from portfolio_cli.reports.stock_performance import PERIODS, calculate_performance
+from portfolio_cli.reports.utils import get_period_start_date, load_holdings
 
 OUTPUT_PATH = Path("web/public/data/holdings-performance.json")
-PORTFOLIO_DATA_PATH = Path("web/public/data/portfolio.json")
 
 def get_reference_date():
-    """Get reference date from portfolio.json last_period."""
+    """Get reference date from the latest valuations data."""
     try:
-        if PORTFOLIO_DATA_PATH.exists():
-            with open(PORTFOLIO_DATA_PATH) as f:
+        # Try to get the actual latest date from valuations.json
+        valuations_path = Path("data/valuations.json")
+        if valuations_path.exists():
+            with open(valuations_path) as f:
                 data = json.load(f)
-                last_period = data.get("last_period")
-                if last_period:
-                    year, month = map(int, last_period.split("-"))
-                    # Use last day of that month
-                    _, last_day = monthrange(year, month)
-                    return date(year, month, last_day)
+                if data and isinstance(data, list) and len(data) > 0:
+                    last_entry = data[-1]
+                    if "summaryDate" in last_entry:
+                        return datetime.fromisoformat(last_entry["summaryDate"]).date()
     except Exception as e:
-        print(f"Warning: Could not determine reference date from portfolio.json: {e}")
+        print(f"Warning: Could not determine reference date from valuations.json: {e}")
     return date.today()
 
 def export_performance():

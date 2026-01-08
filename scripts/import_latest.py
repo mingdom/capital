@@ -9,7 +9,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Iterable, Optional
 
-
 IMPORT_DIR = Path("data/import")
 ARCHIVE_DIR = IMPORT_DIR / "archive"
 CANONICAL_JSON = Path("data/valuations.json")
@@ -141,38 +140,53 @@ def archive_move(src: Path, archive_root: Path, dry_run: bool = False) -> Path:
 
 
 def run(args: argparse.Namespace) -> int:
-    IMPORT_DIR.mkdir(parents=True, exist_ok=True)
+    source_dir = Path(args.source)
+    source_dir.mkdir(parents=True, exist_ok=True)
     ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
 
-    json_cands = list_candidates(IMPORT_DIR, ".json")
-    csv_cands = list_candidates(IMPORT_DIR, ".csv")
+    json_cands = list_candidates(source_dir, ".json")
+    csv_cands = list_candidates(source_dir, ".csv")
 
-    latest_json = pick_latest_json(json_cands)
+    # Separate candidates by type
+    val_cands = [c for c in json_cands if "valuations" in c.path.name.lower()]
+    hold_cands = [c for c in json_cands if "holdings" in c.path.name.lower() or "prices" in c.path.name.lower()]
+    other_json = [c for c in json_cands if c not in val_cands and c not in hold_cands]
+
+    latest_val = pick_latest_json(val_cands) or (pick_latest_json(other_json) if not hold_cands else None)
+    latest_hold = pick_latest_json(hold_cands)
     latest_csv = pick_latest_csv(csv_cands)
 
     if args.verbose:
-        print(f"Found JSON candidates: {[c.path.name for c in json_cands]}")
+        print(f"Found Valuations candidates: {[c.path.name for c in val_cands]}")
+        print(f"Found Holdings candidates: {[c.path.name for c in hold_cands]}")
         print(f"Found CSV candidates: {[c.path.name for c in csv_cands]}")
-        print(f"Selected JSON: {latest_json.path.name if latest_json else None}")
+        print(f"Selected Valuations: {latest_val.path.name if latest_val else None}")
+        print(f"Selected Holdings: {latest_hold.path.name if latest_hold else None}")
         print(f"Selected CSV: {latest_csv.path.name if latest_csv else None}")
 
-    # Process JSON → valuations.json
-    if latest_json:
+    # Process Valuations → valuations.json
+    if latest_val:
         if args.verbose:
-            print(f"Copying {latest_json.path} -> {CANONICAL_JSON}")
-        atomic_copy(latest_json.path, CANONICAL_JSON, dry_run=args.dry_run)
+            print(f"Copying {latest_val.path} -> {CANONICAL_JSON}")
+        atomic_copy(latest_val.path, CANONICAL_JSON, dry_run=args.dry_run)
+        archive_move(latest_val.path, ARCHIVE_DIR, dry_run=args.dry_run)
 
-        archive_move(latest_json.path, ARCHIVE_DIR, dry_run=args.dry_run)
+    # Process Holdings → prices.json
+    if latest_hold:
+        canonical_prices = Path("data/prices.json")
+        if args.verbose:
+            print(f"Copying {latest_hold.path} -> {canonical_prices}")
+        atomic_copy(latest_hold.path, canonical_prices, dry_run=args.dry_run)
+        archive_move(latest_hold.path, ARCHIVE_DIR, dry_run=args.dry_run)
 
     # Process CSV → fidelity-performance.csv
     if latest_csv:
         if args.verbose:
             print(f"Copying {latest_csv.path} -> {CANONICAL_FIDELITY}")
         atomic_copy(latest_csv.path, CANONICAL_FIDELITY, dry_run=args.dry_run)
-
         archive_move(latest_csv.path, ARCHIVE_DIR, dry_run=args.dry_run)
 
-    if not latest_json and not latest_csv:
+    if not latest_val and not latest_hold and not latest_csv:
         print("No valid .json or .csv files found in data/import/.")
     else:
         if args.dry_run:
@@ -183,9 +197,10 @@ def run(args: argparse.Namespace) -> int:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Import latest JSON and CSV from data/import/ and update canonical inputs.")
+    parser = argparse.ArgumentParser(description="Import latest JSON and CSV from a source directory and update canonical inputs.")
     parser.add_argument("--dry-run", action="store_true", help="Print actions without writing files or DB")
     parser.add_argument("--verbose", "-v", action="store_true", help="Verbose logging")
+    parser.add_argument("--source", "-s", default=IMPORT_DIR, help=f"Directory to scan for files (default: {IMPORT_DIR})")
     args = parser.parse_args()
     raise SystemExit(run(args))
 

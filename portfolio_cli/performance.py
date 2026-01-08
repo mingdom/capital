@@ -10,12 +10,11 @@ from typing import Dict, Iterable, List, Optional, Tuple
 import numpy as np
 import pandas as pd
 
-from benchmarks import configured_benchmarks, get_benchmark_series
+from benchmarks import configured_benchmarks
 from portfolio_cli.analysis import (
     ANNUAL_RF_RATE,
     FIDELITY_CSV_PATH,
     JSON_FILE_PATH,
-    PerformanceMetrics,
     PortfolioAnalysis,
     calculate_metrics,
     compute_drawdown_stats,
@@ -335,8 +334,42 @@ def collect_performance_data(
         months_index = pd.concat(monthly_map.values()).sort_index().index
 
     if include_benchmarks and len(months_index) > 0:
+        # Determine inception date and current end date for aligned partials
+        inception_date = None
+        current_end = None
+
+        # Try to get inception date from Mingdom data
+        if SourceKind.MINGDOM.label in monthly_map:
+            mingdom_series = monthly_map[SourceKind.MINGDOM.label]
+            if not mingdom_series.empty:
+                first_period = mingdom_series.index[0]
+                inception_date = first_period.to_timestamp('M').date()
+                # Get the last date from valuations.json for current_end
+                try:
+                    import json
+                    from datetime import date as dt_date
+                    with open(JSON_FILE_PATH) as f:
+                        data = json.load(f)
+                        if data and isinstance(data, list) and len(data) > 0:
+                            last_entry = data[-1]
+                            if "summaryDate" in last_entry:
+                                from datetime import datetime
+                                current_end = datetime.fromisoformat(
+                                    last_entry["summaryDate"]
+                                ).date()
+                except Exception:
+                    pass
+
+        # Fallback to today if we couldn't determine dates
+        if inception_date is None:
+            inception_date = months_index[0].to_timestamp('M').date()
+        if current_end is None:
+            from datetime import date as dt_date
+            current_end = dt_date.today()
+
+        from benchmarks import get_aligned_benchmark_series
         for symbol in configured_benchmarks():
-            series = get_benchmark_series(symbol, months_index)
+            series = get_aligned_benchmark_series(symbol, months_index, inception_date, current_end)
             if series.empty:
                 missing.append(f"benchmark {symbol} (no data)")
                 continue
@@ -359,7 +392,9 @@ def collect_performance_data(
         if clean.empty:
             windows[name] = SeriesWindow(start=None, end=None, count=0)
         else:
-            windows[name] = SeriesWindow(start=clean.index.min(), end=clean.index.max(), count=len(clean))
+            windows[name] = SeriesWindow(
+                start=clean.index.min(), end=clean.index.max(), count=len(clean)
+            )
 
     risk_metrics: Dict[str, RiskMetrics] = {}
     spy_series = combined.get("SPY")

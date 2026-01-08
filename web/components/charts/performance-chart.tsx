@@ -31,7 +31,7 @@ export function PerformanceChart({
     title,
     className,
 }: PerformanceChartProps) {
-    const [selectedRange, setSelectedRange] = useState<TimeRange>("YTD");
+    const [selectedRange, setSelectedRange] = useState<TimeRange>("Max");
 
     // Filter data based on selected time range
     const filteredData = useMemo(() => {
@@ -96,13 +96,17 @@ export function PerformanceChart({
         return metrics;
     }, [filteredData, series]);
 
-    // Get the latest date from filtered data
-    const latestDate = useMemo(() => {
+    // Get the date range from filtered data
+    const dateRange = useMemo(() => {
         if (!filteredData || filteredData.length === 0) return "";
+        const firstPeriod = filteredData[0].period;
         const lastPeriod = filteredData[filteredData.length - 1].period;
-        const [year, month] = lastPeriod.split("-");
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-        return `${monthNames[parseInt(month) - 1]} ${parseInt(month)}, ${year}`;
+
+        const [startYear, startMonth] = firstPeriod.split("-");
+        const [endYear, endMonth] = lastPeriod.split("-");
+
+        return `${monthNames[parseInt(startMonth) - 1]} ${startYear} - ${monthNames[parseInt(endMonth) - 1]} ${endYear}`;
     }, [filteredData]);
 
     // Format period for display (e.g., "2024-01" -> "Jan '24")
@@ -124,7 +128,7 @@ export function PerformanceChart({
                     <div className="flex-1">
                         <h3 className="text-lg font-semibold">{title.split("(")[0].trim()}</h3>
                         <div className="flex flex-wrap items-center gap-3 mt-2 text-sm">
-                            <span className="text-muted-foreground">{latestDate}</span>
+                            <span className="text-muted-foreground font-medium">{dateRange}</span>
                             {series.map(name => {
                                 const perf = performanceMetrics[name];
                                 if (perf === undefined) return null;
@@ -237,7 +241,7 @@ export function PerformanceChart({
                     </ResponsiveContainer>
                 </div>
                 <p className="text-xs text-muted-foreground mt-4 text-center">
-                    Growth of $100K invested at inception
+                    Hypothetical growth of $100K invested at inception (February 1, 2024)
                 </p>
             </CardContent>
         </Card>
