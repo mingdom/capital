@@ -311,7 +311,11 @@ export default function Dashboard() {
   }
 
   const chartSeries = [selectedPortfolio, ...selectedBenchmarks];
-  const wealthData = toCumulativeWealth(data.monthly_returns, chartSeries);
+  // Use weekly returns if available for more granular chart, otherwise fall back to monthly
+  const returnsData = (data as any).weekly_returns && Object.keys((data as any).weekly_returns).length > 0
+    ? (data as any).weekly_returns
+    : data.monthly_returns;
+  const wealthData = toCumulativeWealth(returnsData, chartSeries);
   const timeSeriesData = toTimeSeries(data.monthly_returns, [selectedPortfolio]);
   const metrics = data.performance[selectedPortfolio];
   const riskMetrics = data.risk[selectedPortfolio];

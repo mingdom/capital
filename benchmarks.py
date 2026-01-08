@@ -16,6 +16,7 @@ except Exception:  # pragma: no cover - fallback for older environments
 
 
 CACHE_PATH = Path("data/benchmarks.json")
+WEEKLY_CACHE_PATH = Path("data/benchmarks_weekly.json")
 
 # Default benchmarks used across CLI, reports, and apps.
 # Centralize here so adding more is a single-line change.
@@ -292,5 +293,117 @@ def get_aligned_benchmark_series(
     if not out:
         return pd.Series(dtype=float)
     idx = pd.PeriodIndex([m for m, _ in out], freq="M")
+    data = [v for _, v in out]
+    return pd.Series(data, index=idx, name=symbol).sort_index()
+# Temporary file - will append to benchmarks.py
+
+def _load_weekly_cache() -> Dict[str, Dict[str, float]]:
+    if WEEKLY_CACHE_PATH.exists():
+        with open(WEEKLY_CACHE_PATH, "r") as f:
+            return json.load(f)
+    return {}
+
+
+def _save_weekly_cache(cache: Dict[str, Dict[str, float]]) -> None:
+    WEEKLY_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(WEEKLY_CACHE_PATH, "w") as f:
+        json.dump(cache, f, indent=2)
+
+
+def fetch_weekly_returns(symbol: str, start_date: date, end_date: date) -> pd.Series:
+    """Fetch weekly returns for a symbol using daily data and resampling."""
+    start_ts = pd.Timestamp(start_date)
+    end_ts = pd.Timestamp(end_date)
+
+    try:
+        hist = yf.Ticker(symbol).history(
+            start=start_ts - pd.offsets.Day(7),  # Extra buffer for first week
+            end=end_ts + pd.offsets.Day(1),
+            interval="1d",
+            auto_adjust=True,
+        )
+    except Exception:
+        return pd.Series(dtype=float)
+
+    if hist.empty:
+        return pd.Series(dtype=float)
+
+    # Normalize timezone
+    if isinstance(hist.index, pd.DatetimeIndex) and hist.index.tz is not None:
+        hist = hist.copy()
+        hist.index = hist.index.tz_localize(None)
+
+    closes = hist["Close"].copy()
+
+    # Resample to weekly (Friday) and calculate returns
+    weekly_closes = closes.resample("W-FRI").last()
+    rets = weekly_closes.pct_change().dropna()
+
+    # Convert to period index
+    periods = rets.index.to_period("W-FRI")
+    rets.index = periods
+
+    return rets
+
+
+def ensure_benchmark_weekly_cache(
+    symbols: Iterable[str], needed_weeks: Iterable[pd.Period]
+) -> Dict[str, Dict[str, float]]:
+    """Ensure weekly benchmark cache has all needed weeks."""
+    cache = _load_weekly_cache()
+
+    weeks_list = list(needed_weeks)
+    if not weeks_list:
+        return cache
+
+    for sym in symbols:
+        sym_cache = cache.get(sym, {})
+        missing = [p for p in weeks_list if str(p) not in sym_cache]
+
+        if missing:
+            start_p = min(missing)
+            end_p = max(missing)
+
+            # Convert Period to date - handle both Period and Timestamp
+            if hasattr(start_p, 'to_timestamp'):
+                start_date = start_p.to_timestamp().date()
+            elif hasattr(start_p, 'date'):
+                start_date = start_p.date()
+            else:
+                start_date = pd.Timestamp(start_p).date()
+
+            if hasattr(end_p, 'to_timestamp'):
+                end_date = end_p.to_timestamp().date()
+            elif hasattr(end_p, 'date'):
+                end_date = end_p.date()
+            else:
+                end_date = pd.Timestamp(end_p).date()
+
+            series = fetch_weekly_returns(sym, start_date, end_date)
+
+            for p, v in series.items():
+                sym_cache[str(p)] = float(v)
+
+            cache[sym] = sym_cache
+
+    _save_weekly_cache(cache)
+    return cache
+
+
+def get_benchmark_weekly_series(symbol: str, weeks: Iterable[pd.Period]) -> pd.Series:
+    """Get weekly benchmark returns for specified weeks."""
+    cache = ensure_benchmark_weekly_cache([symbol], weeks)
+    mapping = cache.get(symbol, {})
+
+    out = []
+    for w in weeks:
+        key = str(w)
+        if key in mapping:
+            out.append((w, mapping[key]))
+
+    if not out:
+        return pd.Series(dtype=float)
+
+    idx = pd.PeriodIndex([w for w, _ in out], freq="W-FRI")
     data = [v for _, v in out]
     return pd.Series(data, index=idx, name=symbol).sort_index()

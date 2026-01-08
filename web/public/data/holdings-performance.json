@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-01-07T18:15:47.652017",
+  "generated_at": "2026-01-07T20:02:45.574373",
   "as_of": "2026-01-07",
   "periods": {
     "3mo": {
@@ -542,10 +542,10 @@
       "start_date": "2025-01-07",
       "end_date": "2026-01-07",
       "summary": {
-        "net_return": 0.2930407853268004,
+        "net_return": 0.29304079067627076,
         "gainers_count": 27,
         "losers_count": 4,
-        "avg_return": 0.24514978007726132
+        "avg_return": 0.24514978776317745
       },
       "holdings": [
         {
@@ -623,8 +623,8 @@
         {
           "symbol": "BN",
           "current_price": 47.13,
-          "period_start_price": 37.792362213134766,
-          "period_return": 0.24707737860376278,
+          "period_start_price": 37.7923583984375,
+          "period_return": 0.2470775044816616,
           "allocation": 0.009566,
           "total_return_pct": 0.07044
         },
@@ -671,8 +671,8 @@
         {
           "symbol": "BKNG",
           "current_price": 5445.72,
-          "period_start_price": 4760.72705078125,
-          "period_return": 0.14388410465715332,
+          "period_start_price": 4760.7265625,
+          "period_return": 0.143884221978985,
           "allocation": 0.033161,
           "total_return_pct": 0.2064
         },
@@ -711,8 +711,8 @@
         {
           "symbol": "SPGI",
           "current_price": 537.5,
-          "period_start_price": 487.7435607910156,
-          "period_return": 0.1020135235169278,
+          "period_start_price": 487.74359130859375,
+          "period_return": 0.10201345456515806,
           "allocation": 0.014183,
           "total_return_pct": 0.070646
         },
@@ -767,8 +767,8 @@
         {
           "symbol": "PGR",
           "current_price": 209.1,
-          "period_start_price": 223.2516632080078,
-          "period_return": -0.06338883663689639,
+          "period_start_price": 223.25164794921875,
+          "period_return": -0.06338877262145773,
           "allocation": 0.010611,
           "total_return_pct": -0.054261
         },

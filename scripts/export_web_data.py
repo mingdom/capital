@@ -63,6 +63,15 @@ def bundle_to_dict(bundle: PerformanceBundle) -> dict:
             str(period): round(val, 6) for period, val in series.items()
         }
 
+    # Weekly returns time series for more granular charts
+    weekly_returns = {}
+    if not bundle.weekly_combined.empty:
+        for col in bundle.weekly_combined.columns:
+            series = bundle.weekly_combined[col].dropna()
+            weekly_returns[col] = {
+                str(period): round(val, 6) for period, val in series.items()
+            }
+
     # Performance metrics per source/benchmark
     performance = {}
     for name, analysis in bundle.metrics.items():
@@ -146,6 +155,7 @@ def bundle_to_dict(bundle: PerformanceBundle) -> dict:
         "portfolios": portfolios,
         "benchmarks": benchmarks,
         "monthly_returns": monthly_returns,
+        "weekly_returns": weekly_returns,
         "performance": performance,
         "risk": risk,
         "windows": windows,

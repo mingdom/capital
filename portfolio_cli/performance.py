@@ -47,6 +47,7 @@ SUPPORTED_SOURCES: Tuple[str, ...] = tuple(kind.value for kind in SourceKind)
 @dataclass
 class PerformanceBundle:
     combined: pd.DataFrame
+    weekly_combined: pd.DataFrame  # Weekly returns for charts
     recent: pd.DataFrame
     metrics: Dict[str, PortfolioAnalysis]
     risk_metrics: Dict[str, "RiskMetrics"]
@@ -406,9 +407,46 @@ def collect_performance_data(
             benchmark=spy_series,
         )
 
+    # Collect weekly data for charts
+    weekly_map: Dict[str, pd.Series] = {}
+
+    # Get weekly data for Mingdom if available
+    if SourceKind.MINGDOM.label in monthly_map:
+        try:
+            mingdom_path = savvy_json if savvy_json else JSON_FILE_PATH
+            daily_returns = _load_mingdom_daily_returns(mingdom_path)
+            weekly_returns = _resample_compound(daily_returns, "W-FRI")
+            # Convert to Period index for consistency
+            if not weekly_returns.empty and isinstance(weekly_returns.index, pd.DatetimeIndex):
+                weekly_returns.index = weekly_returns.index.to_period("W-FRI")
+            weekly_map[SourceKind.MINGDOM.label] = weekly_returns
+        except Exception:
+            pass
+
+    # Get weekly data for benchmarks if we have monthly data
+    if include_benchmarks and weekly_map:
+        # Generate weekly periods from the Mingdom weekly data
+        mingdom_weekly = weekly_map.get(SourceKind.MINGDOM.label)
+        if mingdom_weekly is not None and not mingdom_weekly.empty:
+            weekly_periods = mingdom_weekly.index
+
+            from benchmarks import get_benchmark_weekly_series
+            for symbol in configured_benchmarks():
+                try:
+                    series = get_benchmark_weekly_series(symbol, weekly_periods)
+                    if not series.empty:
+                        weekly_map[symbol] = series
+                except Exception as e:
+                    missing.append(f"weekly benchmark {symbol} ({e})")
+
+    weekly_combined = pd.DataFrame(weekly_map) if weekly_map else pd.DataFrame()
+    if not weekly_combined.empty:
+        weekly_combined = weekly_combined.sort_index()
+
     return PerformanceBundle(
         combined=combined,
         recent=recent,
+        weekly_combined=weekly_combined,
         metrics=metrics_map,
         risk_metrics=risk_metrics,
         windows=windows,
