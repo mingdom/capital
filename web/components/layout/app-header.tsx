@@ -21,8 +21,8 @@ export function AppHeader() {
     }, []);
 
     const navItems = [
-        { name: "Dashboard", href: "/" },
-        { name: "Portfolio Info", href: "/portfolio-info" },
+        { name: "Performance", href: "/" },
+        { name: "About", href: "/portfolio-info" },
     ];
 
     return (
