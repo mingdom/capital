@@ -26,27 +26,38 @@ export function ConvictionHeatStrip({ performance }: ConvictionHeatStripProps) {
         : 50;
 
     return (
-        <div className="space-y-4 py-4">
-            <div className="relative h-2 w-full rounded-full bg-gradient-to-r from-red-900 via-zinc-700 to-emerald-900 border border-white/5 overflow-visible">
-                {/* Net Return Marker */}
-                <motion.div
-                    className="absolute top-1/2 -translate-y-1/2 w-0.5 h-6 bg-white shadow-[0_0_8px_rgba(255,255,255,0.5)] z-10"
-                    initial={{ left: "50%" }}
-                    animate={{ left: `${Math.min(Math.max(markerPos, 0), 100)}%` }}
-                    transition={{ type: "spring", stiffness: 50, damping: 15 }}
-                />
+        <div className="py-2 space-y-6">
+            <div className="relative">
+                {/* The Strip */}
+                <div className="relative h-3 w-full rounded-full bg-gradient-to-r from-red-500/40 via-zinc-700 to-emerald-500/40 border border-white/10 overflow-visible shadow-inner">
+                    {/* Net Return Marker */}
+                    <motion.div
+                        className="absolute top-1/2 -translate-y-1/2 w-0.5 h-7 bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)] z-10"
+                        initial={{ left: "50%" }}
+                        animate={{ left: `${Math.min(Math.max(markerPos, 0), 100)}%` }}
+                        transition={{ type: "spring", stiffness: 60, damping: 15 }}
+                    />
 
-                {/* Gainers/Losers density indicators (simplified for MVP) */}
-                <div className="absolute inset-0 flex justify-between px-2 text-[10px] text-muted-foreground/50 -bottom-5">
-                    <span>Worst ({formatPercent(minReturn, 0)})</span>
-                    <span>Best ({formatPercent(maxReturn, 0)})</span>
+                    {/* Tick for center (0%) if possible, or just the labels below */}
+                </div>
+
+                {/* Extremes Labels - Positioned below the bar for zero overlap */}
+                <div className="flex justify-between items-center mt-3 text-[10px] uppercase tracking-widest font-bold">
+                    <div className="flex flex-col items-start">
+                        <span className="text-muted-foreground/80">Worst</span>
+                        <span className="text-red-400">{formatPercent(minReturn, 1)}</span>
+                    </div>
+                    <div className="flex flex-col items-end">
+                        <span className="text-muted-foreground/80">Best</span>
+                        <span className="text-emerald-400">{formatPercent(maxReturn, 1)}</span>
+                    </div>
                 </div>
             </div>
 
-            <div className="flex justify-center pt-2">
+            <div className="flex justify-center border-t border-white/[0.03] pt-4">
                 <div className="text-center">
-                    <div className="text-xs uppercase tracking-widest text-muted-foreground mb-0.5">Weighted Net Return</div>
-                    <div className={`text-lg font-mono font-bold ${summary.net_return >= 0 ? "text-emerald-500" : "text-red-500"}`}>
+                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground/60 mb-1">Weighted Net Return</div>
+                    <div className={`text-2xl font-heading font-bold ${summary.net_return >= 0 ? "text-emerald-500" : "text-red-500"}`}>
                         {summary.net_return >= 0 ? "+" : ""}{formatPercent(summary.net_return)}
                     </div>
                 </div>

@@ -111,6 +111,7 @@ def fetch_historical_prices(
     """
     end = end_date or date.today()
     # Fetch a small window to find the first available price
+    # If the stock didn't exist at the start of the period, it will be skipped
     start_str = start_date.strftime("%Y-%m-%d")
     end_str = (start_date + timedelta(days=10)).strftime("%Y-%m-%d")
 

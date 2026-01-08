@@ -1,12 +1,30 @@
 """Export holdings performance data to JSON for web dashboard."""
 
 import json
-from datetime import datetime
+from datetime import datetime, date
 from pathlib import Path
+from calendar import monthrange
 from portfolio_cli.reports.stock_performance import calculate_performance, PERIODS
-from portfolio_cli.reports.utils import load_holdings
+from portfolio_cli.reports.utils import load_holdings, get_period_start_date
 
 OUTPUT_PATH = Path("web/public/data/holdings-performance.json")
+PORTFOLIO_DATA_PATH = Path("web/public/data/portfolio.json")
+
+def get_reference_date():
+    """Get reference date from portfolio.json last_period."""
+    try:
+        if PORTFOLIO_DATA_PATH.exists():
+            with open(PORTFOLIO_DATA_PATH) as f:
+                data = json.load(f)
+                last_period = data.get("last_period")
+                if last_period:
+                    year, month = map(int, last_period.split("-"))
+                    # Use last day of that month
+                    _, last_day = monthrange(year, month)
+                    return date(year, month, last_day)
+    except Exception as e:
+        print(f"Warning: Could not determine reference date from portfolio.json: {e}")
+    return date.today()
 
 def export_performance():
     """Calculate and export performance for all periods to JSON."""
@@ -15,13 +33,17 @@ def export_performance():
         print("No holdings found to export.")
         return
 
+    ref_date = get_reference_date()
+    print(f"Calculating performance using reference date: {ref_date}")
+
     data = {
         "generated_at": datetime.now().isoformat(),
+        "as_of": ref_date.isoformat(),
         "periods": {}
     }
 
     for period in PERIODS:
-        performances = calculate_performance(holdings, period)
+        performances = calculate_performance(holdings, period, reference_date=ref_date)
 
         # Calculate summary stats for the period
         if performances:
@@ -42,7 +64,12 @@ def export_performance():
                 "avg_return": 0
             }
 
+        # Get period start date for this iteration
+        start_date = get_period_start_date(period, ref_date)
+
         data["periods"][period] = {
+            "start_date": start_date.isoformat(),
+            "end_date": ref_date.isoformat(),
             "summary": summary,
             "holdings": [
                 {

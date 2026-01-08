@@ -93,6 +93,8 @@ export interface HoldingsPerformanceData {
 }
 
 export interface PeriodPerformance {
+  start_date: string;
+  end_date: string;
   summary: PerformanceSummary;
   holdings: StockPerformance[];
 }
