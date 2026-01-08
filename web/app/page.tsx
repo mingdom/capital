@@ -54,45 +54,6 @@ function LoadingSkeleton() {
   );
 }
 
-function Header({ data }: { data: PortfolioData }) {
-  const meta = getPortfolioMeta("Mingdom");
-
-  return (
-    <header className="border-b border-border/50 bg-card/60 backdrop-blur-md sticky top-0 z-50">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex flex-row items-center justify-between">
-          <div className="flex flex-col">
-            <h1 className="text-xl font-bold tracking-tight">
-              Mingdom Capital
-            </h1>
-          </div>
-
-          <div className="flex items-center gap-3 md:gap-4">
-            {meta.url && (
-              <a
-                href={meta.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-primary hover:text-primary/80 border border-primary/20 hover:border-primary/40 rounded-md transition-colors"
-              >
-                <ExternalLink className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Follow Live Trades</span>
-                <span className="sm:hidden">Follow</span>
-              </a>
-            )}
-            {data.warnings.length > 0 && (
-              <Badge variant="destructive" className="gap-1 scale-90 md:scale-100">
-                <AlertTriangle className="h-3 w-3" />
-                <span className="hidden sm:inline">{data.warnings.length} warning{data.warnings.length > 1 ? "s" : ""}</span>
-                <span className="sm:hidden">{data.warnings.length}</span>
-              </Badge>
-            )}
-          </div>
-        </div>
-      </div>
-    </header>
-  );
-}
 
 function DashboardFooter({ data }: { data: PortfolioData }) {
   const formatDate = (dateStr: string) => {
@@ -322,7 +283,6 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header data={data} />
 
       <main className="container mx-auto px-4 pt-4 md:pt-6 pb-6 md:pb-8 space-y-6 md:space-y-8">
         <motion.div

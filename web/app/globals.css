@@ -167,3 +167,67 @@
 .dashboard-card {
   @apply bg-card/40 backdrop-blur-sm border-border/50 transition-all duration-200 hover:border-border;
 }
+
+/* Portfolio Prose Styling */
+.portfolio-prose {
+  @apply text-foreground leading-relaxed;
+}
+
+.portfolio-prose h1 {
+  @apply text-5xl font-bold tracking-tight mb-8 mt-4;
+}
+
+.portfolio-prose h2 {
+  @apply text-4xl font-bold tracking-tight mb-6 mt-12;
+}
+
+.portfolio-prose h3 {
+  @apply text-2xl font-semibold mb-4 mt-8;
+}
+
+.portfolio-prose p {
+  @apply mb-6 text-muted-foreground/90 leading-relaxed;
+}
+
+.portfolio-prose ul {
+  @apply list-none space-y-3 mb-8;
+}
+
+.portfolio-prose li {
+  @apply relative pl-6 text-muted-foreground/90;
+}
+
+.portfolio-prose li::before {
+  content: "";
+  @apply absolute left-0 top-2.5 w-1.5 h-1.5 rounded-full;
+  background-color: var(--section-accent, #7c3aed);
+}
+
+.portfolio-prose blockquote {
+  @apply border-l-4 pl-6 py-4 mb-8 italic bg-zinc-900/50 rounded-r-md text-muted-foreground/90;
+  border-color: var(--section-accent, #7c3aed);
+}
+
+.portfolio-prose strong {
+  @apply text-foreground font-semibold;
+}
+
+.portfolio-prose table {
+  @apply w-full mb-8 border-collapse overflow-hidden rounded-lg border border-border/50;
+}
+
+.portfolio-prose th {
+  @apply text-left py-3 px-4 border-b border-border bg-zinc-900/50 text-xs font-semibold uppercase tracking-wider text-muted-foreground;
+}
+
+.portfolio-prose td {
+  @apply py-3 px-4 border-b border-border/30 text-sm font-mono;
+}
+
+.portfolio-prose tr:last-child td {
+  @apply border-b-0;
+}
+
+.portfolio-prose tr:nth-child(even) {
+  @apply bg-zinc-900/30;
+}

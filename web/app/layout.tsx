@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Geist_Mono, Geist } from "next/font/google";
 import "./globals.css";
+import { AppHeader } from "@/components/layout/app-header";
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -31,6 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${bricolage.variable} ${geistSans.variable} ${geistMono.variable} font-sans antialiased`} suppressHydrationWarning>
+        <AppHeader />
         {children}
       </body>
     </html>
