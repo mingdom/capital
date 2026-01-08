@@ -65,11 +65,8 @@ export function QuickStatsCard({ metrics, name, className }: QuickStatsCardProps
     const downCaptureGood = metrics.down_capture !== null && metrics.down_capture < 1;
 
     return (
-        <Card className={className}>
-            <CardHeader className="pb-2">
-                <CardTitle className="text-lg font-medium">Quick Stats</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-1">
+        <Card className={`${className} h-full flex flex-col`}>
+            <CardContent className="p-4 flex-1 flex flex-col justify-between space-y-0 text-sm">
                 <StatRow
                     icon={Target}
                     label="Hit Rate"

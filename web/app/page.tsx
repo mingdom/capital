@@ -399,7 +399,7 @@ export default function Dashboard() {
           {/* Holdings Performance Section - Mingdom only */}
           {selectedPortfolio === "Mingdom" && (
             <motion.div variants={item}>
-              <Section title="Holdings Performance" collapsible>
+              <Section title="Holdings" collapsible>
                 <StockPerformanceSection />
               </Section>
             </motion.div>

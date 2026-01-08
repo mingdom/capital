@@ -13,9 +13,12 @@ import { Button } from "@/components/ui/button";
 
 export function StockPerformanceSection() {
     const [data, setData] = useState<HoldingsPerformanceData | null>(null);
-    const [activePeriod, setActivePeriod] = useState<string>("ytd");
-    const [expanded, setExpanded] = useState(false);
+    const [activePeriod, setActivePeriod] = useState<string>("3mo");
     const [loading, setLoading] = useState(true);
+    const [sortConfig, setSortConfig] = useState<{ key: keyof StockPerformance | 'none', direction: 'asc' | 'desc' }>({
+        key: 'period_return',
+        direction: 'desc'
+    });
 
     useEffect(() => {
         loadHoldingsPerformanceData()
@@ -29,10 +32,7 @@ export function StockPerformanceSection() {
             <div className="space-y-4">
                 <Skeleton className="h-8 w-48" />
                 <Skeleton className="h-32 w-full" />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Skeleton className="h-64" />
-                    <Skeleton className="h-64" />
-                </div>
+                <Skeleton className="h-96 w-full" />
             </div>
         );
     }
@@ -42,169 +42,128 @@ export function StockPerformanceSection() {
     const currentPeriodData = data.periods[activePeriod];
     if (!currentPeriodData) return null;
 
-    const topPerformers = currentPeriodData.holdings.slice(0, 5);
-    const bottomPerformers = [...currentPeriodData.holdings].reverse().slice(0, 5);
-    const restOfHoldings = currentPeriodData.holdings.slice(5, -5);
+    // Sorting logic
+    const sortedHoldings = [...currentPeriodData.holdings].sort((a, b) => {
+        if (sortConfig.key === 'none') return 0;
+
+        const aValue = a[sortConfig.key];
+        const bValue = b[sortConfig.key];
+
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+            return sortConfig.direction === 'asc'
+                ? aValue.localeCompare(bValue)
+                : bValue.localeCompare(aValue);
+        }
+
+        if (typeof aValue === 'number' && typeof bValue === 'number') {
+            return sortConfig.direction === 'asc'
+                ? aValue - bValue
+                : bValue - aValue;
+        }
+
+        return 0;
+    });
+
+    const handleSort = (key: keyof StockPerformance) => {
+        setSortConfig(prev => ({
+            key,
+            direction: prev.key === key && prev.direction === 'desc' ? 'asc' : 'desc'
+        }));
+    };
+
+    const formatDate = (dateStr: string) => {
+        const date = new Date(dateStr + "T12:00:00");
+        return new Intl.DateTimeFormat("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+        }).format(date);
+    };
+
+    const SortIcon = ({ column }: { column: keyof StockPerformance }) => {
+        if (sortConfig.key !== column) return <div className="w-3 h-3 ml-1 opacity-20 group-hover:opacity-50">↕</div>;
+        return <div className="w-3 h-3 ml-1 text-primary">{sortConfig.direction === 'desc' ? '↓' : '↑'}</div>;
+    };
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div className="space-y-1">
-                    <p className="text-sm text-muted-foreground">
-                        Price performance of current holdings over the selected period.
-                        <span className="hidden md:inline"> This differs from portfolio time-weighted returns.</span>
-                    </p>
-                </div>
+            <div className="flex justify-end">
                 <Tabs value={activePeriod} onValueChange={setActivePeriod}>
-                    <TabsList className="bg-zinc-900/50 border border-white/5">
-                        <TabsTrigger value="3mo">3M</TabsTrigger>
-                        <TabsTrigger value="ytd">YTD</TabsTrigger>
-                        <TabsTrigger value="1y">1Y</TabsTrigger>
+                    <TabsList className="bg-zinc-900/50 border border-white/5 h-8">
+                        <TabsTrigger value="3mo" className="text-xs px-3">3MO</TabsTrigger>
+                        <TabsTrigger value="ytd" className="text-xs px-3">YTD</TabsTrigger>
+                        <TabsTrigger value="1y" className="text-xs px-3">1Y</TabsTrigger>
                     </TabsList>
                 </Tabs>
             </div>
 
             <ConvictionHeatStrip performance={currentPeriodData} />
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <PerformanceSubTable
-                    title="Top Performers"
-                    holdings={topPerformers}
-                    isTop={true}
-                    totalCount={currentPeriodData.holdings.length}
-                />
-                <PerformanceSubTable
-                    title="Bottom Performers"
-                    holdings={bottomPerformers}
-                    isTop={false}
-                    totalCount={currentPeriodData.holdings.length}
-                    startRank={currentPeriodData.holdings.length - 4}
-                />
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center pt-2 border-t border-white/5">
+                <p className="text-xs text-muted-foreground italic">
+                    Price change of holdings, excluding transaction timing and cash flows.
+                </p>
+                <div className="flex items-center gap-2 mt-1 md:mt-0">
+                    <span className="text-[10px] uppercase tracking-wider font-bold text-zinc-500">Analysis Period:</span>
+                    <span className="text-xs font-mono text-zinc-300">
+                        {formatDate(currentPeriodData.start_date)} — {formatDate(currentPeriodData.end_date)}
+                    </span>
+                </div>
             </div>
 
-            <AnimatePresence>
-                {expanded && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="overflow-hidden"
-                    >
-                        <Card className="bg-zinc-950/30 border-white/5">
-                            <CardContent className="p-0">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-sm">
-                                        <thead className="text-xs uppercase tracking-widest text-muted-foreground border-b border-white/5">
-                                            <tr>
-                                                <th className="px-6 py-3 text-left font-medium">Rank</th>
-                                                <th className="px-6 py-3 text-left font-medium">Symbol</th>
-                                                <th className="px-6 py-3 text-right font-medium">Return</th>
-                                                <th className="px-6 py-3 text-right font-medium">Price</th>
-                                                <th className="px-6 py-3 text-right font-medium">Allocation</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-white/5">
-                                            {restOfHoldings.map((h, i) => (
-                                                <tr key={h.symbol} className="hover:bg-white/[0.02] transition-colors">
-                                                    <td className="px-6 py-3 text-muted-foreground font-mono">{i + 6}</td>
-                                                    <td className="px-6 py-3 font-bold font-mono">{h.symbol}</td>
-                                                    <td className={`px-6 py-3 text-right font-mono font-bold ${getValueColor(h.period_return)}`}>
-                                                        {h.period_return >= 0 ? "+" : ""}{formatPercent(h.period_return)}
-                                                    </td>
-                                                    <td className="px-6 py-3 text-right font-mono text-muted-foreground">${formatNumber(h.current_price)}</td>
-                                                    <td className="px-6 py-3 text-right text-muted-foreground">{formatPercent(h.allocation)}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
-            <div className="flex justify-center">
-                <Button
-                    variant="ghost"
-                    size="sm"
-                    className="text-muted-foreground hover:text-foreground gap-2"
-                    onClick={() => setExpanded(!expanded)}
-                >
-                    {expanded ? (
-                        <>Collapse<ChevronUp className="h-4 w-4" /></>
-                    ) : (
-                        <>Show all {currentPeriodData.holdings.length} holdings <ChevronDown className="h-4 w-4" /></>
-                    )}
-                </Button>
-            </div>
+            <Card className="bg-zinc-950/40 border-white/5 overflow-hidden">
+                <CardContent className="p-0">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                            <thead className="text-[10px] uppercase tracking-widest text-muted-foreground border-b border-white/5 bg-zinc-900/50">
+                                <tr>
+                                    <th className="px-6 py-4 text-left font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('symbol')}>
+                                        <div className="flex items-center">Symbol <SortIcon column="symbol" /></div>
+                                    </th>
+                                    <th className="px-6 py-4 text-right font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('period_return')}>
+                                        <div className="flex items-center justify-end">Period Return <SortIcon column="period_return" /></div>
+                                    </th>
+                                    <th className="px-6 py-4 text-right font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('current_price')}>
+                                        <div className="flex items-center justify-end">Current Price <SortIcon column="current_price" /></div>
+                                    </th>
+                                    <th className="px-6 py-4 text-right font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('allocation')}>
+                                        <div className="flex items-center justify-end">Allocation <SortIcon column="allocation" /></div>
+                                    </th>
+                                    <th className="px-6 py-4 text-right font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('total_return_pct')}>
+                                        <div className="flex items-center justify-end">Total Return <SortIcon column="total_return_pct" /></div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-white/5">
+                                {sortedHoldings.map((h) => (
+                                    <tr key={h.symbol} className="hover:bg-white/[0.03] transition-colors group">
+                                        <td className="px-6 py-4">
+                                            <div className="font-bold font-mono text-sm tracking-tight group-hover:text-primary transition-colors">
+                                                {h.symbol}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-right">
+                                            <div className={`font-mono font-bold text-sm ${getValueColor(h.period_return)}`}>
+                                                {h.period_return >= 0 ? "+" : ""}{formatPercent(h.period_return)}
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-right font-mono text-muted-foreground">
+                                            ${formatNumber(h.current_price)}
+                                        </td>
+                                        <td className="px-6 py-4 text-right font-mono text-muted-foreground">
+                                            {formatPercent(h.allocation)}
+                                        </td>
+                                        <td className={`px-6 py-4 text-right font-mono font-medium ${getValueColor(h.total_return_pct)}`}>
+                                            {h.total_return_pct >= 0 ? "+" : ""}{formatPercent(h.total_return_pct)}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </CardContent>
+            </Card>
         </div>
     );
 }
 
-function PerformanceSubTable({
-    title,
-    holdings,
-    isTop,
-    totalCount,
-    startRank = 1
-}: {
-    title: string;
-    holdings: StockPerformance[];
-    isTop: boolean;
-    totalCount: number;
-    startRank?: number;
-}) {
-    return (
-        <Card className="bg-zinc-900/40 border-white/5 overflow-hidden">
-            <div className="px-5 py-3 border-b border-white/5 bg-zinc-900/80">
-                <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                    {title}
-                </h3>
-            </div>
-            <CardContent className="p-0">
-                <div className="divide-y divide-white/5">
-                    {holdings.map((h, i) => (
-                        <motion.div
-                            key={h.symbol}
-                            initial={{ opacity: 0, x: isTop ? -10 : 10 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.05 }}
-                            className="flex items-center justify-between px-5 py-3 hover:bg-white/[0.02] transition-colors group"
-                        >
-                            <div className="flex items-center gap-4">
-                                <span className="text-[10px] font-mono text-muted-foreground/50 w-4">
-                                    {startRank + i}
-                                </span>
-                                <div>
-                                    <div className="font-mono font-bold text-sm tracking-tight">{h.symbol}</div>
-                                    <div className="text-[10px] text-muted-foreground/60">${formatNumber(h.current_price)}</div>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-6">
-                                <div className="hidden sm:block">
-                                    <div className="h-1 w-20 bg-zinc-800 rounded-full overflow-hidden">
-                                        <motion.div
-                                            className={`h-full ${isTop ? "bg-emerald-500" : "bg-red-500"}`}
-                                            initial={{ width: 0 }}
-                                            animate={{ width: `${Math.min(Math.abs(h.period_return) * 100, 100)}%` }}
-                                            transition={{ duration: 1, delay: 0.2 + i * 0.1 }}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="text-right min-w-[70px]">
-                                    <div className={`text-sm font-mono font-bold ${getValueColor(h.period_return)}`}>
-                                        {h.period_return >= 0 ? "+" : ""}{formatPercent(h.period_return)}
-                                    </div>
-                                    <div className="text-[10px] text-muted-foreground/60">{formatPercent(h.allocation)} alloc</div>
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            </CardContent>
-        </Card>
-    );
-}
