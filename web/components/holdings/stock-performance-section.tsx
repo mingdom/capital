@@ -49,7 +49,12 @@ export function StockPerformanceSection() {
     return (
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <h2 className="text-xl font-bold uppercase tracking-tight font-sans">Stock Performance</h2>
+                <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">
+                        Price performance of current holdings over the selected period.
+                        <span className="hidden md:inline"> This differs from portfolio time-weighted returns.</span>
+                    </p>
+                </div>
                 <Tabs value={activePeriod} onValueChange={setActivePeriod}>
                     <TabsList className="bg-zinc-900/50 border border-white/5">
                         <TabsTrigger value="3mo">3M</TabsTrigger>
