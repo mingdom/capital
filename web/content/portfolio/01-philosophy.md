@@ -1,6 +1,6 @@
 ---
 title: Investment Philosophy
-order: 1
+order: 2
 icon: Lightbulb
 accent: purple
 ---

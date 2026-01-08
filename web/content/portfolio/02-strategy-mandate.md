@@ -1,6 +1,6 @@
 ---
 title: Strategy & Mandate
-order: 2
+order: 3
 icon: Target
 accent: blue
 ---

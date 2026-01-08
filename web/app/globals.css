@@ -231,3 +231,11 @@
 .portfolio-prose tr:nth-child(even) {
   @apply bg-zinc-900/30;
 }
+
+.portfolio-prose a {
+  @apply text-primary hover:text-primary/80 transition-colors underline-offset-4 hover:underline font-medium;
+}
+
+.portfolio-prose hr {
+  @apply border-border/30 my-8;
+}
