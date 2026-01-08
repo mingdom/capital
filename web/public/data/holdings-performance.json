@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-01-08T14:34:57.557326",
+  "generated_at": "2026-01-08T14:39:48.823135",
   "as_of": "2026-01-07",
   "periods": {
     "3mo": {
@@ -542,10 +542,10 @@
       "start_date": "2025-01-07",
       "end_date": "2026-01-07",
       "summary": {
-        "net_return": 0.29304081779279373,
+        "net_return": 0.2930407844718602,
         "gainers_count": 27,
         "losers_count": 4,
-        "avg_return": 0.24514978970978402
+        "avg_return": 0.24514977661932819
       },
       "holdings": [
         {
@@ -583,8 +583,8 @@
         {
           "symbol": "ASML",
           "current_price": 1228.47,
-          "period_start_price": 750.4093017578125,
-          "period_return": 0.6370665943536999,
+          "period_start_price": 750.4093627929688,
+          "period_return": 0.6370664612015561,
           "allocation": 0.009974,
           "total_return_pct": 0.686526
         },
@@ -655,40 +655,40 @@
         {
           "symbol": "MCO",
           "current_price": 531.44,
-          "period_start_price": 460.48858642578125,
-          "period_return": 0.15407854975283805,
+          "period_start_price": 460.488525390625,
+          "period_return": 0.15407870271943924,
           "allocation": 0.010787,
           "total_return_pct": 0.115967
         },
         {
           "symbol": "MSFT",
           "current_price": 483.612,
-          "period_start_price": 419.2770690917969,
-          "period_return": 0.15344252202382574,
+          "period_start_price": 419.277099609375,
+          "period_return": 0.1534424380691516,
           "allocation": 0.004908,
           "total_return_pct": 0.020263
         },
         {
           "symbol": "BKNG",
           "current_price": 5445.72,
-          "period_start_price": 4760.72607421875,
-          "period_return": 0.14388433930084077,
+          "period_start_price": 4760.7265625,
+          "period_return": 0.143884221978985,
           "allocation": 0.033161,
           "total_return_pct": 0.2064
         },
         {
           "symbol": "MA",
           "current_price": 579.92,
-          "period_start_price": 508.4784851074219,
-          "period_return": 0.14050056587445436,
+          "period_start_price": 508.478515625,
+          "period_return": 0.14050049742453158,
           "allocation": 0.070628,
           "total_return_pct": 0.09045
         },
         {
           "symbol": "XLU",
           "current_price": 41.861,
-          "period_start_price": 36.95927429199219,
-          "period_return": 0.13262505289693544,
+          "period_start_price": 36.95927047729492,
+          "period_return": 0.13262516979918043,
           "allocation": 0.006798,
           "total_return_pct": -0.044204
         },
@@ -751,8 +751,8 @@
         {
           "symbol": "META",
           "current_price": 648.88,
-          "period_start_price": 615.9476928710938,
-          "period_return": 0.05346607757454229,
+          "period_start_price": 615.9478149414062,
+          "period_return": 0.053465868795600016,
           "allocation": 0.101417,
           "total_return_pct": 0.145381
         },
@@ -767,8 +767,8 @@
         {
           "symbol": "PGR",
           "current_price": 209.1,
-          "period_start_price": 223.25164794921875,
-          "period_return": -0.06338877262145773,
+          "period_start_price": 223.2516632080078,
+          "period_return": -0.06338883663689639,
           "allocation": 0.010611,
           "total_return_pct": -0.054261
         },

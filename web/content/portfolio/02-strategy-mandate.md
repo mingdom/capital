@@ -5,56 +5,50 @@ icon: Target
 accent: blue
 ---
 
-# Investment Strategy & Fund Mandate
+# Strategy & Mandate
 
-## Fund Objectives
+## Objectives
 
-Our primary objectives, in order of priority:
+1. Beat S&P 500 over rolling 3-year periods
+2. Limit drawdowns to -30% max
+3. Compound capital long-term
 
-1. **Long-term capital appreciation** - Achieve above-market returns over rolling 3-year periods
-2. **Capital preservation** - Limit maximum drawdown to -30% in severe market downturns
-3. **Benchmark outperformance** - Exceed S&P 500 total returns net of fees
+## Stock Selection
 
-## Investment Strategy
+1. Screen for quality (ROE > 15%, low debt, consistent earnings)
+2. Deep fundamental analysis
+3. Buy with margin of safety
+4. Size positions by conviction and risk/reward
 
-### Stock Selection Process
-1. **Screen for quality**: ROE > 15%, debt/equity < 50%, consistent earnings growth
-2. **Deep fundamental analysis**: Business model, competitive position, management quality
-3. **Valuation discipline**: Only buy when price offers adequate margin of safety
-4. **Position sizing**: Scale position size with conviction and risk-adjusted return potential
-
-### Asset Allocation Framework
-
-| Asset Class | Target % | Range    | Rationale                    |
-|-------------|----------|----------|------------------------------|
-| Equities    | 80%      | 70-90%   | Primary return driver        |
-| Cash        | 20%      | 10-30%   | Dry powder for opportunities |
-
-## Portfolio Construction Rules
+## Portfolio Rules
 
 ### Position Sizing
-- **Maximum single position**: 15% of portfolio
-- **Minimum position size**: 2% of portfolio
-- **Typical position count**: 10-15 stocks (concentrated)
+- Max position: 15%
+- Min position: 2%
+- Typical holdings: 10-15 stocks
+
+### Allocation
+- Equities: 70-90% (target 80%)
+- Cash: 10-30% (target 20%)
 
 ### Diversification
-- **Sector limits**: No more than 30% in any single sector
-- **Geographic exposure**: Primarily US equities, up to 20% international
-- **Market cap flexibility**: Focus on large/mega caps, but opportunistic in mid-caps
+- Max 30% in any sector
+- Primarily US equities
+- Focus on large/mega caps
 
 ### Risk Management
 
-**Hard stops:**
-- Maximum portfolio volatility: 20% annualized
-- Individual position stop loss: -20% from entry price (reviewed case-by-case)
-- Maximum portfolio drawdown tolerance: -30%
+**Hard limits:**
+- Max portfolio volatility: 20% annualized
+- Position stop loss: -20% (case-by-case)
+- Max drawdown tolerance: -30%
 
-**Rebalancing triggers:**
-- Positions exceeding 20% due to appreciation: Trim to 15%
-- Positions falling below 2%: Evaluate for exit or re-sizing
+**Rebalancing:**
+- Trim positions above 20% back to 15%
+- Review positions below 2%
 
-## Benchmark & Reporting
+## Reporting
 
-- **Primary benchmark**: S&P 500 Total Return
-- **Reporting frequency**: Monthly performance updates, quarterly deep dives
-- **Transparency**: All holdings disclosed with 30-day lag
+- Benchmark: S&P 500 Total Return
+- Public holdings updates: Real-time
+- Performance: Monthly

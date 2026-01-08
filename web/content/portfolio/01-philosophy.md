@@ -9,21 +9,17 @@ accent: purple
 
 ## Core Beliefs
 
-Our investment philosophy is built on a foundation of rigorous analysis and patient capital:
+- **Long-term focus**: Hold quality positions for years, not quarters
+- **Concentrated conviction**: 10-15 stocks I understand deeply
+- **Quality first**: Sustainable competitive advantages over market sentiment
 
-- **Long-term focus**: We hold quality positions for years, not quarters. Time is our competitive advantage.
-- **Concentrated conviction**: Better to own 10 great businesses we deeply understand than 100 mediocre ones.
-- **Quality first**: We prioritize sustainable competitive advantages and strong fundamentals over market sentiment.
+## What I Look For
 
-## Our Approach
+Businesses with:
+- Durable competitive moats (pricing power, network effects, switching costs)
+- Strong capital allocation
+- Management with skin in the game
 
-We seek businesses with:
-- **Durable competitive moats**: Pricing power, network effects, or high switching costs
-- **Strong capital allocation**: Management teams that deploy capital intelligently
-- **Aligned incentives**: Founders or insider ownership that aligns with shareholders
+## Approach
 
-> "In the short run, the market is a voting machine, but in the long run, it's a weighing machine." - Benjamin Graham
-
-## What Makes Us Different
-
-Unlike many funds that chase quarterly performance, we optimize for multi-year compounding. We're willing to look foolish in the short term if the long-term thesis remains intact.
+I'm willing to underperform in the short term if the long-term thesis is intact. Time horizon is measured in years, not quarters.
