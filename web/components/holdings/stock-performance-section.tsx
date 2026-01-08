@@ -19,6 +19,7 @@ export function StockPerformanceSection() {
         key: 'period_return',
         direction: 'desc'
     });
+    const [isTableExpanded, setIsTableExpanded] = useState(false);
 
     useEffect(() => {
         loadHoldingsPerformanceData()
@@ -111,58 +112,91 @@ export function StockPerformanceSection() {
                 </div>
             </div>
 
-            <Card className="bg-zinc-950/40 border-white/5 overflow-hidden">
-                <CardContent className="p-0">
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-sm">
-                            <thead className="text-[10px] uppercase tracking-widest text-muted-foreground border-b border-white/5 bg-zinc-900/50">
-                                <tr>
-                                    <th className="px-6 py-4 text-left font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('symbol')}>
-                                        <div className="flex items-center">Symbol <SortIcon column="symbol" /></div>
-                                    </th>
-                                    <th className="px-6 py-4 text-right font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('period_return')}>
-                                        <div className="flex items-center justify-end">Period Return <SortIcon column="period_return" /></div>
-                                    </th>
-                                    <th className="px-6 py-4 text-right font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('current_price')}>
-                                        <div className="flex items-center justify-end">Current Price <SortIcon column="current_price" /></div>
-                                    </th>
-                                    <th className="px-6 py-4 text-right font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('allocation')}>
-                                        <div className="flex items-center justify-end">Allocation <SortIcon column="allocation" /></div>
-                                    </th>
-                                    <th className="px-6 py-4 text-right font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('total_return_pct')}>
-                                        <div className="flex items-center justify-end">Total Return <SortIcon column="total_return_pct" /></div>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-white/5">
-                                {sortedHoldings.map((h) => (
-                                    <tr key={h.symbol} className="hover:bg-white/[0.03] transition-colors group">
-                                        <td className="px-6 py-4">
-                                            <div className="font-bold font-mono text-sm tracking-tight group-hover:text-primary transition-colors">
-                                                {h.symbol}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <div className={`font-mono font-bold text-sm ${getValueColor(h.period_return)}`}>
-                                                {h.period_return >= 0 ? "+" : ""}{formatPercent(h.period_return)}
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4 text-right font-mono text-muted-foreground">
-                                            ${formatNumber(h.current_price)}
-                                        </td>
-                                        <td className="px-6 py-4 text-right font-mono text-muted-foreground">
-                                            {formatPercent(h.allocation)}
-                                        </td>
-                                        <td className={`px-6 py-4 text-right font-mono font-medium ${getValueColor(h.total_return_pct)}`}>
-                                            {h.total_return_pct >= 0 ? "+" : ""}{formatPercent(h.total_return_pct)}
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </CardContent>
-            </Card>
+            <div className="flex justify-center mt-2">
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-2 group"
+                    onClick={() => setIsTableExpanded(!isTableExpanded)}
+                >
+                    {isTableExpanded ? (
+                        <>
+                            <ChevronUp className="h-3 w-3 transition-transform group-hover:-translate-y-0.5" />
+                            Hide All Holdings
+                        </>
+                    ) : (
+                        <>
+                            <ChevronDown className="h-3 w-3 transition-transform group-hover:translate-y-0.5" />
+                            View All Holdings ({sortedHoldings.length})
+                        </>
+                    )}
+                </Button>
+            </div>
+
+            <AnimatePresence>
+                {isTableExpanded && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                        className="overflow-hidden"
+                    >
+                        <Card className="bg-zinc-950/40 border-white/5 overflow-hidden">
+                            <CardContent className="p-0">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-sm">
+                                        <thead className="text-[10px] uppercase tracking-widest text-muted-foreground border-b border-white/5 bg-zinc-900/50">
+                                            <tr>
+                                                <th className="px-6 py-4 text-left font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('symbol')}>
+                                                    <div className="flex items-center">Symbol <SortIcon column="symbol" /></div>
+                                                </th>
+                                                <th className="px-6 py-4 text-right font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('period_return')}>
+                                                    <div className="flex items-center justify-end">Period Return <SortIcon column="period_return" /></div>
+                                                </th>
+                                                <th className="px-6 py-4 text-right font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('current_price')}>
+                                                    <div className="flex items-center justify-end">Current Price <SortIcon column="current_price" /></div>
+                                                </th>
+                                                <th className="px-6 py-4 text-right font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('allocation')}>
+                                                    <div className="flex items-center justify-end">Allocation <SortIcon column="allocation" /></div>
+                                                </th>
+                                                <th className="px-6 py-4 text-right font-bold group cursor-pointer hover:text-foreground transition-colors" onClick={() => handleSort('total_return_pct')}>
+                                                    <div className="flex items-center justify-end">Total Return <SortIcon column="total_return_pct" /></div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-white/5">
+                                            {sortedHoldings.map((h) => (
+                                                <tr key={h.symbol} className="hover:bg-white/[0.03] transition-colors group">
+                                                    <td className="px-6 py-4">
+                                                        <div className="font-bold font-mono text-sm tracking-tight group-hover:text-primary transition-colors">
+                                                            {h.symbol}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right">
+                                                        <div className={`font-mono font-bold text-sm ${getValueColor(h.period_return)}`}>
+                                                            {h.period_return >= 0 ? "+" : ""}{formatPercent(h.period_return)}
+                                                        </div>
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right font-mono text-muted-foreground">
+                                                        ${formatNumber(h.current_price)}
+                                                    </td>
+                                                    <td className="px-6 py-4 text-right font-mono text-muted-foreground">
+                                                        {formatPercent(h.allocation)}
+                                                    </td>
+                                                    <td className={`px-6 py-4 text-right font-mono font-medium ${getValueColor(h.total_return_pct)}`}>
+                                                        {h.total_return_pct >= 0 ? "+" : ""}{formatPercent(h.total_return_pct)}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
