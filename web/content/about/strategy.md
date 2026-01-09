@@ -19,8 +19,7 @@ accent: blue
  - **Skin in the Game**: Preference for founder-led companies with high inside ownership.
 
  ### 2. Position Sizing (The "How")
- - **Position Limit**: Maximum 15% in any single name. No exceptions.
- - **Minimum Stake**: 2%. If it's not worth 2%, it's not worth tracking.
+ - **Position Limit**: Maximum 15% in any single name.
  - **Concentration**: typically 10–15 holdings. I am comfortable with zero exposure to sectors I don't understand.
 
  ### 3. Risk Management (The "Guardrails")
