@@ -1,11 +1,11 @@
 ---
-title: About
+title: Overview
 order: 1
 icon: User
 accent: emerald
 ---
 
-# About
+# Overview
 
 ## Background
 
