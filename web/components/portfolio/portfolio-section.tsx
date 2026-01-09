@@ -36,7 +36,7 @@ export function PortfolioSection({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="relative pl-8 md:pl-12 py-16 first:pt-8"
+            className="relative pl-8 md:pl-12 py-16 first:pt-8 scroll-mt-32"
         >
             {/* Side Accent Bar */}
             <div

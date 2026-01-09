@@ -19,55 +19,42 @@ export function SectionNavigation({ sections }: SectionNavigationProps) {
     useEffect(() => {
         if (sections.length === 0) return;
 
-        // Set first section as active by default if none set
+        // Set first section as active by default
         if (!activeSection) {
             setActiveSection(sections[0].id);
         }
 
-        const sectionIds = sections.map((s) => s.id);
-
         const observerOptions = {
             root: null,
-            // Trigger from the very top of the viewport down to 20% height
-            // This ensures Section 1 is active when the page is at the top
-            rootMargin: "0px 0px -80% 0px",
+            // Track sections in the top half of the screen
+            rootMargin: "-10% 0px -60% 0px",
             threshold: 0,
         };
 
         const observerCallback = (entries: IntersectionObserverEntry[]) => {
-            // Find all that are intersecting the trigger line
-            const intersecting = entries.filter(e => e.isIntersecting);
-
-            if (intersecting.length > 0) {
-                // If multiple intersect, pick the one whose top is closest to our trigger point (100px)
-                // but still above or at it. Actually, just picking the one with the smallest
-                // top value usually works for a thin trigger window.
-                const sorted = intersecting.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-                setActiveSection(sorted[0].target.id);
-            }
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    setActiveSection(entry.target.id);
+                }
+            });
         };
 
         const observer = new IntersectionObserver(observerCallback, observerOptions);
 
-        sectionIds.forEach((id) => {
-            const el = document.getElementById(id);
+        sections.forEach((section) => {
+            const el = document.getElementById(section.id);
             if (el) observer.observe(el);
         });
 
         return () => observer.disconnect();
-    }, [sections]); // Removed activeSection from deps to prevent loop/flicker
+    }, [sections]);
 
     const scrollToSection = (id: string) => {
         const el = document.getElementById(id);
         if (el) {
-            // Offset calculation for sticky header + mobile nav
-            const headerOffset = 85;
-            const elementPosition = el.getBoundingClientRect().top + window.scrollY;
-            const offsetPosition = elementPosition - headerOffset;
-
-            window.scrollTo({
-                top: offsetPosition,
+            el.scrollIntoView({
                 behavior: "smooth",
+                block: "start",
             });
         }
     };
