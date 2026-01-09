@@ -5,19 +5,20 @@ icon: Lightbulb
 accent: purple
 ---
 
-## Core Beliefs
+## 1. Avoid Risk of Ruin
 
-- **Long-term focus**: Hold quality positions for years, not quarters
-- **Concentrated conviction**: 10-15 stocks I understand deeply
-- **Quality first**: Sustainable competitive advantages over market sentiment
+This is rule #1. Large losses are mathematically devastating (a 50% loss requires a 100% gain to recover). I'd rather underperform in a bull market than get wiped out in a bear market.
 
-## What I Look For
+## 2. Quality & Competence
 
-Businesses with:
-- Durable competitive moats (pricing power, network effects, switching costs)
-- Strong capital allocation
-- Management with skin in the game
+I focus on **Quality** (wide moats, pricing power, skin in the game) and **Competence** (businesses I actually understand).
 
-## Approach
+My circle of competence is mostly Tech and Consumer. If I don't understand the business model deeply, I don't touch it. I'd rather pay a fair price for a wonderful company than a wonderful price for a fair company.
 
-I'm willing to underperform in the short term if the long-term thesis is intact. Time horizon is measured in years, not quarters.
+## 3. Master the Cycles
+
+Markets move in cycles of fear and greed. My best returns often come from being greedy when others are fearful (e.g., buying tech in late 2022). I track market psychology to know when to be contrarian and when to sit on my hands.
+
+## 4. Know Your Game
+
+I'm not a day trader. I can't beat the algos on speed. My edge is patience and temperament. I play a long-term game where time is my friend, not my enemy.

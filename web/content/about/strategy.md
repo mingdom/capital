@@ -7,16 +7,16 @@ accent: blue
 
 ## Objectives
 
-1. Beat S&P 500 over rolling 3-year periods
-2. Limit drawdowns to -30% max
-3. Compound capital long-term
+ 1. Beat the S&P 500 over rolling 3-year periods
+ 2. Limit drawdowns (I hate losing money more than I like making it)
+ 3. Compound capital for the long haul
 
-## Stock Selection
+ ## Stock Selection
 
-1. Screen for quality (ROE > 15%, low debt, consistent earnings)
-2. Deep fundamental analysis
-3. Buy with margin of safety
-4. Size positions by conviction and risk/reward
+ 1. **Quality Check**: ROE > 15%, low debt, consistent earnings.
+ 2. **Deep Dive**: I read the 10-Ks, listen to calls, and understand the product.
+ 3. **Fair Price**: I need a margin of safety.
+ 4. **Sizing**: Position sizes reflect my conviction, not just hope.
 
 ## Portfolio Rules
 

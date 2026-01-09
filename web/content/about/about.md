@@ -7,25 +7,21 @@ accent: emerald
 
 ## Background
 
-Software engineer. Reached financial independence in my 30s. Active in the stock market since 2009.
-
-I manage my family fund. After 72% returns in 2023, I made the portfolio public in February 2024. Full transparency—holdings, trades, performance. All on the record.
+I'm a software engineer who reached financial independence in my 30s. I've been active in the markets since 2009, making plenty of mistakes and learning just as many lessons along the way. I manage my family fund, and after a 72% return in 2023, I decided to make the portfolio public in February 2024. Full transparency—holdings, trades, performance. All on the record.
 
 ## Approach
 
-I look for risk-adjusted returns and asymmetric opportunities. The goal is simple: beat the S&P 500 consistently.
+I treat this portfolio as a serious business, not a casino. My goal is to compound capital responsibly over decades, not chase the latest hype cycle. I focus on businesses I understand—mostly tech and consumer—within my circle of competence. I look for risk-adjusted returns and asymmetric opportunities.
 
-No moon shots. No hype. Just fundamental analysis, position sizing, and discipline.
+## Why Public?
 
-## Why Public
-
-Accountability. When your portfolio is public, you can't hide mistakes or cherry-pick wins. It keeps me honest.
+Accountability. When your portfolio is public, you can't hide mistakes or cherry-pick wins. It keeps me honest to my investors—aka my wife and daughter ;)
 
 ## Track Record
 
 - Active investor since 2009
-- 72% return in 2023
-- Public portfolio since February 2024
+- 72% return in 2023 (Luck played a role, not expecting a repeat!)
+- Public portfolio tracking since February 2024
 
 ---
 

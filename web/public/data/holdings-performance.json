@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-01-08T16:39:24.767480",
+  "generated_at": "2026-01-08T16:44:20.689822",
   "as_of": "2026-01-07",
   "periods": {
     "3mo": {
@@ -542,10 +542,10 @@
       "start_date": "2025-01-07",
       "end_date": "2026-01-07",
       "summary": {
-        "net_return": 0.29304079825490326,
+        "net_return": 0.29304078894557434,
         "gainers_count": 27,
         "losers_count": 4,
-        "avg_return": 0.24514978767368156
+        "avg_return": 0.24514977259070292
       },
       "holdings": [
         {
@@ -591,16 +591,16 @@
         {
           "symbol": "TSM",
           "current_price": 318.701,
-          "period_start_price": 208.60916137695312,
-          "period_return": 0.5277421082390186,
+          "period_start_price": 208.60914611816406,
+          "period_return": 0.5277422199862503,
           "allocation": 0.025876,
           "total_return_pct": 0.438097
         },
         {
           "symbol": "XBI",
           "current_price": 126.43,
-          "period_start_price": 92.52445220947266,
-          "period_return": 0.36644959230632546,
+          "period_start_price": 92.52445983886719,
+          "period_return": 0.3664494796314386,
           "allocation": 0.002566,
           "total_return_pct": 0.024247
         },
@@ -647,8 +647,8 @@
         {
           "symbol": "VHT",
           "current_price": 297.236,
-          "period_start_price": 253.6874542236328,
-          "period_return": 0.17166219713008699,
+          "period_start_price": 253.6875,
+          "period_return": 0.17166198571076616,
           "allocation": 0.024133,
           "total_return_pct": 0.061254
         },
@@ -671,8 +671,8 @@
         {
           "symbol": "BKNG",
           "current_price": 5445.72,
-          "period_start_price": 4760.7265625,
-          "period_return": 0.143884221978985,
+          "period_start_price": 4760.72705078125,
+          "period_return": 0.14388410465715332,
           "allocation": 0.033161,
           "total_return_pct": 0.2064
         },
@@ -711,8 +711,8 @@
         {
           "symbol": "SPGI",
           "current_price": 537.5,
-          "period_start_price": 487.7435607910156,
-          "period_return": 0.1020135235169278,
+          "period_start_price": 487.7436218261719,
+          "period_return": 0.10201338561339696,
           "allocation": 0.014183,
           "total_return_pct": 0.070646
         },
