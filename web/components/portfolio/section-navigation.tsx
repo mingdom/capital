@@ -28,16 +28,23 @@ export function SectionNavigation({ sections }: SectionNavigationProps) {
 
         const observerOptions = {
             root: null,
-            rootMargin: "-20% 0px -70% 0px",
+            // Trigger from the very top of the viewport down to 20% height
+            // This ensures Section 1 is active when the page is at the top
+            rootMargin: "0px 0px -80% 0px",
             threshold: 0,
         };
 
         const observerCallback = (entries: IntersectionObserverEntry[]) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    setActiveSection(entry.target.id);
-                }
-            });
+            // Find all that are intersecting the trigger line
+            const intersecting = entries.filter(e => e.isIntersecting);
+
+            if (intersecting.length > 0) {
+                // If multiple intersect, pick the one whose top is closest to our trigger point (100px)
+                // but still above or at it. Actually, just picking the one with the smallest
+                // top value usually works for a thin trigger window.
+                const sorted = intersecting.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+                setActiveSection(sorted[0].target.id);
+            }
         };
 
         const observer = new IntersectionObserver(observerCallback, observerOptions);
@@ -48,7 +55,7 @@ export function SectionNavigation({ sections }: SectionNavigationProps) {
         });
 
         return () => observer.disconnect();
-    }, [sections, activeSection]);
+    }, [sections]); // Removed activeSection from deps to prevent loop/flicker
 
     const scrollToSection = (id: string) => {
         const el = document.getElementById(id);
