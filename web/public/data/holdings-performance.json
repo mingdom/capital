@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-01-08T16:36:10.052054",
+  "generated_at": "2026-01-08T16:38:53.062051",
   "as_of": "2026-01-07",
   "periods": {
     "3mo": {
@@ -542,10 +542,10 @@
       "start_date": "2025-01-07",
       "end_date": "2026-01-07",
       "summary": {
-        "net_return": 0.29304080882442335,
+        "net_return": 0.2930407861826464,
         "gainers_count": 27,
         "losers_count": 4,
-        "avg_return": 0.2451497887998216
+        "avg_return": 0.24514978725501252
       },
       "holdings": [
         {
@@ -583,8 +583,8 @@
         {
           "symbol": "ASML",
           "current_price": 1228.47,
-          "period_start_price": 750.4093627929688,
-          "period_return": 0.6370664612015561,
+          "period_start_price": 750.4093017578125,
+          "period_return": 0.6370665943536999,
           "allocation": 0.009974,
           "total_return_pct": 0.686526
         },
@@ -599,8 +599,8 @@
         {
           "symbol": "XBI",
           "current_price": 126.43,
-          "period_start_price": 92.52445983886719,
-          "period_return": 0.3664494796314386,
+          "period_start_price": 92.52445220947266,
+          "period_return": 0.36644959230632546,
           "allocation": 0.002566,
           "total_return_pct": 0.024247
         },
@@ -655,16 +655,16 @@
         {
           "symbol": "MCO",
           "current_price": 531.44,
-          "period_start_price": 460.488525390625,
-          "period_return": 0.15407870271943924,
+          "period_start_price": 460.4885559082031,
+          "period_return": 0.15407862623613358,
           "allocation": 0.010787,
           "total_return_pct": 0.115967
         },
         {
           "symbol": "MSFT",
           "current_price": 483.612,
-          "period_start_price": 419.277099609375,
-          "period_return": 0.1534424380691516,
+          "period_start_price": 419.2770690917969,
+          "period_return": 0.15344252202382574,
           "allocation": 0.004908,
           "total_return_pct": 0.020263
         },
@@ -743,16 +743,16 @@
         {
           "symbol": "INTU",
           "current_price": 651.15,
-          "period_start_price": 611.39013671875,
-          "period_return": 0.06503190171603995,
+          "period_start_price": 611.3901977539062,
+          "period_return": 0.06503179539377837,
           "allocation": 0.006609,
           "total_return_pct": 0.030338
         },
         {
           "symbol": "META",
           "current_price": 648.88,
-          "period_start_price": 615.9476928710938,
-          "period_return": 0.05346607757454229,
+          "period_start_price": 615.9478149414062,
+          "period_return": 0.053465868795600016,
           "allocation": 0.101417,
           "total_return_pct": 0.145381
         },
@@ -767,8 +767,8 @@
         {
           "symbol": "PGR",
           "current_price": 209.1,
-          "period_start_price": 223.25164794921875,
-          "period_return": -0.06338877262145773,
+          "period_start_price": 223.2516632080078,
+          "period_return": -0.06338883663689639,
           "allocation": 0.010611,
           "total_return_pct": -0.054261
         },
@@ -783,8 +783,8 @@
         {
           "symbol": "CRM",
           "current_price": 266.12,
-          "period_start_price": 322.822509765625,
-          "period_return": -0.17564608430431958,
+          "period_start_price": 322.8224792480469,
+          "period_return": -0.17564600637515837,
           "allocation": 0.013504,
           "total_return_pct": 0.061216
         },

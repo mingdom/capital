@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { PortfolioSection } from "@/lib/portfolio-content";
-import { Linkedin, Twitter } from "lucide-react";
+import { Linkedin } from "lucide-react";
 
 interface SectionNavigationProps {
     sections: PortfolioSection[];
@@ -145,9 +145,15 @@ export function SectionNavigation({ sections }: SectionNavigationProps) {
                             className="flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-300 text-muted-foreground hover:bg-zinc-900 hover:text-foreground group"
                         >
                             <span className="p-1 px-1.5 rounded bg-zinc-900 border border-border/50 group-hover:border-primary/50 group-hover:text-primary transition-colors">
-                                <Twitter className="h-3.5 w-3.5" />
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    aria-hidden="true"
+                                    className="h-3.5 w-3.5 fill-current"
+                                >
+                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+                                </svg>
                             </span>
-                            <span className="text-sm font-medium tracking-tight">X (Twitter)</span>
+                            <span className="text-sm font-medium tracking-tight">X</span>
                         </a>
                     </div>
                 </div>
