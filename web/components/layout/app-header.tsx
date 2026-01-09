@@ -22,7 +22,7 @@ export function AppHeader() {
 
     const navItems = [
         { name: "Performance", href: "/" },
-        { name: "About", href: "/portfolio-info" },
+        { name: "About", href: "/about" },
     ];
 
     return (

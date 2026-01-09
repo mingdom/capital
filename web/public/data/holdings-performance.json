@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-01-08T16:17:31.579978",
+  "generated_at": "2026-01-08T16:21:03.243336",
   "as_of": "2026-01-07",
   "periods": {
     "3mo": {
@@ -542,10 +542,10 @@
       "start_date": "2025-01-07",
       "end_date": "2026-01-07",
       "summary": {
-        "net_return": 0.29304079257750176,
+        "net_return": 0.29304079238193154,
         "gainers_count": 27,
         "losers_count": 4,
-        "avg_return": 0.24514977508452937
+        "avg_return": 0.2451497715505771
       },
       "holdings": [
         {
@@ -583,8 +583,8 @@
         {
           "symbol": "ASML",
           "current_price": 1228.47,
-          "period_start_price": 750.4093627929688,
-          "period_return": 0.6370664612015561,
+          "period_start_price": 750.4093017578125,
+          "period_return": 0.6370665943536999,
           "allocation": 0.009974,
           "total_return_pct": 0.686526
         },
@@ -623,8 +623,8 @@
         {
           "symbol": "BN",
           "current_price": 47.13,
-          "period_start_price": 37.7923583984375,
-          "period_return": 0.2470775044816616,
+          "period_start_price": 37.792362213134766,
+          "period_return": 0.24707737860376278,
           "allocation": 0.009566,
           "total_return_pct": 0.07044
         },
@@ -647,16 +647,16 @@
         {
           "symbol": "VHT",
           "current_price": 297.236,
-          "period_start_price": 253.68748474121094,
-          "period_return": 0.17166205618386463,
+          "period_start_price": 253.68746948242188,
+          "period_return": 0.1716621266569716,
           "allocation": 0.024133,
           "total_return_pct": 0.061254
         },
         {
           "symbol": "MCO",
           "current_price": 531.44,
-          "period_start_price": 460.48858642578125,
-          "period_return": 0.15407854975283805,
+          "period_start_price": 460.4885559082031,
+          "period_return": 0.15407862623613358,
           "allocation": 0.010787,
           "total_return_pct": 0.115967
         },
@@ -687,8 +687,8 @@
         {
           "symbol": "XLU",
           "current_price": 41.861,
-          "period_start_price": 36.95927047729492,
-          "period_return": 0.13262516979918043,
+          "period_start_price": 36.95927429199219,
+          "period_return": 0.13262505289693544,
           "allocation": 0.006798,
           "total_return_pct": -0.044204
         },
@@ -711,8 +711,8 @@
         {
           "symbol": "SPGI",
           "current_price": 537.5,
-          "period_start_price": 487.74359130859375,
-          "period_return": 0.10201345456515806,
+          "period_start_price": 487.7436218261719,
+          "period_return": 0.10201338561339696,
           "allocation": 0.014183,
           "total_return_pct": 0.070646
         },
@@ -783,8 +783,8 @@
         {
           "symbol": "CRM",
           "current_price": 266.12,
-          "period_start_price": 322.8224792480469,
-          "period_return": -0.17564600637515837,
+          "period_start_price": 322.822509765625,
+          "period_return": -0.17564608430431958,
           "allocation": 0.013504,
           "total_return_pct": 0.061216
         },
