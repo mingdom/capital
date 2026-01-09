@@ -1,11 +1,9 @@
 ---
-title: Investment Philosophy
+title: Philosophy
 order: 2
 icon: Lightbulb
 accent: purple
 ---
-
-# Investment Philosophy
 
 ## Core Beliefs
 

@@ -74,12 +74,15 @@ export function SectionNavigation({ sections }: SectionNavigationProps) {
                             key={section.id}
                             onClick={() => scrollToSection(section.id)}
                             className={cn(
-                                "px-4 py-4 text-[10px] font-bold uppercase tracking-widest transition-colors relative",
+                                "px-4 py-4 text-[10px] font-bold uppercase tracking-widest transition-colors relative flex items-center gap-1.5",
                                 activeSection === section.id
                                     ? "text-primary"
                                     : "text-muted-foreground"
                             )}
                         >
+                            <span className="opacity-40 font-mono text-[10px]">
+                                {section.order.toString().padStart(2, "0")}
+                            </span>
                             {section.title}
                             {activeSection === section.id && (
                                 <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
@@ -99,12 +102,18 @@ export function SectionNavigation({ sections }: SectionNavigationProps) {
                         key={section.id}
                         onClick={() => scrollToSection(section.id)}
                         className={cn(
-                            "w-full text-left px-4 py-4 rounded-r-lg border-l-2 transition-all duration-300 group flex items-start gap-4",
+                            "w-full text-left px-4 py-4 rounded-r-lg border-l-2 transition-all duration-300 group flex items-start gap-3",
                             activeSection === section.id
                                 ? "bg-zinc-900 border-primary text-foreground"
                                 : "border-transparent text-muted-foreground hover:bg-zinc-900/40 hover:text-foreground"
                         )}
                     >
+                        <span className={cn(
+                            "font-mono text-[10px] mt-1 transition-colors duration-300",
+                            activeSection === section.id ? "text-primary" : "text-zinc-600"
+                        )}>
+                            {section.order.toString().padStart(2, "0")}
+                        </span>
                         <span className="text-sm font-semibold tracking-tight transition-colors duration-300">
                             {section.title}
                         </span>

@@ -44,6 +44,15 @@ export function PortfolioSection({
                 style={{ backgroundColor: accentColor }}
             />
 
+            {/* Section Header */}
+            <div className="mb-10">
+                <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+                    <span className="text-muted-foreground/40 mr-4 font-mono text-3xl md:text-4xl">
+                        {order.toString().padStart(2, "0")}
+                    </span>
+                    {title}
+                </h2>
+            </div>
 
             {/* Markdown Content */}
             <MarkdownContent

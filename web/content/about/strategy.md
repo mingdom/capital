@@ -1,11 +1,9 @@
 ---
-title: Strategy & Mandate
+title: Mandate
 order: 3
 icon: Target
 accent: blue
 ---
-
-# Strategy & Mandate
 
 ## Objectives
 

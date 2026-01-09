@@ -5,8 +5,6 @@ icon: User
 accent: emerald
 ---
 
-# Overview
-
 ## Background
 
 Software engineer. Reached financial independence in my 30s. Active in the stock market since 2009.
