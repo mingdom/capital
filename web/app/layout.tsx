@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Bricolage_Grotesque, Geist_Mono, Geist } from "next/font/google";
 import "./globals.css";
 import { AppHeader } from "@/components/layout/app-header";
-import { IOSViewportFix } from "@/components/ios-viewport-fix";
 
 const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -25,6 +24,8 @@ export const metadata: Metadata = {
   description: "Institutional-grade portfolio performance analytics and risk management",
 };
 
+// iOS Safari specific: shrink-to-fit=no prevents Safari from shrinking content
+// This is the ONLY viewport definition - no duplicate in <head>
 export const viewport = {
   width: "device-width",
   initialScale: 1,
@@ -41,15 +42,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
-      <head>
-        {/* Explicit viewport meta for iOS Safari - sometimes the Next.js viewport export isn't enough */}
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, viewport-fit=cover" />
-      </head>
       <body className={`${bricolage.variable} ${geistSans.variable} ${geistMono.variable} font-sans antialiased`} suppressHydrationWarning>
-        <IOSViewportFix />
         <AppHeader />
         {children}
       </body>
     </html>
   );
 }
+
