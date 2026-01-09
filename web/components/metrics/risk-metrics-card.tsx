@@ -58,14 +58,14 @@ function MetricRow({
     }
 
     return (
-        <div className="flex justify-between items-center py-2">
-            <div className="flex items-center gap-1">
-                <span className="text-sm text-muted-foreground">{label}</span>
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-2.5 sm:py-2 border-b border-border/10 last:border-0">
+            <div className="flex items-center gap-1 mb-1 sm:mb-0">
+                <span className="text-xs sm:text-sm text-muted-foreground">{label}</span>
                 {description && (
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger>
-                                <Info className="h-3 w-3 text-muted-foreground/50" />
+                                <Info className="h-3 w-3 text-muted-foreground/30" />
                             </TooltipTrigger>
                             <TooltipContent className="max-w-xs">
                                 <p className="text-sm">{description}</p>
@@ -74,10 +74,10 @@ function MetricRow({
                     </TooltipProvider>
                 )}
             </div>
-            <div className="flex items-center gap-3">
-                <span className="text-sm font-mono font-medium">{value}</span>
+            <div className="flex items-center justify-between sm:justify-end gap-3">
+                <span className="text-sm font-mono font-bold sm:font-medium">{value}</span>
                 {showComparison && (
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-muted/50 sm:bg-transparent text-[10px] sm:text-xs text-muted-foreground border border-border/20 sm:border-0">
                         <span className="font-mono">{compareValue}</span>
                         {isBetter !== null && (
                             isBetter ? (
@@ -112,11 +112,11 @@ export function RiskMetricsCard({
     return (
         <Card className={className}>
             <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <CardTitle className="text-lg font-medium">Risk Profile: {name}</CardTitle>
                     {benchmarks.length > 0 && (
                         <Select value={selectedBenchmark} onValueChange={setSelectedBenchmark}>
-                            <SelectTrigger className="w-[140px] h-8">
+                            <SelectTrigger className="w-full sm:w-[140px] h-10 sm:h-8">
                                 <SelectValue placeholder="Compare with..." />
                             </SelectTrigger>
                             <SelectContent>

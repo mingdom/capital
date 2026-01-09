@@ -39,16 +39,16 @@ const item = {
 
 function LoadingSkeleton() {
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="space-y-6 md:space-y-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         {[...Array(4)].map((_, i) => (
-          <Skeleton key={i} className="h-32" />
+          <Skeleton key={i} className="h-28 md:h-32" />
         ))}
       </div>
-      <Skeleton className="h-[450px]" />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Skeleton className="h-[400px]" />
-        <Skeleton className="h-[400px]" />
+      <Skeleton className="h-[300px] md:h-[450px]" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        <Skeleton className="h-[350px] md:h-[400px]" />
+        <Skeleton className="h-[350px] md:h-[400px]" />
       </div>
     </div>
   );
@@ -103,16 +103,16 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
       {/* CAGR - Always show */}
       <Card className="relative overflow-hidden">
-        <CardContent className="p-4 md:p-6">
-          <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
+        <CardContent className="p-3 md:p-6">
+          <div className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
             <TrendingUp className="h-3 w-3 md:h-4 md:w-4" />
             Annual Return
             <InfoTooltip content={METRIC_INFO.cagr} />
           </div>
-          <div className={`text-xl md:text-3xl font-bold ${metrics.cagr && metrics.cagr > 0 ? "text-emerald-500" : "text-red-500"}`}>
+          <div className={`text-lg md:text-3xl font-bold ${metrics.cagr && metrics.cagr > 0 ? "text-emerald-500" : "text-red-500"}`}>
             {metrics.cagr ? `${(metrics.cagr * 100).toFixed(1)}%` : "—"}
           </div>
-          <p className="text-[10px] md:text-xs text-muted-foreground mt-1">CAGR since inception</p>
+          <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">CAGR</p>
         </CardContent>
         <div className={`absolute inset-0 opacity-5 ${metrics.cagr && metrics.cagr > 0 ? "bg-emerald-500" : "bg-red-500"}`} />
       </Card>
@@ -120,31 +120,31 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
       {/* YTD or 1Y - Conditional based on time of year */}
       {ytdMeaningful ? (
         <Card className="relative overflow-hidden">
-          <CardContent className="p-4 md:p-6">
-            <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
+          <CardContent className="p-3 md:p-6">
+            <div className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
               <Activity className="h-3 w-3 md:h-4 md:w-4" />
               Year to Date
               <InfoTooltip content={METRIC_INFO.ytd} />
             </div>
-            <div className={`text-xl md:text-3xl font-bold ${metrics.ytd && metrics.ytd > 0 ? "text-emerald-500" : "text-red-500"}`}>
+            <div className={`text-lg md:text-3xl font-bold ${metrics.ytd && metrics.ytd > 0 ? "text-emerald-500" : "text-red-500"}`}>
               {metrics.ytd ? `${(metrics.ytd * 100).toFixed(1)}%` : "—"}
             </div>
-            <p className="text-[10px] md:text-xs text-muted-foreground mt-1">{data.current_year} performance</p>
+            <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">{data.current_year}</p>
           </CardContent>
           <div className={`absolute inset-0 opacity-5 ${metrics.ytd && metrics.ytd > 0 ? "bg-emerald-500" : "bg-red-500"}`} />
         </Card>
       ) : (
         <Card className="relative overflow-hidden">
-          <CardContent className="p-4 md:p-6">
-            <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
+          <CardContent className="p-3 md:p-6">
+            <div className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
               <Activity className="h-3 w-3 md:h-4 md:w-4" />
               1 Year
               <InfoTooltip content={METRIC_INFO.one_year} />
             </div>
-            <div className={`text-xl md:text-3xl font-bold ${metrics.one_year && metrics.one_year > 0 ? "text-emerald-500" : "text-red-500"}`}>
+            <div className={`text-lg md:text-3xl font-bold ${metrics.one_year && metrics.one_year > 0 ? "text-emerald-500" : "text-red-500"}`}>
               {metrics.one_year ? `${(metrics.one_year * 100).toFixed(1)}%` : "—"}
             </div>
-            <p className="text-[10px] md:text-xs text-muted-foreground mt-1">Trailing 12 months</p>
+            <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">12 Months</p>
           </CardContent>
           <div className={`absolute inset-0 opacity-5 ${metrics.one_year && metrics.one_year > 0 ? "bg-emerald-500" : "bg-red-500"}`} />
         </Card>
@@ -152,29 +152,29 @@ function HeroMetrics({ data, portfolio }: { data: PortfolioData; portfolio: stri
 
       {/* Beta vs SPY */}
       <Card>
-        <CardContent className="p-4 md:p-6">
-          <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
+        <CardContent className="p-3 md:p-6">
+          <div className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
             Beta
             <InfoTooltip content={METRIC_INFO.beta_spy} />
           </div>
-          <div className="text-xl md:text-3xl font-bold">
+          <div className="text-lg md:text-3xl font-bold">
             {data.risk[portfolio]?.beta_spy ? data.risk[portfolio].beta_spy.toFixed(2) : "—"}
           </div>
-          <p className="text-[10px] md:text-xs text-muted-foreground mt-1">vs S&P 500</p>
+          <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">vs S&P 500</p>
         </CardContent>
       </Card>
 
       {/* Sharpe Ratio */}
       <Card>
-        <CardContent className="p-4 md:p-6">
-          <div className="flex items-center gap-2 text-xs md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
+        <CardContent className="p-3 md:p-6">
+          <div className="flex items-center gap-1.5 md:gap-2 text-[10px] md:text-sm text-muted-foreground mb-1 md:mb-2 text-nowrap">
             Sharpe Ratio
             <InfoTooltip content={METRIC_INFO.sharpe} />
           </div>
-          <div className="text-xl md:text-3xl font-bold">
+          <div className="text-lg md:text-3xl font-bold">
             {metrics.sharpe ? metrics.sharpe.toFixed(2) : "—"}
           </div>
-          <p className="text-[10px] md:text-xs text-muted-foreground mt-1">Risk-adjusted return</p>
+          <p className="text-[10px] md:text-xs text-muted-foreground mt-0.5 md:mt-1">Risk-Adjusted</p>
         </CardContent>
       </Card>
     </div>
@@ -199,23 +199,25 @@ function BenchmarkSelector({
   };
 
   return (
-    <div className="flex flex-wrap gap-4 items-center">
+    <div className="flex flex-wrap gap-x-6 gap-y-3 items-center">
       <span className="text-sm font-medium text-muted-foreground">Compare with:</span>
-      {benchmarks.map((benchmark) => (
-        <div key={benchmark} className="flex items-center space-x-2">
-          <Checkbox
-            id={`benchmark-${benchmark}`}
-            checked={selected.includes(benchmark)}
-            onCheckedChange={() => toggleBenchmark(benchmark)}
-          />
-          <Label
-            htmlFor={`benchmark-${benchmark}`}
-            className="text-sm font-medium cursor-pointer"
-          >
-            {benchmark}
-          </Label>
-        </div>
-      ))}
+      <div className="flex flex-wrap gap-4">
+        {benchmarks.map((benchmark) => (
+          <div key={benchmark} className="flex items-center space-x-2">
+            <Checkbox
+              id={`benchmark-${benchmark}`}
+              checked={selected.includes(benchmark)}
+              onCheckedChange={() => toggleBenchmark(benchmark)}
+            />
+            <Label
+              htmlFor={`benchmark-${benchmark}`}
+              className="text-sm font-medium cursor-pointer"
+            >
+              {benchmark}
+            </Label>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -284,7 +286,7 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
 
-      <main className="container mx-auto px-4 pt-4 md:pt-6 pb-6 md:pb-8 space-y-6 md:space-y-8">
+      <main className="container mx-auto px-4 pt-3 md:pt-6 pb-6 md:pb-8 space-y-6 md:space-y-8">
         <motion.div
           variants={container}
           initial="hidden"
@@ -293,12 +295,12 @@ export default function Dashboard() {
         >
           {/* Portfolio Selector - only show if multiple portfolios */}
           {data.portfolios.length > 1 && (
-            <motion.div variants={item} className="flex items-center gap-4">
-              <span className="text-sm font-medium text-muted-foreground">Portfolio:</span>
-              <Tabs value={selectedPortfolio} onValueChange={setSelectedPortfolio}>
-                <TabsList>
+            <motion.div variants={item} className="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+              <span className="text-sm font-medium text-muted-foreground mr-1">Portfolio</span>
+              <Tabs value={selectedPortfolio} onValueChange={setSelectedPortfolio} className="w-full md:w-auto">
+                <TabsList className="h-10 md:h-9 w-full md:w-auto">
                   {data.portfolios.map((p) => (
-                    <TabsTrigger key={p} value={p} className="min-w-[120px]">
+                    <TabsTrigger key={p} value={p} className="flex-1 md:min-w-[120px] h-full">
                       {p}
                     </TabsTrigger>
                   ))}

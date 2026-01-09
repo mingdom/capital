@@ -35,7 +35,8 @@ export function ComparisonTable({
                 <CardTitle className="text-lg font-medium">Performance Comparison</CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="overflow-x-auto">
+                {/* Desktop View: Table */}
+                <div className="hidden md:block">
                     <Table>
                         <TableHeader>
                             <TableRow>
@@ -93,6 +94,78 @@ export function ComparisonTable({
                             })}
                         </TableBody>
                     </Table>
+                </div>
+
+                {/* Mobile View: Card List */}
+                <div className="md:hidden space-y-3">
+                    {allSeries.map((name) => {
+                        const metrics = performance[name];
+                        if (!metrics) return null;
+
+                        const isMainPortfolio = name === selectedPortfolio;
+
+                        return (
+                            <div
+                                key={name}
+                                className={cn(
+                                    "p-4 rounded-lg border transition-all",
+                                    isMainPortfolio
+                                        ? "bg-primary/[0.03] border-primary/30 ring-1 ring-primary/20"
+                                        : "bg-muted/5 border-border/50"
+                                )}
+                            >
+                                <div className="flex justify-between items-center mb-3">
+                                    <span className={cn("font-bold text-base", isMainPortfolio ? "text-primary" : "text-foreground")}>
+                                        {name}
+                                    </span>
+                                    {isMainPortfolio && (
+                                        <Badge variant="outline" className="text-[10px] uppercase tracking-wider py-0 px-1.5 h-5 border-primary/30 text-primary bg-primary/5">
+                                            Active
+                                        </Badge>
+                                    )}
+                                </div>
+
+                                <div className="grid grid-cols-3 gap-2">
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] text-muted-foreground uppercase font-semibold">CAGR</span>
+                                        <span className={cn("text-sm font-mono font-bold", getValueColor(metrics.cagr))}>
+                                            {formatPercent(metrics.cagr)}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] text-muted-foreground uppercase font-semibold">1Y</span>
+                                        <span className={cn("text-sm font-mono font-bold", getValueColor(metrics.one_year))}>
+                                            {formatPercent(metrics.one_year)}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] text-muted-foreground uppercase font-semibold">Max DD</span>
+                                        <span className={cn("text-sm font-mono font-bold", getValueColor(metrics.max_drawdown))}>
+                                            {formatPercent(metrics.max_drawdown)}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-col pt-2 opacity-80">
+                                        <span className="text-[10px] text-muted-foreground uppercase">YTD</span>
+                                        <span className={cn("text-xs font-mono font-medium", getValueColor(metrics.ytd))}>
+                                            {formatPercent(metrics.ytd)}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-col pt-2 opacity-80">
+                                        <span className="text-[10px] text-muted-foreground uppercase">Sharpe</span>
+                                        <span className="text-xs font-mono text-foreground">
+                                            {formatNumber(metrics.sharpe, 2)}
+                                        </span>
+                                    </div>
+                                    <div className="flex flex-col pt-2 opacity-80">
+                                        <span className="text-[10px] text-muted-foreground uppercase">Sortino</span>
+                                        <span className="text-xs font-mono text-foreground">
+                                            {formatNumber(metrics.sortino, 2)}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </CardContent>
         </Card>

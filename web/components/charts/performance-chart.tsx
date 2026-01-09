@@ -173,30 +173,33 @@ export function PerformanceChart({
                 </div>
             </CardHeader>
             <CardContent>
-                <div className="h-[200px] md:h-[280px] w-full mt-4">
+                <div className="h-[300px] md:h-[350px] w-full mt-4">
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart
                             data={filteredData}
-                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                            margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
                         >
                             <CartesianGrid
                                 strokeDasharray="3 3"
                                 stroke="#3f3f46"
-                                opacity={0.5}
+                                opacity={0.3}
+                                vertical={false}
                             />
                             <XAxis
                                 dataKey="period"
                                 tickFormatter={formatTick}
                                 interval={tickInterval}
-                                tick={{ fill: "#a1a1aa", fontSize: 12 }}
+                                tick={{ fill: "#a1a1aa", fontSize: 10 }}
                                 axisLine={{ stroke: "#3f3f46" }}
-                                tickLine={{ stroke: "#3f3f46" }}
+                                tickLine={false}
+                                dy={10}
                             />
                             <YAxis
                                 tickFormatter={(value) => `$${value.toFixed(0)}`}
-                                tick={{ fill: "#a1a1aa", fontSize: 12 }}
-                                axisLine={{ stroke: "#3f3f46" }}
-                                tickLine={{ stroke: "#3f3f46" }}
+                                tick={{ fill: "#a1a1aa", fontSize: 10 }}
+                                axisLine={false}
+                                tickLine={false}
+                                orientation="right"
                                 domain={["dataMin - 10", "dataMax + 10"]}
                             />
                             <Tooltip
@@ -222,19 +225,23 @@ export function PerformanceChart({
                                 }}
                             />
                             <Legend
+                                verticalAlign="top"
+                                align="center"
+                                iconType="circle"
                                 wrapperStyle={{
-                                    paddingTop: "20px",
+                                    paddingBottom: "20px",
+                                    fontSize: "12px",
                                 }}
                             />
                             {series.map((name) => (
                                 <Line
                                     key={name}
-                                    type="linear"
+                                    type="monotone"
                                     dataKey={name}
                                     stroke={getChartColor(name)}
                                     strokeWidth={name === "Mingdom" || name === "Fidelity" ? 3 : 2}
                                     dot={false}
-                                    activeDot={{ r: 5 }}
+                                    activeDot={{ r: 4, strokeWidth: 0 }}
                                 />
                             ))}
                         </LineChart>

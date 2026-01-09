@@ -19,10 +19,12 @@ interface InfoTooltipProps {
  */
 export function InfoTooltip({ content, className = "" }: InfoTooltipProps) {
     return (
-        <TooltipProvider delayDuration={300}>
+        <TooltipProvider delayDuration={0}>
             <Tooltip>
                 <TooltipTrigger asChild>
-                    <Info className={`h-3.5 w-3.5 text-muted-foreground hover:text-foreground cursor-help ${className}`} />
+                    <button className="inline-flex items-center justify-center p-1 -m-1 outline-none">
+                        <Info className={`h-3.5 w-3.5 text-muted-foreground hover:text-foreground cursor-help ${className}`} />
+                    </button>
                 </TooltipTrigger>
                 <TooltipContent className="max-w-xs text-sm">
                     <p>{content}</p>

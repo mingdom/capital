@@ -30,10 +30,12 @@ export function StockPerformanceSection() {
 
     if (loading) {
         return (
-            <div className="space-y-4">
-                <Skeleton className="h-8 w-48" />
-                <Skeleton className="h-32 w-full" />
-                <Skeleton className="h-96 w-full" />
+            <div className="space-y-6">
+                <div className="flex justify-end">
+                    <Skeleton className="h-8 w-48" />
+                </div>
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-[350px] md:h-96 w-full" />
             </div>
         );
     }
@@ -88,12 +90,12 @@ export function StockPerformanceSection() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-end">
-                <Tabs value={activePeriod} onValueChange={setActivePeriod}>
-                    <TabsList className="bg-zinc-900/50 border border-white/5 h-8">
-                        <TabsTrigger value="3mo" className="text-xs px-3">3MO</TabsTrigger>
-                        <TabsTrigger value="ytd" className="text-xs px-3">YTD</TabsTrigger>
-                        <TabsTrigger value="1y" className="text-xs px-3">1Y</TabsTrigger>
+            <div className="flex justify-start sm:justify-end">
+                <Tabs value={activePeriod} onValueChange={setActivePeriod} className="w-full sm:w-auto">
+                    <TabsList className="bg-zinc-900/50 border border-white/5 h-10 sm:h-8 w-full sm:w-auto">
+                        <TabsTrigger value="3mo" className="flex-1 sm:flex-none text-xs px-6 sm:px-3 h-full">3MO</TabsTrigger>
+                        <TabsTrigger value="ytd" className="flex-1 sm:flex-none text-xs px-6 sm:px-3 h-full">YTD</TabsTrigger>
+                        <TabsTrigger value="1y" className="flex-1 sm:flex-none text-xs px-6 sm:px-3 h-full">1Y</TabsTrigger>
                     </TabsList>
                 </Tabs>
             </div>
@@ -116,7 +118,7 @@ export function StockPerformanceSection() {
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-2 group"
+                    className="w-full sm:w-auto h-10 sm:h-8 text-xs text-muted-foreground hover:text-foreground flex items-center justify-center sm:justify-start gap-2 group"
                     onClick={() => setIsTableExpanded(!isTableExpanded)}
                 >
                     {isTableExpanded ? (
@@ -144,7 +146,8 @@ export function StockPerformanceSection() {
                     >
                         <Card className="bg-zinc-950/40 border-white/5 overflow-hidden">
                             <CardContent className="p-0">
-                                <div className="overflow-x-auto">
+                                {/* Desktop Table View */}
+                                <div className="hidden md:block overflow-x-auto">
                                     <table className="w-full text-sm">
                                         <thead className="text-[10px] uppercase tracking-widest text-muted-foreground border-b border-white/5 bg-zinc-900/50">
                                             <tr>
@@ -191,6 +194,38 @@ export function StockPerformanceSection() {
                                             ))}
                                         </tbody>
                                     </table>
+                                </div>
+
+                                {/* Mobile Card View */}
+                                <div className="md:hidden divide-y divide-white/5 bg-zinc-900/20">
+                                    {sortedHoldings.map((h) => (
+                                        <div key={h.symbol} className="p-4 space-y-3">
+                                            <div className="flex justify-between items-center">
+                                                <span className="font-bold font-mono text-base tracking-tight text-primary">
+                                                    {h.symbol}
+                                                </span>
+                                                <div className={`font-mono font-bold text-sm ${getValueColor(h.period_return)}`}>
+                                                    {h.period_return >= 0 ? "+" : ""}{formatPercent(h.period_return)}
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="flex flex-col">
+                                                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Allocation</span>
+                                                    <span className="text-xs font-mono text-zinc-300">{formatPercent(h.allocation)}</span>
+                                                </div>
+                                                <div className="flex flex-col items-end">
+                                                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Total Return</span>
+                                                    <span className={`text-xs font-mono font-medium ${getValueColor(h.total_return_pct)}`}>
+                                                        {h.total_return_pct >= 0 ? "+" : ""}{formatPercent(h.total_return_pct)}
+                                                    </span>
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Current Price</span>
+                                                    <span className="text-xs font-mono text-zinc-300">${formatNumber(h.current_price)}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             </CardContent>
                         </Card>
