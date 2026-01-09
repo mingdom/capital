@@ -21,7 +21,7 @@ Accountability. When your portfolio is public, you can't hide mistakes or cherry
 
 - Active investor since 2009
 - 72% return in 2023 (Luck played a role, not expecting a repeat!)
-- Public portfolio tracking since February 2024
+- [See full performance history](/)
 
 ---
 
