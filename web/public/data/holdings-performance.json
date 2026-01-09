@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-01-08T16:38:53.062051",
+  "generated_at": "2026-01-08T16:39:24.767480",
   "as_of": "2026-01-07",
   "periods": {
     "3mo": {
@@ -542,10 +542,10 @@
       "start_date": "2025-01-07",
       "end_date": "2026-01-07",
       "summary": {
-        "net_return": 0.2930407861826464,
+        "net_return": 0.29304079825490326,
         "gainers_count": 27,
         "losers_count": 4,
-        "avg_return": 0.24514978725501252
+        "avg_return": 0.24514978767368156
       },
       "holdings": [
         {
@@ -647,8 +647,8 @@
         {
           "symbol": "VHT",
           "current_price": 297.236,
-          "period_start_price": 253.68746948242188,
-          "period_return": 0.1716621266569716,
+          "period_start_price": 253.6874542236328,
+          "period_return": 0.17166219713008699,
           "allocation": 0.024133,
           "total_return_pct": 0.061254
         },
@@ -663,8 +663,8 @@
         {
           "symbol": "MSFT",
           "current_price": 483.612,
-          "period_start_price": 419.2770690917969,
-          "period_return": 0.15344252202382574,
+          "period_start_price": 419.277099609375,
+          "period_return": 0.1534424380691516,
           "allocation": 0.004908,
           "total_return_pct": 0.020263
         },
@@ -751,8 +751,8 @@
         {
           "symbol": "META",
           "current_price": 648.88,
-          "period_start_price": 615.9478149414062,
-          "period_return": 0.053465868795600016,
+          "period_start_price": 615.94775390625,
+          "period_return": 0.05346597318506081,
           "allocation": 0.101417,
           "total_return_pct": 0.145381
         },
@@ -783,8 +783,8 @@
         {
           "symbol": "CRM",
           "current_price": 266.12,
-          "period_start_price": 322.8224792480469,
-          "period_return": -0.17564600637515837,
+          "period_start_price": 322.822509765625,
+          "period_return": -0.17564608430431958,
           "allocation": 0.013504,
           "total_return_pct": 0.061216
         },

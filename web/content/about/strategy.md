@@ -48,5 +48,5 @@ accent: blue
 ## Reporting
 
 - Benchmark: S&P 500 Total Return
-- Public holdings updates: Real-time
-- Performance: Monthly
+- Public holdings updates: Quarterly
+- Performance: Quarterly
