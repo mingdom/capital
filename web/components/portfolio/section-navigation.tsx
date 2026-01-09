@@ -105,12 +105,6 @@ export function SectionNavigation({ sections }: SectionNavigationProps) {
                                 : "border-transparent text-muted-foreground hover:bg-zinc-900/40 hover:text-foreground"
                         )}
                     >
-                        <span className={cn(
-                            "font-mono text-xs mt-0.5 transition-colors duration-300",
-                            activeSection === section.id ? "text-primary" : "text-zinc-500"
-                        )}>
-                            {section.order.toString().padStart(2, "0")}
-                        </span>
                         <span className="text-sm font-semibold tracking-tight transition-colors duration-300">
                             {section.title}
                         </span>

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-01-08T16:15:53.146118",
+  "generated_at": "2026-01-08T16:17:31.579978",
   "as_of": "2026-01-07",
   "periods": {
     "3mo": {
@@ -542,10 +542,10 @@
       "start_date": "2025-01-07",
       "end_date": "2026-01-07",
       "summary": {
-        "net_return": 0.29304081183815905,
+        "net_return": 0.29304079257750176,
         "gainers_count": 27,
         "losers_count": 4,
-        "avg_return": 0.245149783335509
+        "avg_return": 0.24514977508452937
       },
       "holdings": [
         {
@@ -647,16 +647,16 @@
         {
           "symbol": "VHT",
           "current_price": 297.236,
-          "period_start_price": 253.68746948242188,
-          "period_return": 0.1716621266569716,
+          "period_start_price": 253.68748474121094,
+          "period_return": 0.17166205618386463,
           "allocation": 0.024133,
           "total_return_pct": 0.061254
         },
         {
           "symbol": "MCO",
           "current_price": 531.44,
-          "period_start_price": 460.4885559082031,
-          "period_return": 0.15407862623613358,
+          "period_start_price": 460.48858642578125,
+          "period_return": 0.15407854975283805,
           "allocation": 0.010787,
           "total_return_pct": 0.115967
         },
@@ -679,8 +679,8 @@
         {
           "symbol": "MA",
           "current_price": 579.92,
-          "period_start_price": 508.4784851074219,
-          "period_return": 0.14050056587445436,
+          "period_start_price": 508.478515625,
+          "period_return": 0.14050049742453158,
           "allocation": 0.070628,
           "total_return_pct": 0.09045
         },
@@ -751,8 +751,8 @@
         {
           "symbol": "META",
           "current_price": 648.88,
-          "period_start_price": 615.9476928710938,
-          "period_return": 0.05346607757454229,
+          "period_start_price": 615.94775390625,
+          "period_return": 0.05346597318506081,
           "allocation": 0.101417,
           "total_return_pct": 0.145381
         },
@@ -767,8 +767,8 @@
         {
           "symbol": "PGR",
           "current_price": 209.1,
-          "period_start_price": 223.2516632080078,
-          "period_return": -0.06338883663689639,
+          "period_start_price": 223.25164794921875,
+          "period_return": -0.06338877262145773,
           "allocation": 0.010611,
           "total_return_pct": -0.054261
         },

@@ -28,7 +28,6 @@ export function PortfolioSection({
     accent,
 }: PortfolioSectionProps) {
     const accentColor = ACCENT_COLORS[accent] || ACCENT_COLORS.purple;
-    const sectionNumber = order.toString().padStart(2, "0");
 
     return (
         <motion.section
@@ -45,16 +44,6 @@ export function PortfolioSection({
                 style={{ backgroundColor: accentColor }}
             />
 
-            {/* Section Header Metadata */}
-            <div className="mb-6 select-none">
-                <span className="font-mono text-sm text-zinc-500 font-medium">
-                    {sectionNumber}
-                </span>
-                <div
-                    className="h-px w-10 mt-1 opacity-50"
-                    style={{ backgroundColor: accentColor }}
-                />
-            </div>
 
             {/* Markdown Content */}
             <MarkdownContent
