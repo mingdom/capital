@@ -143,8 +143,24 @@
     @apply border-border outline-ring/50;
   }
 
+  /* iOS Safari viewport fix: prevent text size adjustment and ensure proper scaling */
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    /* Ensure no minimum width constraints */
+    min-width: 0;
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-background text-foreground font-sans;
+    /* iOS Safari: prevent horizontal scroll and ensure proper sizing */
+    min-width: 0;
+    width: 100%;
+    overflow-x: hidden;
+    /* Smooth touch scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
   }
 
   h1,
