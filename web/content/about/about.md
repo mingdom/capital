@@ -20,9 +20,4 @@ Accountability. When your portfolio is public, you can't hide mistakes or cherry
 ## Track Record
 
 - Active investor since 2009
-- 72% return in 2023 (Luck played a role, not expecting a repeat!)
-- [See full performance history](/)
-
----
-
-*Past performance does not guarantee future results. Investing involves risk, including possible loss of principal.*
+- [Public portfolio performance since Feb 2024](/)

@@ -5,20 +5,18 @@ icon: Lightbulb
 accent: purple
 ---
 
-## 1. Avoid Risk of Ruin
+## 1. Maximize Long-Term Intrinsic Value
 
-This is rule #1. Large losses are mathematically devastating (a 50% loss requires a 100% gain to recover). I'd rather underperform in a bull market than get wiped out in a bear market.
+My objective is simple: maximize the long-term compound annual growth rate of intrinsic value per share. I am not trying to smooth out quarterly earnings or shadow an index. I am trying to own businesses that compound capital efficiently over decades.
 
-## 2. Quality & Competence
+## 2. Concentrated Conviction
 
-I focus on **Quality** (wide moats, pricing power, skin in the game) and **Competence** (businesses I actually understand).
+I run a concentrated, research-intensive strategy. I adhere to the belief that you only need a few wonderful ideas to build wealth. I target 10–15 high-conviction positions in companies I understand deeply—primarily within the Technology and Consumer sectors. I'd rather hold a volatile winner than a stable mediocrity.
 
-My circle of competence is mostly Tech and Consumer. If I don't understand the business model deeply, I don't touch it. I'd rather pay a fair price for a wonderful company than a wonderful price for a fair company.
+## 3. Asymmetric Risk/Reward
 
-## 3. Master the Cycles
+I am obsessed with the risk of ruin. My approach is to identify significant valuation discrepancies where the downside is protected by tangible assets or cash flow, and the upside is driven by a clear catalyst. I am willing to be patient for these opportunities to materialize.
 
-Markets move in cycles of fear and greed. My best returns often come from being greedy when others are fearful (e.g., buying tech in late 2022). I track market psychology to know when to be contrarian and when to sit on my hands.
+## 4. Temperament Over Intellect
 
-## 4. Know Your Game
-
-I'm not a day trader. I can't beat the algos on speed. My edge is patience and temperament. I play a long-term game where time is my friend, not my enemy.
+In the long run, investing is a game of temperament, not just IQ. I strive to be greedy when others are fearful and fearful when others are greedy. My edge is the ability to sit on my hands and do nothing when there is nothing to do, and to act decisively when the odds are heavily in my favor.
