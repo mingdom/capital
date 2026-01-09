@@ -29,8 +29,4 @@ Accountability. When your portfolio is public, you can't hide mistakes or cherry
 
 ---
 
-**Connect:** [LinkedIn](https://linkedin.com/in/dongming) • [X](https://x.com/dming)
-
----
-
 *Past performance does not guarantee future results. Investing involves risk, including possible loss of principal.*

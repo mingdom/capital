@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import { PortfolioSection } from "@/lib/portfolio-content";
+import { Linkedin, Twitter } from "lucide-react";
 
 interface SectionNavigationProps {
     sections: PortfolioSection[];
@@ -119,6 +120,37 @@ export function SectionNavigation({ sections }: SectionNavigationProps) {
                         </span>
                     </button>
                 ))}
+
+                {/* Social Links - Sticky in Sidebar */}
+                <div className="pt-12 mt-12 border-t border-border/30">
+                    <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-4 px-4 opacity-50">
+                        Connect
+                    </div>
+                    <div className="space-y-2 px-1">
+                        <a
+                            href="https://linkedin.com/in/dongming"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-300 text-muted-foreground hover:bg-zinc-900 hover:text-foreground group"
+                        >
+                            <span className="p-1 px-1.5 rounded bg-zinc-900 border border-border/50 group-hover:border-primary/50 group-hover:text-primary transition-colors">
+                                <Linkedin className="h-3.5 w-3.5" />
+                            </span>
+                            <span className="text-sm font-medium tracking-tight">LinkedIn</span>
+                        </a>
+                        <a
+                            href="https://x.com/dming"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-3 px-3 py-2 rounded-md transition-all duration-300 text-muted-foreground hover:bg-zinc-900 hover:text-foreground group"
+                        >
+                            <span className="p-1 px-1.5 rounded bg-zinc-900 border border-border/50 group-hover:border-primary/50 group-hover:text-primary transition-colors">
+                                <Twitter className="h-3.5 w-3.5" />
+                            </span>
+                            <span className="text-sm font-medium tracking-tight">X (Twitter)</span>
+                        </a>
+                    </div>
+                </div>
             </nav>
         </>
     );

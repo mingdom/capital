@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { PortfolioSection as SectionType } from "@/lib/portfolio-content";
 import { PortfolioSection } from "@/components/portfolio/portfolio-section";
 import { SectionNavigation } from "@/components/portfolio/section-navigation";
+import { Linkedin, Twitter } from "lucide-react";
 
 interface PortfolioInfoContentProps {
     sections: SectionType[];
@@ -39,6 +40,31 @@ export default function PortfolioInfoContent({ sections }: PortfolioInfoContentP
                             ))}
                         </motion.div>
                     </div>
+                </div>
+            </div>
+
+            {/* Mobile Sticky Social Bar */}
+            <div className="md:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+                <div className="bg-card/80 backdrop-blur-md border border-border/50 rounded-full px-6 py-3 shadow-xl flex items-center gap-6">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider mr-2">
+                        Connect
+                    </span>
+                    <a
+                        href="https://linkedin.com/in/dongming"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                        <Linkedin className="h-5 w-5" />
+                    </a>
+                    <a
+                        href="https://x.com/dming"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-primary transition-colors"
+                    >
+                        <Twitter className="h-5 w-5" />
+                    </a>
                 </div>
             </div>
         </main>
