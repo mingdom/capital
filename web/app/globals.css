@@ -1,16 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@source "../**/*.{js,ts,jsx,tsx,mdx}";
+
 @custom-variant dark (&:is(.dark *));
 
-/* Tailwind v4: Define responsive breakpoints */
-@custom-media --sm (width >=640px);
-@custom-media --md (width >=768px);
-@custom-media --lg (width >=1024px);
-@custom-media --xl (width >=1280px);
-@custom-media --2xl (width >=1536px);
-
-@theme inline {
+@theme {
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
