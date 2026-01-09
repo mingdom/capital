@@ -1,7 +1,11 @@
 # Active Tasks
 
 ## High Priority (PM Requested - Decision Usefulness)
+- [ ] evaluate merging into folio or expose library
+- [ ] portfolio beta calculation based on current holdings.
 
+
+---archive below this line:
 ### Up/Down Capture Ratios ⭐ NEW
 - [ ] Calculate up-capture vs SPY (portfolio return / SPY return when SPY > 0)
 - [ ] Calculate down-capture vs SPY (portfolio return / SPY return when SPY < 0)

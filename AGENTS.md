@@ -6,7 +6,6 @@
 - use make and makefile for all commands
 - you have skills! check: `~/projects/dot-agents/master/skills`
 - minimalistic designs, no bs/fluff
-- use `bd` aka beads for task tracking
 - project plans in `docs/plans/`
 
 ## Available Make Commands
