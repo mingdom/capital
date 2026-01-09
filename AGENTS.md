@@ -1,5 +1,4 @@
 # Mingdom Capital AI Agent Guidelines
-
 - repo: institutional portfolio management / analytics. report portfolio perf, stats, risks... etc.
 - coding: prefer simplicity, files < 500 loc
 - error handling: check for error case and exit/handle early, reduce branching
@@ -9,7 +8,6 @@
 - minimalistic designs, no bs/fluff
 - use `bd` aka beads for task tracking
 - project plans in `docs/plans/`
-- never run `git push` or any unsafe `git` commands!!! `git push` deploys to production!!!
 
 ## Available Make Commands
 
@@ -24,3 +22,7 @@
 - `make import`: Import latest portfolio data from external sources.
 - `make run`: Launch the interactive CLI toolkit.
 - `make clean`: Remove build artifacts and virtual environments.
+
+# Prohibited
+
+- NEVER!!! EVER!!! use `git push` or any unsafe `git` commands!!! `git push` deploys to production!!!
